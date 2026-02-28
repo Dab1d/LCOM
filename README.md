@@ -67,8 +67,8 @@ We declare that:
 4. We have not used AI tools to generate complete solutions that we present as entirely our own unaided work, and we have avoided plagiarism, whether from AI outputs or other sources.  
 5. If asked, we will provide details of which tools we used, for which files or parts of the project, and how we verified and adapted their outputs.
 
-Signed: `<student name>`, `<student name>`, `<student name>`, `<student name>`  
-Date: `<date>`
+Signed: André Baptista, David Ferreira, Diogo Santos, Leonor Alpoim
+Date: 28/02/2026
 
 ## Authors and acknowledgment
 
@@ -78,4 +78,4 @@ Group members:
 <first name> <family name> (<email address>)
 <first name> <family name> (<email address>)
 <first name> <family name> (<email address>)
-<first name> <family name> (<email address>)
+Leonor Alpoim (up202407742@up.pt / alpoimleonor@gmail.com)
