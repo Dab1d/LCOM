@@ -76,6 +76,6 @@ LCOM Project for group GRUPO_2LEIC<m><n>_<p>.
 Group members:
 
 André Baptista (up202403287@up.pt / andrebap26@gmail.com)
-David Ferreira (up202406798@up.pt)
+David Ferreira (up202406798@up.pt/2006davidferreira@gmail.com)
 Diogo Santos (up202406839@up.pt dimcsantos@gmail.com)
 Leonor Alpoim (up202407742@up.pt / alpoimleonor@gmail.com)
