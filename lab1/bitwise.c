@@ -31,7 +31,7 @@ uint8_t mask(int pos, ...) {
 
   
     while (pos != MSK_END) {
-        res |= (1 << pos);     
+        set(res, pos);     
         pos = va_arg(ap, int);  
     }
 
