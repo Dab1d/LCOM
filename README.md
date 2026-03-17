@@ -72,7 +72,7 @@ Date: 28/02/2026
 
 ## Authors and acknowledgment
 
-LCOM Project for group GRUPO_2LEIC<m><n>_<p>.
+LCOM Project for group GRUPO_2LEIC07_01.
 Group members:
 
 André Baptista (up202403287@up.pt / andrebap26@gmail.com)
