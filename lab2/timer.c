@@ -32,10 +32,21 @@ void (timer_int_handler)() {
 }
 
 int (timer_get_conf)(uint8_t timer, uint8_t *st) {
-  /* To be implemented by the students */
-  printf("%s is not yet implemented!\n", __func__);
+  if (timer > 2) return 1;
 
-  return 1;
+    // read-back command: bit7=1, bit6=1, bit5=0 (latch status),
+    // bits 3-1 selecionam o timer
+    uint8_t cmd = TIMER_RB_CMD          // 0xC0
+                | TIMER_RB_COUNT_       // não latch count (bit5=1 -> desativar)
+                | TIMER_RB_SEL(timer);  // seleciona o timer
+    if (sys_outb(TIMER_CTRL, cmd) != 0) return 1;
+    // lê o status byte da porta do timr selecionado
+    uint8_t port;
+    if      (timer == 0) port = TIMER_0;
+    else if (timer == 1) port = TIMER_1;
+    else                 port = TIMER_2;
+
+    return util_sys_inb(port, st);
 }
 
 int (timer_display_conf)(uint8_t timer, uint8_t st,
