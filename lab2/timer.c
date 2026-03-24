@@ -5,11 +5,41 @@
 
 #include "i8254.h"
 
-int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
-  /* To be implemented by the students */
-  printf("%s is not yet implemented!\n", __func__);
+int(timer_set_frequency)(uint8_t timer, uint32_t freq) {
+    if (timer > 2) return 1;
+    if (freq < 19 || freq > TIMER_FREQ) return 1;
 
-  return 1;
+    //lê a configuração atual do timer
+    uint8_t conf;
+    if (timer_get_conf(timer, &conf) != 0) return 1;
+
+    // calcula o divisor
+    uint16_t divider = (uint16_t)(TIMER_FREQ / freq);
+
+    // Constrói o Control Word
+    // Bits 7-6: seleciona o timer
+    // Bits 5-4: 11 = LSB seguido de MSB
+    // Bits 3-0: preservar da configuração atual (counting mode + BCD)
+    uint8_t ctrl = (timer << 6) | TIMER_LSB_MSB | (conf & 0x0F);
+
+    // Seleciona a porta do timer
+    uint8_t port;
+    if      (timer == 0) port = TIMER_0;
+    else if (timer == 1) port = TIMER_1;
+    else                 port = TIMER_2;
+
+    // escreve o Control Word no Control Register
+    if (sys_outb(TIMER_CTRL, ctrl) != 0) return 1;
+
+    // Escreve LSB e MSB do divisor
+    uint8_t lsb, msb;
+    if (util_get_LSB(divider, &lsb) != 0) return 1;
+    if (util_get_MSB(divider, &msb) != 0) return 1;
+
+    if (sys_outb(port, lsb) != 0) return 1;
+    if (sys_outb(port, msb) != 0) return 1;
+
+    return 0;
 }
 
 int (timer_subscribe_int)(uint8_t *bit_no) {
