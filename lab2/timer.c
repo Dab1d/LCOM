@@ -31,6 +31,7 @@ void (timer_int_handler)() {
   printf("%s is not yet implemented!\n", __func__);
 }
 
+
 int (timer_get_conf)(uint8_t timer, uint8_t *st) {
   if (timer > 2) return 1;
 
@@ -49,10 +50,37 @@ int (timer_get_conf)(uint8_t timer, uint8_t *st) {
     return util_sys_inb(port, st);
 }
 
-int (timer_display_conf)(uint8_t timer, uint8_t st,
-                        enum timer_status_field field) {
-  /* To be implemented by the students */
-  printf("%s is not yet implemented!\n", __func__);
 
-  return 1;
+int (timer_display_conf)(uint8_t timer, uint8_t conf, enum timer_status_field field) {
+  //parseia e imprime o campo pedido
+    union timer_status_field_val val;
+      switch (field) {
+        case tsf_all:
+            val.byte = conf;
+            break;
+
+        case tsf_initial: {
+            uint8_t init = (conf >> 4) & 0x03;
+            if      (init == 1) val.in_mode = LSB_only;
+            else if (init == 2) val.in_mode = MSB_only;
+            else if (init == 3) val.in_mode = MSB_after_LSB;
+            else                val.in_mode = INVAL_val;
+            break;
+        }
+
+        case tsf_mode:
+            val.count_mode = (conf >> 1) & 0x07;
+            if (val.count_mode > 5) val.count_mode &= 0x03;
+            break;
+
+        case tsf_base:
+            val.bcd = (bool)(conf & 0x01);
+            break;
+
+        default:
+            return 1;
+    }
+
+    return timer_print_config(timer, field, val);
+    //o header tem esta função implementada
 }
