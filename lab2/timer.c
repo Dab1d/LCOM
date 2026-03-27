@@ -5,6 +5,10 @@
 
 #include "i8254.h"
 
+int timer_counter=0 ; //contador global  dos interrupts
+
+int hook_id=0; //id da subscrição
+
 int(timer_set_frequency)(uint8_t timer, uint32_t freq) {
     if (timer > 2) return 1;
     if (freq < 19 || freq > TIMER_FREQ) return 1;
@@ -42,23 +46,17 @@ int(timer_set_frequency)(uint8_t timer, uint32_t freq) {
     return 0;
 }
 
-int (timer_subscribe_int)(uint8_t *bit_no) {
-    /* To be implemented by the students */
-  printf("%s is not yet implemented!\n", __func__);
-
-  return 1;
+int(timer_subscribe_int)(uint8_t *bit_no) {
+    *bit_no = hook_id;
+    return sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &hook_id);
 }
 
-int (timer_unsubscribe_int)() {
-  /* To be implemented by the students */
-  printf("%s is not yet implemented!\n", __func__);
-
-  return 1;
+int(timer_unsubscribe_int)() {
+    return sys_irqrmpolicy(&hook_id);
 }
 
-void (timer_int_handler)() {
-  /* To be implemented by the students */
-  printf("%s is not yet implemented!\n", __func__);
+void(timer_int_handler)() {
+    timer_counter++;
 }
 
 
@@ -114,3 +112,4 @@ int (timer_display_conf)(uint8_t timer, uint8_t conf, enum timer_status_field fi
     return timer_print_config(timer, field, val);
     //o header tem esta função implementada
 }
+
