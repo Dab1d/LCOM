@@ -1,5 +1,7 @@
 #include <lcom/lcf.h>
+#include <lcom/lab2.h>
 
+#include <stdbool.h>
 #include <stdint.h>
 
 int(util_get_LSB)(uint16_t val, uint8_t *lsb) {
@@ -19,7 +21,7 @@ int(util_get_MSB)(uint16_t val, uint8_t *msb) {
 int (util_sys_inb)(int port, uint8_t *value) {
   /* To be implemented by the students */
   uint32_t tmp;
-  sysinb(port,&tmp);
+  sys_inb(port,&tmp);
   *value=(uint8_t)tmp;
   return 0;
 

@@ -46,14 +46,40 @@ int(timer_test_read_config)(uint8_t timer, enum timer_status_field field) {
 }
 
 int(timer_test_time_base)(uint8_t timer, uint32_t freq) {
-  /* To be implemented by the students */
-  printf("%s is not yet implemented!\n", __func__);
-
-  return 1;
+  if (timer_set_frequency(timer, freq )!=0 ){
+    printf("Erro\n");
+    return 1;
+  }
+  return 0;
 }
 
 int(timer_test_int)(uint8_t time) {
-  /* To be implemented by the students */
+  int ipc_status;
+  message msg;
+  uint8_t bit_no;
+  int irq_set;
+
+  timer_subscribe_int(&bit_no);
+  irq_set = BIT(bit_no);
+
+  while (counter < time * 60) {
+    driver_receive(ANY, &msg, &ipc_status);
+
+    if (is_ipc_notify(ipc_status)) {
+      if (_ENDPOINT_P(msg.m_source) == HARDWARE) {
+        
+        if (msg.m_notify.interrupts & irq_set) {
+          timer_int_handler();
+
+          if (counter % 60 == 0) {
+            timer_print_elapsed_time();
+          }
+        }
+      }
+    }
+  }
+
+  timer_unsubscribe_int();
   printf("%s is not yet implemented!\n", __func__);
 
   return 1;
