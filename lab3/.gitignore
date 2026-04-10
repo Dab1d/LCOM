@@ -1,0 +1,6 @@
+*.o
+*.d
+lab3
+trace.txt
+output.txt
+.idea/
