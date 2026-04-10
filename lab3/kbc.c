@@ -53,3 +53,64 @@ bool check_kbc_error() {
 }
 
 
+// Lê um byte do Output Buffer
+int kbc_read_outbuf(uint8_t *byte) {
+    uint8_t status;
+
+    for (int i = 0; i < KBC_MAX_TRIES; i++) {
+        if (util_sys_inb(KBC_STATUS_REG, &status) != OK) return -1;
+
+        // Verificar se o Output Buffer tem dados
+        if (status & KBC_OBF) {
+            if (util_sys_inb(KBC_OUTBUF_REG, byte) != OK) return -1;
+
+            // Paridade ou Timeout
+            if (status & (KBC_PARITY | KBC_TIMEOUT)) return -1;
+
+            // Verificar rato
+            if (status & KBC_AUX) return -1;
+
+            return OK;
+        }
+
+        tickdelay(micros_to_ticks(KBC_DELAY_US));
+    }
+    return -1; // Timeout
+}
+
+// Escreve um comando no KBC (espera IBF estar livre)
+int kbc_write_cmd(uint8_t cmd) {
+    uint8_t status;
+    uint32_t tries = 0;
+
+    while (tries < KBC_MAX_TRIES) {
+        if (util_sys_inb(KBC_STATUS_REG, &status) != OK) return 1;
+
+        if (!(status & KBC_IBF)) {
+            // Se o bit IBF não está ativo, o buffer está livre para escrita
+            return sys_outb(KBC_CMD_REG, cmd); 
+        }
+
+        tickdelay(micros_to_ticks(KBC_DELAY_US));
+        tries++;
+    }
+    return 1; // timeout
+}
+
+// Escreve um argumento no Input Buffer (espera IBF estar livre)
+int kbc_write_arg(uint8_t arg) {
+    uint8_t status;
+    uint32_t tries = 0;
+
+    while (tries < KBC_MAX_TRIES) {
+        if (util_sys_inb(KBC_STATUS_REG, &status) != OK) return 1;
+
+        if (!(status & KBC_IBF)) {
+            // Se o bit IBF não está ativo, o buffer está livre para escrita
+            return sys_outb(KBC_CMD_REG, arg);
+        }
+        tickdelay(micros_to_ticks(KBC_DELAY_US));
+        tries++;
+    }
+    return 1;
+}
