@@ -1,6 +1,6 @@
 *.o
-*.d
+*.a
+*.txt
 lab3
-trace.txt
-output.txt
 .idea/
+.gdbinit
