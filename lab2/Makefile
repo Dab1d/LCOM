@@ -9,7 +9,7 @@ SRCS = lab2.c
 CFLAGS += -pedantic
 
 # list of library dependencies (for Lab 2, only LCF library)
-DPADD += ${LIBLCF}
+DPADD += ${LIBLCF} ${LIB_NAME}
 LDADD += -llcf -L. -ltimer
 
 LIB_NAME = libtimer.a
