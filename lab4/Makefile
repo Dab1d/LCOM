@@ -17,4 +17,3 @@ LDADD += -L../lab3 -lkbc
 
 # include LCOM's makefile that does all the "heavy lifting"
 .include <minix.lcom.mk>
-minix.lcom.mk
