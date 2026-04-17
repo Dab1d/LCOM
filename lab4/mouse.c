@@ -59,3 +59,66 @@ int (mouse_unsubscribe_int)() {
     return sys_irqrmpolicy(&mouse_hook_id);
 }
 
+/* ---- kbc_wait_input ----
+ * Waits until KBC input buffer is empty (safe to write).
+ */
+static int kbc_wait_input() {
+    uint8_t status;
+    int tries = 10;
+    while (tries--) {
+        if (util_sys_inb(KBC_CMD_PORT, &status) != 0) return 1;
+        if (!(status & KBC_IBF)) return 0;   // input buffer empty, safe to write
+        tickdelay(micros_to_ticks(20000));    // wait 20ms
+    }
+    return 1; // timed out
+}
+
+/* ---- mouse_write_command ----
+ * Sends one command byte to the mouse.
+ * Handles retries on 0xFE (resend) responses.
+ */
+int (mouse_write_command)(uint8_t cmd) {
+    uint8_t ack;
+    int retries = 5;
+
+    while (retries--) {
+        // Step 1: tell KBC to forward next byte to mouse
+        if (kbc_wait_input() != 0) return 1;
+        if (sys_outb(KBC_CMD_PORT, KBC_WRITE_MOUSE) != 0) return 1;
+
+        // Step 2: write the actual command
+        if (kbc_wait_input() != 0) return 1;
+        if (sys_outb(KBC_DATA_PORT, cmd) != 0) return 1;
+
+        // Step 3: read acknowledgment
+        // Wait a bit for mouse to respond
+        tickdelay(micros_to_ticks(20000));
+
+        uint8_t status;
+        int tries = 10;
+        bool got_ack = false;
+        while (tries--) {
+            if (util_sys_inb(KBC_CMD_PORT, &status) != 0) continue;
+            if (status & KBC_OBF) {
+                util_sys_inb(KBC_DATA_PORT, &ack);
+                got_ack = true;
+                break;
+            }
+            tickdelay(micros_to_ticks(20000));
+        }
+
+        if (!got_ack) return 1;
+        if (ack == 0xFA) return 0;       // success
+        if (ack == 0xFE || ack == 0xFC)  // error: retry whole command
+            continue;
+    }
+    return 1; // failed after retries
+}
+
+/* ---- mouse_disable_data_reporting ----
+ * Sends 0xF5 to mouse to disable data reporting.
+ */
+int (mouse_disable_data_reporting)() {
+    return mouse_write_command(MOUSE_DISABLE_DR);
+}
+
