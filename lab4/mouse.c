@@ -73,11 +73,11 @@ static int kbc_wait_input() {
     return 1; // timed out
 }
 
-/* ---- mouse_write_command ----
+/* ---- write_to_mouse ----
  * Sends one command byte to the mouse.
  * Handles retries on 0xFE (resend) responses.
  */
-int (mouse_write_command)(uint8_t cmd) {
+int (write_to_mouse)(uint8_t cmd) {
     uint8_t ack;
     int retries = 5;
 
@@ -119,7 +119,7 @@ int (mouse_write_command)(uint8_t cmd) {
  * Sends 0xF5 to mouse to disable data reporting.
  */
 int (mouse_disable_data_reporting)() {
-    return mouse_write_command(MOUSE_DISABLE_DR);
+    return write_to_mouse(MOUSE_DISABLE_DR);
 }
 
 
