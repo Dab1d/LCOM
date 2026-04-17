@@ -152,8 +152,7 @@ static void parse_packet(uint8_t bytes[3], struct packet *pp) {
 }
 
 /* ---- mouse_test_packet ----
- * Reads and displays cnt mouse packets using interrupts.
- */
+ esta funçao vinha no lab4.c mas implementei-a antes aqui*/
 int (mouse_test_packet)(uint32_t cnt) {
     uint8_t mouse_mask;
 
