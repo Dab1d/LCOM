@@ -215,3 +215,74 @@ int (mouse_test_packet)(uint32_t cnt) {
     return 0;
 }
 
+/*vinha a funçao no lab4.c mas eu implementei-a aqui*/
+int (mouse_test_async)(uint8_t idle_time) {
+    uint8_t mouse_mask;
+    uint8_t timer_mask;
+
+    if (mouse_subscribe_int(&mouse_mask) != 0) return 1;
+    if (timer_subscribe_int(&timer_mask) != 0) {  // from your lab3 timer code
+        mouse_unsubscribe_int();
+        return 1;
+    }
+
+    if (write_to_mouse(MOUSE_ENABLE_DR) != 0) {
+        mouse_unsubscribe_int();
+        timer_unsubscribe_int();
+        return 1;
+    }
+
+    int ipc_status;
+    message msg;
+
+    uint8_t packet_bytes[3];
+    int byte_index = 0;
+
+    uint32_t tick_count = 0;     // counts timer interrupts
+    uint32_t sys_freq = sys_hz(); // timer frequency (usually 60Hz)
+    uint32_t idle_ticks = idle_time * sys_freq;
+
+    while (tick_count < idle_ticks) {
+        if (driver_receive(ANY, &msg, &ipc_status) != 0) continue;
+
+        if (is_ipc_notify(ipc_status)) {
+            switch (_ENDPOINT_P(msg.m_source)) {
+                case HARDWARE:
+                    // Timer interrupt
+                    if (msg.m_notify.interrupts & timer_mask) {
+                        tick_count++;
+                    }
+                    // Mouse interrupt
+                    if (msg.m_notify.interrupts & mouse_mask) {
+                        byte_ready = false;
+                        mouse_ih();
+
+                        if (byte_error || !byte_ready) break;
+
+                        if (byte_index == 0 && !(byte_received & BIT(3))) break;
+
+                        packet_bytes[byte_index++] = byte_received;
+
+                        if (byte_index == 3) {
+                            struct packet pp;
+                            parse_packet(packet_bytes, &pp);
+                            mouse_print_packet(&pp);
+                            byte_index = 0;
+                            tick_count = 0;  // reset idle timer on packet received
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    // 4. Cleanup
+    mouse_disable_data_reporting();
+    mouse_unsubscribe_int();
+    timer_unsubscribe_int();
+
+    return 0;
+}
+

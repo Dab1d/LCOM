@@ -31,8 +31,4 @@ int main(int argc, char *argv[]) {
 }
 
 
-int (mouse_test_async)(uint8_t idle_time) {
-    /* To be completed */
-    printf("%s(%u): under construction\n", __func__, idle_time);
-    return 1;
-}
+
