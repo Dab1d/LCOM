@@ -28,3 +28,4 @@ int (mouse_test_packet)(uint32_t cnt);
 int (mouse_test_async)(uint8_t idle_time);
 
 #endif /* MOUSE_H */
+
