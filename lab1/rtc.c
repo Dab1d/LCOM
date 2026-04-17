@@ -35,24 +35,56 @@ static int is_updating() {
     return value & RTC_UIP_MSK;
 }
 
+int rtc_read_reg(uint8_t reg, uint32_t *value) {
+    
+    if (sys_outb(RTC_ADDR_REG, reg) != 0) {
+        return 1; 
+    }
+    
+    if (sys_inb(RTC_DATA_REG, value) != 0) {
+        return 1; 
+    }
+    return 0; 
+}
+
 int rtc_read_date(rtc_date *date) {
-    while(is_updating());
 
-    uint8_t day = rtc_read(RTC_REG_DAY);
-    uint8_t month = rtc_read(RTC_REG_MONTH);
-    uint8_t year = rtc_read(RTC_REG_YEAR);
+    uint32_t regA, regB, day, month, year;
+    int counter=0;
 
-    uint8_t regB = rtc_read(RTC_REG_B);
+    // Esperar que o RTC não esteja a atualizar (UIP - Update In Progress)
+    do {
+        if (rtc_read_reg(RTC_REG_A, &regA) != OK) return 1;
 
-    if (!(regB & 0x04)) {
-        day   = bcd_to_bin(day);
-        month = bcd_to_bin(month);
-        year  = bcd_to_bin(year);
+        if (regA & RTC_UIP_MSK) {
+            counter++;
+            if (counter >= 50) {
+                
+                return 1;
+            }
+            tickdelay(micros_to_ticks(20000));
+        }
+    } while (regA & RTC_UIP_MSK);
+
+    // Leitura dos dados (usando a auxiliar e verificando erros)
+    if (rtc_read_reg(RTC_REG_DAY, &day) != 0) return 1;
+    if (rtc_read_reg(RTC_REG_MONTH, &month) != 0) return 1;
+    if (rtc_read_reg(RTC_REG_YEAR, &year) != 0) return 1;
+    if (rtc_read_reg(RTC_REG_B, &regB) != 0) return 1;
+
+    // Conversão de BCD para Binário, se necessário
+    // Se o bit RTC_DM_MSK no Reg B for 0, os dados estão em BCD
+    if (!(regB & RTC_DM_MSK)) {
+        day = bcd_to_bin((uint8_t)day);
+        month = bcd_to_bin((uint8_t)month);
+        year = bcd_to_bin((uint8_t)year);
     }
 
-    date->day = day;
-    date->month = month;
-    date->year = year;
+    // Guardar na estrutura através das referências
+    date->day = (uint8_t) day;
+    date->month = (uint8_t) month;
+    date->year = (uint8_t) year;
 
     return 0;
+
 }

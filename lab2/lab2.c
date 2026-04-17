@@ -29,58 +29,50 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
-int(timer_test_read_config)(uint8_t timer, enum timer_status_field field) {
-   uint8_t st;
 
-    if (timer_get_conf(timer, &st) != 0) {
-        printf("Erro ao ler configuração\n");
-        return 1;
-    }
+int (timer_test_read_config)(uint8_t timer, enum timer_status_field field) {
+    uint8_t conf;
+    if (timer_get_conf(timer, &conf) != 0) return 1; //pq o timer_get_conf retorna 0 com sucesso
+    //e non zero otherwise
 
-    if (timer_display_conf(timer, st, field) != 0) {
-        printf("Erro ao mostrar configuração\n");
-        return 1;
-    }
-
-    return 0;
+    return timer_display_conf(timer, conf, field);
 }
 
 int(timer_test_time_base)(uint8_t timer, uint32_t freq) {
-  if (timer_set_frequency(timer, freq )!=0 ){
-    printf("Erro\n");
-    return 1;
-  }
-  return 0;
+    return timer_set_frequency(timer, freq);
 }
 
 int(timer_test_int)(uint8_t time) {
-  int ipc_status;
-  message msg;
-  uint8_t bit_no;
-  int irq_set;
+    uint8_t bit_no;
+    if (timer_subscribe_int(&bit_no) != 0) return 1;
 
-  timer_subscribe_int(&bit_no);
-  irq_set = BIT(bit_no);
+    uint32_t irq_set = BIT(bit_no); // máscara do bit do timer
 
-  while (counter < time * 60) {
-    driver_receive(ANY, &msg, &ipc_status);
-
-    if (is_ipc_notify(ipc_status)) {
-      if (_ENDPOINT_P(msg.m_source) == HARDWARE) {
-        
-        if (msg.m_notify.interrupts & irq_set) {
-          timer_int_handler();
-
-          if (counter % 60 == 0) {
-            timer_print_elapsed_time();
-          }
+    int ipc_status;
+    message msg;
+    int r;
+    extern int timer_counter;
+    //meti extern pq estava a dar erro a compilar quando o tentava aceder
+    while (timer_counter < time * 60) { // 60 Hz * segundos
+        if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
+            printf("driver_receive failed: %d\n", r);
+            continue;
         }
-      }
+        if (is_ipc_notify(ipc_status)) {
+            switch (_ENDPOINT_P(msg.m_source)) {
+                case HARDWARE:
+                    if (msg.m_notify.interrupts & irq_set) {
+                        timer_int_handler();
+                        if (timer_counter % 60 == 0) // a cada segundo
+                            timer_print_elapsed_time();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
     }
-  }
-
-  timer_unsubscribe_int();
-  printf("%s is not yet implemented!\n", __func__);
-
-  return 1;
+    if (timer_unsubscribe_int() != 0) return 1;
+    return 0;
 }
+

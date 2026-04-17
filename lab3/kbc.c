@@ -2,46 +2,115 @@
 #include <stdint.h>
 #include "kbc.h"
 
-int hook_id=1;
-bool kbc_error=0;
+static int kbc_hook_id = 1;
 static uint8_t current_scancode = 0;
-int (kbc_subscribe_int)(uint8_t *bit_no) {
-   if (bit_no == NULL) return 1;
+static bool has_error = false;
 
-  *bit_no = hook_id;
+int kbc_subscribe_int(uint8_t *bit_no) {
+    if (bit_no == NULL) return 1; // check ponteiro
 
-  if (sys_irqsetpolicy(KBC_IRQ, IRQ_REENABLE|IRQ_EXCLUSIVE, &hook_id) != OK)
-    return 1;
+    *bit_no = kbc_hook_id; // guardar bit
 
-  return 0;
+    if (sys_irqsetpolicy(KBC_IRQ, IRQ_REENABLE | IRQ_EXCLUSIVE, &kbc_hook_id) != OK) return 1;
+    // EXCLUSIVE STEALS THE KEYBOARD FOR US
 
+    return 0;
 }
+
 int kbc_unsubscribe_int() {
-    if (sys_irqrmpolicy(&hook_id) != OK) return 1; // remover interrupções
+    if (sys_irqrmpolicy(&kbc_hook_id) != OK) return 1; // remover interrupções
     return 0;
 }
 
 void (kbc_ih)() {
     uint8_t status;
-    kbc_error= false;
+    has_error = false;
 
     // ler status register
     if (util_sys_inb(KBC_STATUS_REG, &status) != OK) {
-        kbc_error= true;
+        has_error = true;
         return;
     }
 
     // ler output buffer
     if (util_sys_inb(KBC_OUTBUF_REG, &current_scancode) != OK) {
-        kbc_error = true;
+        has_error = true;
         return;
     }
 
     // errors
     if (status & (KBC_PARITY | KBC_TIMEOUT)) {
-        kbc_error = true;
+        has_error = true;
     }
 }
-int kbc_read_outbuf(uint8_t *byte){
 
+uint8_t get_current_scancode() {
+    return current_scancode;
+}
+
+bool check_kbc_error() {
+    return has_error;
+}
+
+
+// Lê um byte do Output Buffer
+int kbc_read_outbuf(uint8_t *byte) {
+    uint8_t status;
+
+    for (int i = 0; i < KBC_MAX_TRIES; i++) {
+        if (util_sys_inb(KBC_STATUS_REG, &status) != OK) return -1;
+
+        // Verificar se o Output Buffer tem dados
+        if (status & KBC_OBF) {
+            if (util_sys_inb(KBC_OUTBUF_REG, byte) != OK) return -1;
+
+            // Paridade ou Timeout
+            if (status & (KBC_PARITY | KBC_TIMEOUT)) return -1;
+
+            // Verificar rato
+            if (status & KBC_AUX) return -1;
+
+            return OK;
+        }
+
+        tickdelay(micros_to_ticks(KBC_DELAY_US));
+    }
+    return -1; // Timeout
+}
+
+// Escreve um comando no KBC (espera IBF estar livre)
+int kbc_write_cmd(uint8_t cmd) {
+    uint8_t status;
+    uint32_t tries = 0;
+
+    while (tries < KBC_MAX_TRIES) {
+        if (util_sys_inb(KBC_STATUS_REG, &status) != OK) return 1;
+
+        if (!(status & KBC_IBF)) {
+            // Se o bit IBF não está ativo, o buffer está livre para escrita
+            return sys_outb(KBC_CMD_REG, cmd); 
+        }
+
+        tickdelay(micros_to_ticks(KBC_DELAY_US));
+        tries++;
+    }
+    return 1; // timeout
+}
+
+// Escreve um argumento no Input Buffer (espera IBF estar livre)
+int kbc_write_arg(uint8_t arg) {
+    uint8_t status;
+    uint32_t tries = 0;
+
+    while (tries < KBC_MAX_TRIES) {
+        if (util_sys_inb(KBC_STATUS_REG, &status) != OK) return 1;
+
+        if (!(status & KBC_IBF)) {
+            // Se o bit IBF não está ativo, o buffer está livre para escrita
+            return sys_outb(KBC_CMD_REG, arg);
+        }
+        tickdelay(micros_to_ticks(KBC_DELAY_US));
+        tries++;
+    }
+    return 1;
 }
