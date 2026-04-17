@@ -134,13 +134,45 @@ int (kbd_test_poll)() {
     return 0;
 }
 
-int (kbd_test_timed_scan)(uint8_t n) {
-    /* To be completed by the students */
-    /*
-     * mas sai no teste
-     *
-     */
-    printf("%s is not yet implemented!\n", __func__);
+int(kbd_test_timed_scan)(uint8_t n) {
 
-    return 1;
+    int ipc_status;
+    uint8_t irq_set_TIMER, irq_set_KBC;
+    message msg;
+
+    int seconds = 0;  // timer seconds
+
+    if (timer_subscribe_int(&irq_set_TIMER) != 0) return 1;
+    if (keyboard_subscribe_interrupts(&irq_set_KBC) != 0) return 1;
+
+    while (scancode != BREAK_ESC && seconds < n){
+
+        if( driver_receive(ANY, &msg, &ipc_status) != 0 ){
+            printf("Error");
+            continue;
+        }
+
+        if(is_ipc_notify(ipc_status)) {
+            switch(_ENDPOINT_P(msg.m_source)){
+                 case HARDWARE:
+                    if (msg.m_notify.interrupts & irq_set_KBC) {
+                        kbc_ih();
+                        kbd_print_scancode(!(scancode & MAKE_CODE), scancode == TWO_BYTES ? 2 : 1, &scancode);
+                        seconds = 0;
+                        counter_TIMER = 0;
+                    }
+                    if (msg.m_notify.interrupts & irq_set_TIMER) {
+                        timer_int_handler();
+                        //if (counter_TIMER == (UINT32_MAX - (UINT32_MAX % 60)) ) { counter_TIMER = 0; }  // "esvazia" o counter para evitar overflow e preserva a lógica do módulo para o lab
+                        if (counter_TIMER % 60 == 0) seconds++;
+                    }
+            }
+        }
+    }
+
+  if (timer_unsubscribe_int() != 0) return 1;
+  if (keyboard_unsubscribe_interrupts() != 0) return 1;
+  if (kbd_print_no_sysinb(counter_KBC) != 0) return 1;
+
+  return 0;
 }
