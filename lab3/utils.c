@@ -12,6 +12,18 @@ uint8_t msb(uint16_t bytes) {
     return ((bytes >> 8) & 0xFF);
 }
 
+int (util_get_LSB)(uint16_t val, uint8_t *lsb_out) {
+    if (lsb_out == NULL) return 1;
+    *lsb_out = lsb(val);
+    return 0;
+}
+
+int (util_get_MSB)(uint16_t val, uint8_t *msb_out) {
+    if (msb_out == NULL) return 1;
+    *msb_out = msb(val);
+    return 0;
+}
+
 bool is_single_byte(uint16_t keycode) {
     return (keycode <= 0xFF);
 }

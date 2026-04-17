@@ -1,28 +1,16 @@
-# name of the program (Minix service)
 PROG=lab3
 
-# source code files to be compiled
-SRCS = lab3.c kbc.c utils.c
+# 1. Point directly to the source files
+# This ensures your timer.c code is actually compiled into the lab3 binary
+SRCS = lab3.c kbc.c utils.c ../lab2/timer.c
 
-# additional compilation flags
-# "-Wall -Wextra -Werror -I . -std=c11 -Wno-unused-parameter" are already set
-CFLAGS += -pedantic -DLAB3
-CFLAGS += -pedantic -DLAB3
+# 2. Keep your includes
+CFLAGS += -I../lab2       # Specify directories to the compiler to search for header files
+CFLAGS += -pedantic -DLAB3 -I../lab2 -I.
 
-# list of library dependencies
-DPADD += ${LIBLCF} ${LIB_NAME}
-LDADD += -llcf -L.
-LDADD += -llcf -L.
-LDADD += -lkbc
+# 3. Only link the LCOM library (LCF)
+LDADD += -llcf
+LDADD += -L../lab2
+LDADD += -ltimer
 
-LIB_NAME = libkbc.a
-LIB_SRCS = kbc.c utils.c
-LIB_OBJS = ${LIB_SRCS:.c=.o}
-CLEANFILES += ${LIB_NAME} ${LIB_OBJS}
-
-all: lib
-lib: ${LIB_OBJS}
-	ar rcs ${LIB_NAME} ${LIB_OBJS}
-
-# include LCOM's makefile that does
 .include <minix.lcom.mk>
