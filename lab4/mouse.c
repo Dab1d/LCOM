@@ -123,4 +123,96 @@ int (mouse_disable_data_reporting)() {
 }
 
 
+/* ---- parse_packet ----
+ * Takes 3 raw bytes and fills a struct packet.
+ */
+static void parse_packet(uint8_t bytes[3], struct packet *pp) {
+    pp->bytes[0] = bytes[0];
+    pp->bytes[1] = bytes[1];
+    pp->bytes[2] = bytes[2];
+
+    // Button states
+    pp->lb = bytes[0] & BIT(0);           // left button
+    pp->rb = bytes[0] & BIT(1);           // right button
+    pp->mb = bytes[0] & BIT(2);           // middle button
+
+    // X and Y movement (two's complement with sign bit from byte 1)
+    pp->delta_x = bytes[1];
+    pp->delta_y = bytes[2];
+
+    if (bytes[0] & BIT(4))                // X sign bit
+        pp->delta_x |= 0xFF00;            // sign extend to 16 bits
+
+    if (bytes[0] & BIT(5))                // Y sign bit
+        pp->delta_y |= 0xFF00;
+
+    // Overflow flags
+    pp->x_ov = bytes[0] & BIT(6);
+    pp->y_ov = bytes[0] & BIT(7);
+}
+
+/* ---- mouse_test_packet ----
+ * Reads and displays cnt mouse packets using interrupts.
+ */
+int (mouse_test_packet)(uint32_t cnt) {
+    uint8_t mouse_mask;
+
+    // 1. Subscribe mouse interrupts
+    if (mouse_subscribe_int(&mouse_mask) != 0) return 1;
+
+    // 2. Enable data reporting (provided by LCF)
+    if (mouse_enable_data_reporting() != 0) {
+        mouse_unsubscribe_int();
+        return 1;
+    }
+
+    // 3. Event loop
+    int ipc_status;
+    message msg;
+    uint32_t packets_read = 0;
+
+    uint8_t packet_bytes[3];  // assembles one packet
+    int byte_index = 0;       // which byte we're waiting for (0, 1, 2)
+
+    while (packets_read < cnt) {
+        if (driver_receive(ANY, &msg, &ipc_status) != 0) continue;
+
+        if (is_ipc_notify(ipc_status)) {
+            switch (_ENDPOINT_P(msg.m_source)) {
+                case HARDWARE:
+                    if (msg.m_notify.interrupts & mouse_mask) {
+                        byte_ready = false;
+                        mouse_ih();
+
+                        if (byte_error || !byte_ready) break;
+
+                        // Sync: byte 0 must have bit 3 set
+                        if (byte_index == 0 && !(byte_received & BIT(3))) {
+                            break; // discard, wait for valid first byte
+                        }
+
+                        packet_bytes[byte_index++] = byte_received;
+
+                        if (byte_index == 3) {
+                            // Full packet received
+                            struct packet pp;
+                            parse_packet(packet_bytes, &pp);
+                            mouse_print_packet(&pp);
+                            packets_read++;
+                            byte_index = 0;
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    // 4. Cleanup
+    mouse_disable_data_reporting();
+    mouse_unsubscribe_int();
+
+    return 0;
+}
 
