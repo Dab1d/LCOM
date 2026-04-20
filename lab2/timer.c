@@ -5,7 +5,7 @@
 
 #include "i8254.h"
 
-int timer_counter=0 ; //contador global  dos interrupts
+int counter=0 ; //contador global  dos interrupts
 
 int hook_id=0; //id da subscrição
 
@@ -56,7 +56,7 @@ int(timer_unsubscribe_int)() {
 }
 
 void(timer_int_handler)() {
-    timer_counter++;
+    counter++;
 }
 
 
