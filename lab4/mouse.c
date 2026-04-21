@@ -6,6 +6,8 @@ static uint8_t byte_index = 0;
 static uint8_t mouse_bytes[3];
 static uint8_t current_byte;
 static bool packet_complete = false;
+
+
 // Subscrição das interrupções
 // Modo REENABLE e modo EXCLUSIVE
 int (mouse_subscribe_int)(uint8_t *bit_no){

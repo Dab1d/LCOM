@@ -8,7 +8,7 @@ static bool has_error = false;
 
 int kbc_subscribe_int(uint8_t *bit_no) {
     if (bit_no == NULL) return 1; // check ponteiro
-
+    kbc_hook_id=1;
     *bit_no = kbc_hook_id; // guardar bit
 
     if (sys_irqsetpolicy(KBC_IRQ, IRQ_REENABLE | IRQ_EXCLUSIVE, &kbc_hook_id) != OK) return 1;
