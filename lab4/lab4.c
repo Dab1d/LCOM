@@ -38,14 +38,14 @@ int (mouse_test_packet)(uint32_t cnt) {
   int ipc_status;
   message msg;
   uint32_t packets_read = 0;
-
-  if (mouse_subscribe_int(&mouse_bit_no) != 0)
-    return 1;
-
   if (mouse_write(ENABLE_DATA_REPORT) != 0) {
     mouse_unsubscribe_int();
     return 1;
   }
+  if (mouse_subscribe_int(&mouse_bit_no) != 0)
+    return 1;
+
+  
 
   int irq_set_mouse = BIT(mouse_bit_no);
 
@@ -71,14 +71,15 @@ int (mouse_test_packet)(uint32_t cnt) {
       }
     }
   }
-
+  if (mouse_unsubscribe_int() != 0)
+    return 1;
+  
   if (mouse_write(DISABLE_DATA_REPORT) != 0) {
     mouse_unsubscribe_int();
     return 1;
   }
 
-  if (mouse_unsubscribe_int() != 0)
-    return 1;
+  
 
   return 0;
 }

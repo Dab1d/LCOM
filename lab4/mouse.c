@@ -10,7 +10,9 @@ static bool packet_complete = false;
 // Modo REENABLE e modo EXCLUSIVE
 int (mouse_subscribe_int)(uint8_t *bit_no){
   if (bit_no == NULL) return 1;
+  hook_id_mouse=3;
   *bit_no = (hook_id_mouse);
+  
   return sys_irqsetpolicy(IRQ_MOUSE, IRQ_REENABLE | IRQ_EXCLUSIVE, &hook_id_mouse);
 }
 
