@@ -1,4 +1,3 @@
-// IMPORTANT: you must include the following line in all your C files
 #include <lcom/lcf.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -38,15 +37,15 @@ int (mouse_test_packet)(uint32_t cnt) {
   int ipc_status;
   message msg;
   uint32_t packets_read = 0;
+  
+  if (mouse_subscribe_int(&mouse_bit_no) != 0)
+    return 1;
+
   if (mouse_write(ENABLE_DATA_REPORT) != 0) {
     mouse_unsubscribe_int();
     return 1;
   }
-  if (mouse_subscribe_int(&mouse_bit_no) != 0)
-    return 1;
-
   
-
   int irq_set_mouse = BIT(mouse_bit_no);
 
   while (packets_read < cnt) {
@@ -89,7 +88,12 @@ int (mouse_test_async)(uint8_t idle_time) {
   int ipc_status;
   message msg;
   int hz = (int) sys_hz();
-
+  
+  if (mouse_write(ENABLE_DATA_REPORT) != 0) {
+    timer_unsubscribe_int();
+    mouse_unsubscribe_int();
+    return 1;
+  }
   if (mouse_subscribe_int(&mouse_bit_no) != 0)
     return 1;
 
@@ -98,11 +102,7 @@ int (mouse_test_async)(uint8_t idle_time) {
     return 1;
   }
 
-  if (mouse_write(ENABLE_DATA_REPORT) != 0) {
-    timer_unsubscribe_int();
-    mouse_unsubscribe_int();
-    return 1;
-  }
+  
 
   int irq_set_mouse = BIT(mouse_bit_no);
   int irq_set_timer = BIT(timer_bit_no);
@@ -136,11 +136,7 @@ int (mouse_test_async)(uint8_t idle_time) {
     }
   }
 
-  if (mouse_write(DISABLE_DATA_REPORT) != 0) {
-    timer_unsubscribe_int();
-    mouse_unsubscribe_int();
-    return 1;
-  }
+
 
   if (timer_unsubscribe_int() != 0) {
     mouse_unsubscribe_int();
@@ -149,6 +145,12 @@ int (mouse_test_async)(uint8_t idle_time) {
 
   if (mouse_unsubscribe_int() != 0)
     return 1;
-
-  return 0;
+  
+  if (mouse_write(DISABLE_DATA_REPORT) != 0) {
+    timer_unsubscribe_int();
+    mouse_unsubscribe_int();
+    return 1;
+  } 
+  
+  return 0; 
 }
