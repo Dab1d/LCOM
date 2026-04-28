@@ -1,11 +1,28 @@
 #include "video_gr.h"
+#include <lcom/lcf.h>
+#include <stdint.h>
 
-int vg_init(uint16_t mode) {
-    
-    return 0;
-}
+int video_test_init(uint16_t mode, uint8_t delay) {
 
-int vg_exit() {
-    
+    struct reg86 r;
+
+    memset(&r, 0, sizeof(r));
+
+    r.intno = 0x10;
+    r.ax = 0x4F02;          // VBE set mode
+    r.bx = mode | BIT(14);  // enable linear framebuffer
+
+    if (sys_int86(&r) != OK) {
+        printf("Error: sys_int86 failed\n");
+        return 1;
+    }
+
+    tickdelay(micros_to_ticks(delay * 1000000));
+
+    if (vg_exit() != OK) {
+    printf("Error: vg_exit failed\n");
+    return 1;
+   }
+
     return 0;
 }
