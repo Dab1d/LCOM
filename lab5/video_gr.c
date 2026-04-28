@@ -2,6 +2,10 @@
 #include <lcom/lcf.h>
 #include <stdint.h>
 
+static char *video_mem;
+static vbe_mode_info_t vmi;
+static unsigned bytes_per_pixel;
+
 int video_test_init(uint16_t mode, uint8_t delay) {
 
     struct reg86 r;
@@ -20,9 +24,24 @@ int video_test_init(uint16_t mode, uint8_t delay) {
     tickdelay(micros_to_ticks(delay * 1000000));
 
     if (vg_exit() != OK) {
-    printf("Error: vg_exit failed\n");
-    return 1;
-   }
+        printf("Error: vg_exit failed\n");
+        return 1;
+    }
+    return 0;
+}
+
+int vg_draw_pixel(uint16_t x, uint16_t y, uint32_t color) {
+
+    /* verifiva boundaries para evitar crashes */
+    if (x >= vmi.XResolution || y >= vmi.YResolution) {
+        return 1;
+    }
+
+    /*calcular vram offset */
+    unsigned int offset = (y * vmi.XResolution + x) * bytes_per_pixel;
+
+    /* 3. Write color (LSB bytes only) */
+    memcpy(&video_mem[offset], &color, bytes_per_pixel);
 
     return 0;
 }
