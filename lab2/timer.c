@@ -5,9 +5,9 @@
 
 #include "i8254.h"
 
-int counter=0 ; //contador global  dos interrupts
+static int counter=0; //contador global  dos interrupts
 
-int hook_id=0; //id da subscrição
+static int hook_id=0; //id da subscrição
 
 int(timer_set_frequency)(uint8_t timer, uint32_t freq) {
     if (timer > 2) return 1;
@@ -115,3 +115,10 @@ int (timer_display_conf)(uint8_t timer, uint8_t conf, enum timer_status_field fi
     //o header tem esta função implementada
 }
 
+int get_counter(){
+    return counter;
+}
+int set_counter(int new_counter){
+    counter = new_counter;
+    return 0;
+}

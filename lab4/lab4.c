@@ -6,8 +6,9 @@
 // Any header files included below this line should have been created by you
 #include "mouse.h"
 #include "timer.h"
+#include "help.h"
 
-extern int counter;
+
 int main(int argc, char *argv[]) {
   // sets the language of LCF messages (can be either EN-US or PT-PT)
   lcf_set_language("EN-US");
@@ -108,9 +109,9 @@ int (mouse_test_async)(uint8_t idle_time) {
   int irq_set_mouse = BIT(mouse_bit_no);
   int irq_set_timer = BIT(timer_bit_no);
 
-  counter = 0;
 
-  while (counter< idle_time * hz) {
+
+  while (get_counter()< idle_time * hz) {
     if (driver_receive(ANY, &msg, &ipc_status) != 0)
       continue;
 
@@ -127,7 +128,7 @@ int (mouse_test_async)(uint8_t idle_time) {
             if (mouse_packet_ready()) {
               mouse_bytes_to_packet();
               mouse_print_packet(get_mouse_packet());
-              counter= 0;
+              set_counter(0);
             }
           }
           break;
