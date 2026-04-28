@@ -15,7 +15,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8aa93eec-f6b2-4cb6-b060-945920bd8ad0" name="Changes" comment="min fix on lab2" />
+    <list default="true" id="8aa93eec-f6b2-4cb6-b060-945920bd8ad0" name="Changes" comment="gitoignore" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -66,7 +66,7 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "davidlabs",
+    "git-widget-placeholder": "Rebasing davidlabs",
     "last_opened_file_path": "/home/conduto/Desktop/2Y2S/LCOM/MINIX-LCOM-2026/shared",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
