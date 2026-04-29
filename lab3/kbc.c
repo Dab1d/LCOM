@@ -8,7 +8,7 @@ static bool has_error = false;
 
 int kbc_subscribe_int(uint8_t *bit_no) {
     if (bit_no == NULL) return 1; // check ponteiro
-
+    kbc_hook_id=1;
     *bit_no = kbc_hook_id; // guardar bit
 
     if (sys_irqsetpolicy(KBC_IRQ, IRQ_REENABLE | IRQ_EXCLUSIVE, &kbc_hook_id) != OK) return 1;
@@ -107,10 +107,11 @@ int kbc_write_arg(uint8_t arg) {
 
         if (!(status & KBC_IBF)) {
             // Se o bit IBF não está ativo, o buffer está livre para escrita
-            return sys_outb(KBC_CMD_REG, arg);
+            return sys_outb(KBC_INBUF_REG, arg);
         }
         tickdelay(micros_to_ticks(KBC_DELAY_US));
         tries++;
     }
     return 1;
 }
+
