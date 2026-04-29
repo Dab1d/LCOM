@@ -2,6 +2,7 @@
 #include <lcom/lcf.h>
 #include <stdint.h>
 
+
 static char *video_mem;
 static vbe_mode_info_t vmi;
 static unsigned bytes_per_pixel;

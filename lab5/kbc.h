@@ -1,6 +1,3 @@
-//
-// Created by conduto on 4/10/26.
-//
 #ifndef LAB3_KBC_H
 #define LAB3_KBC_H
 
@@ -38,18 +35,5 @@ int kbc_write_cmd(uint8_t cmd);
 int kbc_write_arg(uint8_t arg);
 int kbc_subscribe_int(uint8_t *bit_no);
 int kbc_unsubscribe_int();
-void (kbc_ih)();
 uint8_t get_current_scancode();
 bool check_kbc_error();
-uint32_t get_sys_inb_counter();
-
-/*
-    STATUS REGISTER BYTE
-
-    Os bits 7 e 6 devem ser sempre verificados no Interrupt Handler,
-    uma vez que sinalizam erros de comunicação entre o teclado e o KBC.
-    Mesmo que ocorra um erro, o Output Buffer deve ser sempre lido, mas o valor deve
-    ser descartado.
-
-*/
-#endif //LAB3_KBC_H

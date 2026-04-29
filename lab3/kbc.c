@@ -107,10 +107,11 @@ int kbc_write_arg(uint8_t arg) {
 
         if (!(status & KBC_IBF)) {
             // Se o bit IBF não está ativo, o buffer está livre para escrita
-            return sys_outb(KBC_CMD_REG, arg);
+            return sys_outb(KBC_INBUF_REG, arg);
         }
         tickdelay(micros_to_ticks(KBC_DELAY_US));
         tries++;
     }
     return 1;
 }
+

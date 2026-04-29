@@ -1,6 +1,6 @@
 PROG=lab5
 
-SRCS=src/lab5.c src/video_gr.c
+SRCS=src/lab5.c src/video_gr.c src/kbc.c
 
 CFLAGS += -pedantic -Iinclude
 

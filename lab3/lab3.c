@@ -94,6 +94,9 @@ int (kbd_test_poll)() {
     uint8_t cmd_byte;
     if (kbc_write_cmd(KBC_READ_CMD) != OK) return 1;
     if (kbc_read_outbuf(&cmd_byte) != OK) return 1;
+    uint8_t cmd_byte_without_kbd_int = cmd_byte & ~KBC_INT_BIT;
+    if (kbc_write_cmd(KBC_WRITE_CMD) != OK) return 1;
+    if (kbc_write_arg(cmd_byte_without_kbd_int) != OK) return 1;
 
 
     uint8_t scancode_bytes[2];
@@ -137,42 +140,73 @@ int (kbd_test_poll)() {
 int(kbd_test_timed_scan)(uint8_t n) {
 
     int ipc_status;
-    uint8_t irq_set_TIMER, irq_set_KBC;
+    uint8_t timer_bit_no, kbc_bit_no;
     message msg;
+    uint32_t timer_ticks = 0;
+    bool done = false;
+    bool two_bytes = false;
+    uint8_t bytes[2];
+    uint8_t size = 0;
 
-    int seconds = 0;  // timer seconds
-
-    if (timer_subscribe_int(&irq_set_TIMER) != 0) return 1;
-    if (keyboard_subscribe_interrupts(&irq_set_KBC) != 0) return 1;
-
-    while (scancode != BREAK_ESC && seconds < n){
-
-        if( driver_receive(ANY, &msg, &ipc_status) != 0 ){
-            printf("Error");
-            continue;
-        }
-
-        if(is_ipc_notify(ipc_status)) {
-            switch(_ENDPOINT_P(msg.m_source)){
-                 case HARDWARE:
-                    if (msg.m_notify.interrupts & irq_set_KBC) {
-                        kbc_ih();
-                        kbd_print_scancode(!(scancode & MAKE_CODE), scancode == TWO_BYTES ? 2 : 1, &scancode);
-                        seconds = 0;
-                        counter_TIMER = 0;
-                    }
-                    if (msg.m_notify.interrupts & irq_set_TIMER) {
-                        timer_int_handler();
-                        //if (counter_TIMER == (UINT32_MAX - (UINT32_MAX % 60)) ) { counter_TIMER = 0; }  // "esvazia" o counter para evitar overflow e preserva a lógica do módulo para o lab
-                        if (counter_TIMER % 60 == 0) seconds++;
-                    }
-            }
-        }
+    if (timer_subscribe_int(&timer_bit_no) != 0) return 1;
+    if (kbc_subscribe_int(&kbc_bit_no) != 0) {
+      timer_unsubscribe_int();
+      return 1;
     }
 
-  if (timer_unsubscribe_int() != 0) return 1;
-  if (keyboard_unsubscribe_interrupts() != 0) return 1;
-  if (kbd_print_no_sysinb(counter_KBC) != 0) return 1;
+    const uint32_t irq_set_timer = BIT(timer_bit_no);
+    const uint32_t irq_set_kbc = BIT(kbc_bit_no);
+    const uint32_t timeout_ticks = (uint32_t) n * sys_hz();
 
-  return 0;
+    while (!done && timer_ticks < timeout_ticks) {
+      if (driver_receive(ANY, &msg, &ipc_status) != 0)
+        continue;
+
+      if (!is_ipc_notify(ipc_status))
+        continue;
+
+      if (_ENDPOINT_P(msg.m_source) != HARDWARE)
+        continue;
+
+      if (msg.m_notify.interrupts & irq_set_kbc) {
+        kbc_ih();
+
+        if (!check_kbc_error()) {
+          uint8_t data = get_current_scancode();
+          timer_ticks = 0;
+
+          if (data == SCANCODE_2BYTE) {
+            two_bytes = true;
+            bytes[0] = data;
+            size = 1;
+          } else {
+            if (two_bytes) {
+              bytes[1] = data;
+              size = 2;
+              two_bytes = false;
+            } else {
+              bytes[0] = data;
+              size = 1;
+            }
+
+            bool make = !(bytes[size - 1] & BIT(7));
+            kbd_print_scancode(make, size, bytes);
+
+            if (size == 1 && bytes[0] == ESC_BREAKCODE)
+              done = true;
+          }
+        }
+      }
+
+      if (msg.m_notify.interrupts & irq_set_timer) {
+        timer_int_handler();
+        timer_ticks++;
+      }
+    }
+
+    if (timer_unsubscribe_int() != 0) return 1;
+    if (kbc_unsubscribe_int() != 0) return 1;
+    if (kbd_print_no_sysinb(get_sys_inb_counter()) != 0) return 1;
+
+    return 0;
 }
