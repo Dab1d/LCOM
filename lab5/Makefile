@@ -1,10 +1,15 @@
 PROG=lab5
 
-SRCS=src/lab5.c src/video_gr.c src/kbc.c
+SRCS=lab5.c video_gr.c
 
-CFLAGS += -pedantic -Iinclude
+CFLAGS += -pedantic -I../lab3
 
-DPADD += ${LIBLCF}
-LDADD += -llcf
+DPADD += ${LIBLCF} ../lab3/libkbc.a
+LDADD += -llcf ../lab3/libkbc.a
+
+all: kbc_lib
+
+kbc_lib:
+	${MAKE} -C ../lab3 lib
 
 .include <minix.lcom.mk>   /* acho que tenho que por a lib2 e lib3 */

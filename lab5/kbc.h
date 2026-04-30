@@ -29,11 +29,10 @@
 #define ESC_BREAKCODE   0x81
 #define SCANCODE_2BYTE  0xE0   // prefixo de scancode 2 bytes
 
-
-int kbc_read_outbuf(uint8_t *byte);
-int kbc_write_cmd(uint8_t cmd);
-int kbc_write_arg(uint8_t arg);
 int kbc_subscribe_int(uint8_t *bit_no);
 int kbc_unsubscribe_int();
+void (kbc_ih)();
 uint8_t get_current_scancode();
 bool check_kbc_error();
+
+#endif
