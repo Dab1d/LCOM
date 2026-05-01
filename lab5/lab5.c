@@ -4,8 +4,6 @@
 
 #include <lcom/lab5.h>
 
-
-
 #include <stdint.h>
 #include <stdio.h>
 //#include <machine/x86.h> este header já está no lcf
@@ -16,7 +14,8 @@
 #include "video_gr.h"
 #undef video_test_rectangle
 #undef video_test_init
-
+#undef video_test_xpm
+//these are needed since they are macros in lcf.h
 
 
 
@@ -132,16 +131,52 @@ int video_test_rectangle(uint16_t mode, uint16_t x, uint16_t y,
     return 0;
 }
 
-
-
-
-
 int(video_test_xpm)(xpm_map_t xpm, uint16_t x, uint16_t y) {
-   /* To be completed */
-   printf("%s(%8p, %u, %u): under construction\n", __func__, xpm, x, y);
 
+    // Use vg_init() instead of manual mapping - it handles sys_privctl correctly
+    if (vg_init(0x105) == NULL) {
+        printf("vg_init() failed\n");
+        return 1;
+    }
 
-   return 1;
+    // Load the XPM into a pixmap
+    xpm_image_t img;
+    uint8_t *pixmap = xpm_load(xpm, XPM_INDEXED, &img);
+    if (pixmap == NULL) {
+        printf("xpm_load() failed\n");
+        return 1;
+    }
+
+    vg_draw_pixmap(pixmap,img,x,y);
+
+    // Wait for ESC breakcode (0x81) - reuse kbc like video_test_rectangle does
+    int ipc_status;
+    message msg;
+    uint8_t irq_set;
+
+    if (kbc_subscribe_int(&irq_set) != 0) {
+        printf("kbc_subscribe_int() failed\n");
+        return 1;
+    }
+
+    while (get_current_scancode() != 0x81) {
+        if (driver_receive(ANY, &msg, &ipc_status) != 0)
+            continue;
+        if (is_ipc_notify(ipc_status)) {
+            if (msg.m_notify.interrupts & BIT(irq_set)) {
+                kbc_ih();
+            }
+        }
+    }
+
+    if (kbc_unsubscribe_int() != 0)
+        return 1;
+
+    if (vg_exit() != OK) {
+        printf("vg_exit() failed\n");
+        return 1;
+    }
+
+    return 0;
 }
-
 

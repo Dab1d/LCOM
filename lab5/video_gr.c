@@ -10,6 +10,7 @@ char *video_mem = NULL;
 uint16_t h_res = 0;
 uint16_t v_res = 0;
 uint8_t bits_per_pixel = 0;
+uint8_t bytes_per_pixel =0;  
 
 void *(vg_init)(uint16_t mode) {
   vbe_mode_info_t info;
@@ -95,3 +96,17 @@ int (vg_draw_rectangle)(uint16_t x, uint16_t y,
   }
   return 0;
 }
+
+int vg_draw_pixmap(uint8_t *pixmap, xpm_image_t img, uint16_t x, uint16_t y) {
+    for (uint16_t row = 0; row < img.height; row++) {
+        for (uint16_t col = 0; col < img.width; col++) {
+            uint8_t color = pixmap[row * img.width + col];
+            if ((x + col) < h_res && (y + row) < v_res) {
+                if (vg_draw_pixel(x + col, y + row, color) != 0)
+                    return 1;
+            }
+        }
+    }
+    return 0;
+}
+
