@@ -1,0 +1,6 @@
+*.o
+*.d
+*.txt
+*.a
+lab5
+.vscode/
