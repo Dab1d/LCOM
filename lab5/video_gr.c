@@ -85,3 +85,17 @@ int (vg_draw_rectangle)(uint16_t x, uint16_t y,
   }
   return 0;
 }
+
+int vg_draw_pixmap(uint8_t *pixmap, xpm_image_t img, uint16_t x, uint16_t y) {
+    if (pixmap == NULL || video_mem == NULL)
+        return 1;
+
+    for (uint16_t row = 0; row < img.height; row++) {
+        for (uint16_t col = 0; col < img.width; col++) {
+            uint32_t color = pixmap[row * img.width + col];
+            if (vg_draw_pixel(x + col, y + row, color) != 0)
+                return 1;
+        }
+    }
+    return 0;
+}
