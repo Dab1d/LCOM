@@ -2,8 +2,7 @@
 #include <stdint.h>
 #include "video_gr.h"
 #include "kbc.h"
-#undef video_test_rectangle
-#undef video_test_init
+
 
 int main(int argc, char *argv[]) {
     lcf_set_language("EN-US");
@@ -17,7 +16,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-int video_test_init(uint16_t mode, uint8_t delay) {
+int (video_test_init)(uint16_t mode, uint8_t delay) {
 
     struct reg86 r;
 
@@ -41,7 +40,7 @@ int video_test_init(uint16_t mode, uint8_t delay) {
     return 0;
 }
 
-int video_test_rectangle(uint16_t mode, uint16_t x, uint16_t y,
+int (video_test_rectangle)(uint16_t mode, uint16_t x, uint16_t y,
                          uint16_t width, uint16_t height,
                          uint32_t color) {
 
@@ -76,6 +75,50 @@ int video_test_rectangle(uint16_t mode, uint16_t x, uint16_t y,
 
     if (vg_exit() != 0)
         return 1;
+
+    return 0;
+}
+
+int (video_test_xpm)(xpm_map_t xpm, uint16_t x, uint16_t y) {
+
+    //entrar em modo gráfico
+    if (vg_init(0x105) == NULL)
+        return 1;
+
+    // carregar imagem
+    xpm_image_t img;
+    uint8_t *pixmap = xpm_load(xpm, XPM_INDEXED, &img);
+
+    if (pixmap == NULL)
+        return 1;
+
+    if (vg_draw_pixmap(pixmap, img, x, y) != 0)
+        return 1;
+
+    //esperar ESC (igual ao rectangle)
+    int ipc_status;
+    message msg;
+    uint8_t bit_no;
+
+    if (kbc_subscribe_int(&bit_no) != 0)
+        return 1;
+
+    uint32_t irq_set = BIT(bit_no);
+    
+    while (get_current_scancode() != 0x81) {
+
+        if (driver_receive(ANY, &msg, &ipc_status) != 0)
+            continue;
+
+        if (is_ipc_notify(ipc_status)) {
+            if (msg.m_notify.interrupts & irq_set) {
+                kbc_ih();
+            }
+        }
+    }
+
+    kbc_unsubscribe_int();
+    vg_exit();
 
     return 0;
 }

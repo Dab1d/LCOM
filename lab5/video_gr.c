@@ -95,3 +95,29 @@ int (vg_draw_rectangle)(uint16_t x, uint16_t y,
   }
   return 0;
 }
+
+int vg_draw_pixmap(uint8_t *pixmap, xpm_image_t img,
+                   uint16_t x, uint16_t y) {
+
+    if (pixmap == NULL)
+        return 1;
+
+    for (uint16_t py = 0; py < img.height; py++) {
+        for (uint16_t px = 0; px < img.width; px++) {
+
+            uint16_t screen_x = x + px;
+            uint16_t screen_y = y + py;
+
+            // evitar escrever fora do ecrã
+            if (screen_x >= h_res || screen_y >= v_res)
+                continue;
+
+            uint32_t color = pixmap[py * img.width + px];
+
+            if (vg_draw_pixel(screen_x, screen_y, color) != 0)
+                return 1;
+        }
+    }
+
+    return 0;
+}
