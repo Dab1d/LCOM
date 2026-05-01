@@ -38,8 +38,11 @@ int kbc_write_cmd(uint8_t cmd);
 int kbc_write_arg(uint8_t arg);
 int kbc_subscribe_int(uint8_t *bit_no);
 int kbc_unsubscribe_int();
+void (kbc_ih)();
 uint8_t get_current_scancode();
 bool check_kbc_error();
+uint32_t get_sys_inb_counter();
+
 /*
     STATUS REGISTER BYTE
 
