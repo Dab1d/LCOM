@@ -1,5 +1,6 @@
 #include <lcom/lcf.h>
 #include <stdint.h>
+#include <string.h>
 #include "video_gr.h"
 #include "kbc.h"
 
@@ -17,26 +18,20 @@ int main(int argc, char *argv[]) {
 }
 
 int (video_test_init)(uint16_t mode, uint8_t delay) {
-
-    struct reg86 r;
-
-    memset(&r, 0, sizeof(r));
-
-    r.intno = 0x10;
-    r.ax = 0x4F02;          //VBE set mode
-    r.bx = mode | BIT(14);  //enable linear framebuffer
-
-    if (sys_int86(&r) != OK) {
-        printf("Error: sys_int86 failed\n");
+    // Usa o vg_init que tu próprio escreveste! 
+    // Ele já faz o sys_int86, o mapeamento de memória e preenche as globais.
+    if (vg_init(mode) == NULL) {
         return 1;
     }
 
+    // O LCF exige que esperes 'delay' segundos antes de sair
     tickdelay(micros_to_ticks(delay * 1000000));
 
-    if (vg_exit() != OK) {
-        printf("Error: vg_exit failed\n");
+    // Volta ao modo texto
+    if (vg_exit() != 0) {
         return 1;
     }
+
     return 0;
 }
 
@@ -58,14 +53,16 @@ int (video_test_rectangle)(uint16_t mode, uint16_t x, uint16_t y,
     if (kbc_subscribe_int(&irq_set) != 0)
         return 1;
 
-    while (get_current_scancode() != 0x81) {
-
+   bool done = false;
+    while (!done) {
         if (driver_receive(ANY, &msg, &ipc_status) != 0)
             continue;
 
         if (is_ipc_notify(ipc_status)) {
             if (msg.m_notify.interrupts & BIT(irq_set)) {
                 kbc_ih();
+                if (get_current_scancode() == ESC_BREAKCODE)
+                    done = true;
             }
         }
     }
@@ -81,38 +78,44 @@ int (video_test_rectangle)(uint16_t mode, uint16_t x, uint16_t y,
 
 int (video_test_xpm)(xpm_map_t xpm, uint16_t x, uint16_t y) {
 
-    //entrar em modo gráfico
-    if (vg_init(0x105) == NULL)
+    if (vg_init(0x105) == NULL) {
+        printf("vg_init failed\n");
         return 1;
+    }
 
-    // carregar imagem
     xpm_image_t img;
     uint8_t *pixmap = xpm_load(xpm, XPM_INDEXED, &img);
-
-    if (pixmap == NULL)
+    if (pixmap == NULL) {
+        printf("xpm_load failed\n");
         return 1;
+    }
 
-    if (vg_draw_pixmap(pixmap, img, x, y) != 0)
+    if (vg_draw_pixmap(pixmap, img, x, y) != 0) {
+        printf("vg_draw_pixmap failed\n");
         return 1;
+    }
 
-    //esperar ESC (igual ao rectangle)
     int ipc_status;
     message msg;
     uint8_t bit_no;
 
-    if (kbc_subscribe_int(&bit_no) != 0)
+    if (kbc_subscribe_int(&bit_no) != 0) {
+        printf("kbc_subscribe_int failed\n");
         return 1;
+    }
 
     uint32_t irq_set = BIT(bit_no);
-    
-    while (get_current_scancode() != 0x81) {
+    bool done = false;
 
+    while (!done) {
         if (driver_receive(ANY, &msg, &ipc_status) != 0)
             continue;
 
         if (is_ipc_notify(ipc_status)) {
             if (msg.m_notify.interrupts & irq_set) {
                 kbc_ih();
+                if (get_current_scancode() == ESC_BREAKCODE)
+                    done = true;
             }
         }
     }

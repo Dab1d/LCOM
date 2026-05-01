@@ -1,15 +1,34 @@
 PROG=lab5
 
-SRCS=lab5.c video_gr.c
+# Ficheiros para o executável
+SRCS = lab5.c video_gr.c
 
-CFLAGS += -pedantic -I../lab3
+# Flags e Includes
+CFLAGS += -pedantic -I../lab3 -I../lab2
 
-DPADD += ${LIBLCF} ../lab3/libkbc.a
-LDADD += -llcf ../lab3/libkbc.a
+# Dependências de bibliotecas externas
+DPADD += ${LIBLCF} ../lab3/libkbc.a ../lab2/libtimer.a
+LDADD += -llcf ../lab3/libkbc.a ../lab2/libtimer.a
 
-all: kbc_lib
+# --- Parte da Biblioteca Local ---
+LIB_NAME = libvideo.a
+LIB_SRCS = video_gr.c
+LIB_OBJS = ${LIB_SRCS:.c=.o}
 
-kbc_lib:
+# Inclui as regras do Minix (essencial para o lcom_run)
+.include <minix.lcom.mk>
+
+# Regra 'all' para garantir que as libs externas e a interna são criadas
+all: libs ${LIB_NAME} ${PROG}
+
+# Cria a tua biblioteca local do Lab 5
+${LIB_NAME}: ${LIB_OBJS}
+	ar rcs ${LIB_NAME} ${LIB_OBJS}
+
+# Garante que os outros labs estão compilados
+libs:
+	${MAKE} -C ../lab2 lib
 	${MAKE} -C ../lab3 lib
 
-.include <minix.lcom.mk>   /* acho que tenho que por a lib2 e lib3 */
+# Limpeza extra
+CLEANFILES += ${LIB_NAME} ${LIB_OBJS}
