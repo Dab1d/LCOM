@@ -1,10 +1,9 @@
 #include <lcom/lcf.h>
+
 #include <lcom/lab2.h>
 
-#include <stdbool.h>
-#include <stdint.h>
+extern uint32_t counter;
 
-extern int counter;
 int main(int argc, char *argv[]) {
   // sets the language of LCF messages (can be either EN-US or PT-PT)
   lcf_set_language("EN-US");
@@ -29,50 +28,66 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
+int(timer_test_read_config)(uint8_t timer, enum timer_status_field field) {
+  uint8_t st;
 
-int (timer_test_read_config)(uint8_t timer, enum timer_status_field field) {
-    uint8_t conf;
-    if (timer_get_conf(timer, &conf) != 0) return 1; //pq o timer_get_conf retorna 0 com sucesso
-    //e non zero otherwise
+  if ((timer_get_conf(timer, &st)) != 0) {
+    return 1;
+  }
+  if ((timer_display_conf(timer, st, field)) != 0) {
+    return 1;
+  }
 
-    return timer_display_conf(timer, conf, field);
+  return 0;
 }
 
 int(timer_test_time_base)(uint8_t timer, uint32_t freq) {
-    return timer_set_frequency(timer, freq);
+  if (timer_set_frequency(timer, freq) != 0) {
+    return 1;
+  }
+
+  return 0;
 }
 
 int(timer_test_int)(uint8_t time) {
-    uint8_t bit_no;
-    if (timer_subscribe_int(&bit_no) != 0) return 1;
+  int ipc_status, r;
+  uint8_t bit_no, irq_set;
+  message msg;
 
-    uint32_t irq_set = BIT(bit_no); // máscara do bit do timer
+  if (timer_subscribe_int(&bit_no) != 0) {
+    return 1;
+  }
+  irq_set = BIT(bit_no); // create a bitmask to "filter" the interrupt messages
 
-    int ipc_status;
-    message msg;
-    int r;
-    extern int counter;
-    //meti extern pq estava a dar erro a compilar quando o tentava aceder
-    while (counter < time * 60) { // 60 Hz * segundos
-        if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
-            printf("driver_receive failed: %d\n", r);
-            continue;
-        }
-        if (is_ipc_notify(ipc_status)) {
-            switch (_ENDPOINT_P(msg.m_source)) {
-                case HARDWARE:
-                    if (msg.m_notify.interrupts & irq_set) {
-                        timer_int_handler();
-                        if (counter % 60 == 0) // a cada segundo
-                            timer_print_elapsed_time();
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
+  while (time > 0) {
+    /* get a request message. */
+    if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
+      printf("driver_receive failed with: %d", r);
+      continue;
     }
-    if (timer_unsubscribe_int() != 0) return 1;
-    return 0;
-}
+    if (is_ipc_notify(ipc_status)) { /* received notification */
+      switch (_ENDPOINT_P(msg.m_source)) {
+        case HARDWARE:                             /* hardware interrupt notification */
+          if (msg.m_notify.interrupts & irq_set) { /* subscribed interrupt */
+            timer_int_handler();                   /* process it */
+            if (counter % sys_hz() == 0) {         // timer frequency (60 Hz)
+              timer_print_elapsed_time();
+              time--;
+            }
+          }
+          break;
+        default:
+          break; /* no other notifications expected: do nothing */
+      }
+    }
+    else { /* received a standard message, not a notification */
+      /* no standard messages expected: do nothing */
+    }
+  }
 
+  if (timer_unsubscribe_int() != 0) {
+    return 1;
+  }
+
+  return 0;
+}
