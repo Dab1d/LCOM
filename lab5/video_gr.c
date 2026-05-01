@@ -79,16 +79,21 @@ int (vg_draw_rectangle)(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
     return 0;
 }
 
-int vg_draw_pixmap(xpm_image_t *img, uint16_t x, uint16_t y) {
-    if (img == NULL || img->bytes == NULL) return 1;
+int vg_draw_pixmap(uint8_t *pixmap, xpm_image_t img, uint16_t x, uint16_t y) {
+    if (pixmap == NULL) return 1;
 
-    // The XPM image stores the pixels in a byte array.
-    uint8_t img_bpp = img->size / ((uint32_t)img->width * img->height);
-    for (uint16_t row = 0; row < img->height; row++) {
-        for (uint16_t col = 0; col < img->width; col++) {
-            uint32_t color = 0;
-            memcpy(&color, img->bytes + ((uint32_t)row * img->width + col) * img_bpp, img_bpp);
-            if (vg_draw_pixel(x + col, y + row, color) != 0) return 1;
+    // Draw every pixel from the flat pixmap array.
+    for (uint16_t row = 0; row < img.height; row++) {
+        for (uint16_t col = 0; col < img.width; col++) {
+            uint16_t screen_x = x + col;
+            uint16_t screen_y = y + row;
+
+            // Pixels outside the screen are ignored.
+            if (screen_x >= vmi.XResolution || screen_y >= vmi.YResolution)
+                continue;
+
+            uint32_t color = pixmap[(uint32_t)row * img.width + col];
+            if (vg_draw_pixel(screen_x, screen_y, color) != 0) return 1;
         }
     }
     return 0;

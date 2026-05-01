@@ -122,7 +122,7 @@ int(video_test_xpm)(xpm_map_t xpm, uint16_t x, uint16_t y) {
     }
 
     // Copy the pixels from the XPM image to VRAM.
-    if (vg_draw_pixmap(&img, x, y) != 0) {
+    if (vg_draw_pixmap(sprite, img, x, y) != 0) {
         printf("Failed to draw XPM.\n");
         vg_exit();
         return 1;
