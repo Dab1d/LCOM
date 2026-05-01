@@ -67,3 +67,21 @@ int vg_draw_pixel(uint16_t x, uint16_t y, uint32_t color) {
 
   return 0;
 }
+
+int (vg_draw_hline)(uint16_t x, uint16_t y, uint16_t len, uint32_t color) {
+  for (uint16_t i = 0; i < len; i++) {
+    if (vg_draw_pixel(x + i, y, color) != 0)
+      return 1;
+  }
+  return 0;
+}
+
+int (vg_draw_rectangle)(uint16_t x, uint16_t y,
+                        uint16_t width, uint16_t height,
+                        uint32_t color) {
+  for (uint16_t i = 0; i < height; i++) {
+    if (vg_draw_hline(x, y + i, width, color) != 0)
+      return 1;
+  }
+  return 0;
+}
