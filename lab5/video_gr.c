@@ -58,8 +58,11 @@ int vg_draw_pixel(uint16_t x, uint16_t y, uint32_t color) {
     // Do not draw outside the screen limits.
     if (x >= vmi.XResolution || y >= vmi.YResolution) return 1;
 
-    // Position of the pixel inside the linear framebuffer.
-    uint8_t *pixel = video_mem + (uint32_t)y * vmi.BytesPerScanLine + (uint32_t)x * bytes_per_pixel;
+    // Calculate the pixel position in VRAM.
+    uint32_t offset = ((uint32_t)y * vmi.XResolution + x) * bytes_per_pixel;
+
+    // Copy only the bytes used by the current video mode.
+    uint8_t *pixel = video_mem + offset;
     memcpy(pixel, &color, bytes_per_pixel);
     return 0;
 }
