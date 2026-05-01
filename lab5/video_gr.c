@@ -1,4 +1,5 @@
 #include <lcom/lcf.h>
+#include <stdio.h>
 #include <string.h>
 #include "video_gr.h"
 
@@ -14,21 +15,41 @@ int vg_set_mode(uint16_t mode) {
     reg.ax = 0x4F02;
     reg.bx = mode | BIT(14);
     if (sys_int86(&reg) != OK) return 1;
-    if (reg.ah != 0x4F || reg.al != 0x00) return 1;
+    if (reg.ax != 0x004F) return 1;
     return 0;
 }
 
 void *(vg_init)(uint16_t mode) {
     // Save the mode information first, because the drawing functions need it.
-    if (vbe_get_mode_info(mode, &vmi) != 0) return NULL;
-    if (vg_set_mode(mode) != 0) return NULL;
+    if (vbe_get_mode_info(mode, &vmi) != 0) {
+        printf("vg_init: failed to get mode info.\n");
+        return NULL;
+    }
 
     bytes_per_pixel = (vmi.BitsPerPixel + 7) / 8;
     unsigned int vram_size = (unsigned int)vmi.YResolution * vmi.BytesPerScanLine;
+    phys_bytes vram_base = (phys_bytes)vmi.PhysBasePtr;
+
+    // Allow this process to access the physical VRAM range.
+    struct minix_mem_range mr;
+    mr.mr_base = vram_base;
+    mr.mr_limit = vram_base + vram_size;
+    if (sys_privctl(SELF, SYS_PRIV_ADD_MEM, &mr) != OK) {
+        printf("vg_init: failed to add VRAM memory permission.\n");
+        return NULL;
+    }
 
     // Map the physical video memory so the program can write pixels directly.
-    video_mem = vm_map_phys(SELF, (void *)(phys_bytes)vmi.PhysBasePtr, vram_size);
-    if (video_mem == MAP_FAILED) return NULL;
+    video_mem = vm_map_phys(SELF, (void *)vram_base, vram_size);
+    if (video_mem == MAP_FAILED || video_mem == NULL) {
+        printf("vg_init: failed to map VRAM.\n");
+        return NULL;
+    }
+
+    if (vg_set_mode(mode) != 0) {
+        printf("vg_init: failed to set graphics mode.\n");
+        return NULL;
+    }
 
     return video_mem;
 }
