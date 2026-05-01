@@ -50,3 +50,20 @@ void *(vg_init)(uint16_t mode) {
 
   return video_mem;
 }
+
+
+int vg_draw_pixel(uint16_t x, uint16_t y, uint32_t color) {
+  if (video_mem == NULL || (void *) video_mem == MAP_FAILED)
+    return 1;
+
+  if (x >= h_res || y >= v_res)
+    return 1;
+
+  unsigned bpp = (unsigned) ((bits_per_pixel + 7) / 8);
+  uint8_t *px = (uint8_t *) video_mem + ((uint32_t) y * h_res + x) * bpp;
+
+  for (unsigned b = 0; b < bpp; b++, px++)
+    *px = (uint8_t) ((color >> (8 * b)) & 0xFF);
+
+  return 0;
+}

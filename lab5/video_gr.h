@@ -14,4 +14,5 @@ extern uint16_t  h_res;
 extern uint16_t  v_res;
 extern uint8_t   bits_per_pixel;
 
+int vg_draw_pixel(uint16_t x, uint16_t y, uint32_t color);
 #endif
