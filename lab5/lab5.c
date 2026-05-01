@@ -45,47 +45,95 @@ int(video_test_init)(uint16_t mode, uint8_t delay) {
     return 0;
 }
 
+
 int (video_test_rectangle)(uint16_t mode, uint16_t x, uint16_t y,
                            uint16_t width, uint16_t height, uint32_t color) {
     if (vg_init(mode) == NULL)
         return 1;
 
-    if (vg_draw_rectangle(x, y, width, height, color) != 0)
+    if (vg_draw_rectangle(x, y, width, height, color) != 0) {
+        vg_exit();
         return 1;
+    }
 
+    uint8_t kbd_bit;
+    if (kbc_subscribe_int(&kbd_bit) != 0) {
+        vg_exit();
+        return 1;
+    }
+
+    const uint32_t kbd_irq = BIT(kbd_bit);
     int ipc_status;
     message msg;
-    uint8_t irq_set;
+    bool keep_running = true;
 
-    if (kbc_subscribe_int(&irq_set) != 0)
-        return 1;
-
-    bool done = false;
-    while (!done) {
+    while (keep_running) {
         if (driver_receive(ANY, &msg, &ipc_status) != 0)
             continue;
 
-        if (is_ipc_notify(ipc_status)) {
-            if (msg.m_notify.interrupts & BIT(irq_set)) {
-                kbc_ih();
-                if (get_current_scancode() == ESC_BREAKCODE)
-                    done = true;
-            }
+        if (!is_ipc_notify(ipc_status))
+            continue;
+
+        if (msg.m_notify.interrupts & kbd_irq) {
+            kbc_ih();
+            if (get_current_scancode() == ESC_BREAKCODE)
+                keep_running = false;
         }
     }
 
-    if (kbc_unsubscribe_int() != 0)
+    if (kbc_unsubscribe_int() != 0) {
+        vg_exit();
         return 1;
+    }
 
-    if (vg_exit() != 0)
-        return 1;
-
-    return 0;
+    return vg_exit();
 }
 
-int(video_test_xpm)(xpm_map_t xpm, uint16_t x, uint16_t y) {
-    /* To be completed */
-    printf("%s(%8p, %u, %u): under construction\n", __func__, xpm, x, y);
+int (video_test_xpm)(xpm_map_t xpm, uint16_t x, uint16_t y) {
+    if (vg_init(0x105) == NULL)
+        return 1;
 
-    return 1;
+    xpm_image_t img_info;
+    uint8_t *sprite = xpm_load(xpm, XPM_INDEXED, &img_info);
+    if (sprite == NULL) {
+        vg_exit();
+        return 1;
+    }
+
+    if (vg_draw_pixmap(sprite, img_info, x, y) != 0) {
+        vg_exit();
+        return 1;
+    }
+
+    uint8_t kbd_bit;
+    if (kbc_subscribe_int(&kbd_bit) != 0) {
+        vg_exit();
+        return 1;
+    }
+
+    const uint32_t kbd_irq = BIT(kbd_bit);
+    int ipc_status;
+    message msg;
+    bool keep_running = true;
+
+    while (keep_running) {
+        if (driver_receive(ANY, &msg, &ipc_status) != 0)
+            continue;
+
+        if (!is_ipc_notify(ipc_status))
+            continue;
+
+        if (msg.m_notify.interrupts & kbd_irq) {
+            kbc_ih();
+            if (get_current_scancode() == ESC_BREAKCODE)
+                keep_running = false;
+        }
+    }
+
+    if (kbc_unsubscribe_int() != 0) {
+        vg_exit();
+        return 1;
+    }
+
+    return vg_exit();
 }
