@@ -65,8 +65,18 @@ int vg_draw_pixel(uint16_t x, uint16_t y, uint32_t color) {
 }
 
 int (vg_draw_hline)(uint16_t x, uint16_t y, uint16_t len, uint32_t color) {
+    // If the whole line is below the screen, there is nothing to draw.
+    if (y >= vmi.YResolution) return 0;
+
+    // Draw only the part of the line that is inside the screen.
     for (uint16_t i = 0; i < len; i++) {
-        if (vg_draw_pixel(x + i, y, color) != 0) return 1;
+        // Use uint32_t to avoid overflow when x + i is bigger than uint16_t.
+        uint32_t screen_x = (uint32_t)x + i;
+
+        // Skip pixels that would be outside the right side of the screen.
+        if (screen_x >= vmi.XResolution) continue;
+
+        if (vg_draw_pixel((uint16_t)screen_x, y, color) != 0) return 1;
     }
     return 0;
 }
@@ -74,7 +84,14 @@ int (vg_draw_hline)(uint16_t x, uint16_t y, uint16_t len, uint32_t color) {
 int (vg_draw_rectangle)(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color) {
     // A rectangle is drawn as several horizontal lines.
     for (uint16_t row = 0; row < height; row++) {
-        if (vg_draw_hline(x, y + row, width, color) != 0) return 1;
+        // Use uint32_t to avoid overflow when y + row is too large.
+        uint32_t screen_y = (uint32_t)y + row;
+
+        // Skip rows that would be outside the bottom of the screen.
+        if (screen_y >= vmi.YResolution) continue;
+
+        // Draw the visible part of this row.
+        if (vg_draw_hline(x, (uint16_t)screen_y, width, color) != 0) return 1;
     }
     return 0;
 }
