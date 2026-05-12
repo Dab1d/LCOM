@@ -1,111 +1,120 @@
 #include <lcom/lcf.h>
-#include <stdint.h>
+#include <stdio.h>
 #include <string.h>
-#include <sys/mman.h>
-#include <machine/int86.h>
-
 #include "video_gr.h"
 
-char *video_mem = NULL;
-uint16_t h_res = 0;
-uint16_t v_res = 0;
-uint8_t bits_per_pixel = 0;
+static uint8_t *video_mem = NULL;
+static vbe_mode_info_t vmi;
+static uint8_t bytes_per_pixel;
+
+int vg_set_mode(uint16_t mode) {
+    // Ask the BIOS to enter the VBE graphics mode using linear framebuffer.
+    reg86_t reg;
+    memset(&reg, 0, sizeof(reg));
+    reg.intno = 0x10;
+    reg.ax = 0x4F02;
+    reg.bx = mode | BIT(14);
+    if (sys_int86(&reg) != OK) return 1;
+    if (reg.ax != 0x004F) return 1;
+    return 0;
+}
 
 void *(vg_init)(uint16_t mode) {
-  vbe_mode_info_t info;
+    // Save the mode information first, because the drawing functions need it.
+    if (vbe_get_mode_info(mode, &vmi) != 0) {
+        printf("vg_init: failed to get mode info.\n");
+        return NULL;
+    }
 
-  if (vbe_get_mode_info(mode, &info) != 0) {
-    return NULL;
-  }
+    bytes_per_pixel = (vmi.BitsPerPixel + 7) / 8;
+    unsigned int vram_size = (unsigned int)vmi.YResolution * vmi.BytesPerScanLine;
+    phys_bytes vram_base = (phys_bytes)vmi.PhysBasePtr;
 
-  if (info.PhysBasePtr == 0) {
-    return NULL;
-  }
+    // Allow this process to access the physical VRAM range.
+    struct minix_mem_range mr;
+    mr.mr_base = vram_base;
+    mr.mr_limit = vram_base + vram_size;
+    if (sys_privctl(SELF, SYS_PRIV_ADD_MEM, &mr) != OK) {
+        printf("vg_init: failed to add VRAM memory permission.\n");
+        return NULL;
+    }
 
-  h_res = info.XResolution;
-  v_res = info.YResolution;
-  bits_per_pixel = info.BitsPerPixel;
+    // Map the physical video memory so the program can write pixels directly.
+    video_mem = vm_map_phys(SELF, (void *)vram_base, vram_size);
+    if (video_mem == MAP_FAILED || video_mem == NULL) {
+        printf("vg_init: failed to map VRAM.\n");
+        return NULL;
+    }
 
-  uint32_t vram_size = (uint32_t) info.BytesPerScanLine * info.YResolution;
+    if (vg_set_mode(mode) != 0) {
+        printf("vg_init: failed to set graphics mode.\n");
+        return NULL;
+    }
 
-  struct minix_mem_range mr;
-  mr.mr_base = info.PhysBasePtr;
-  mr.mr_limit = mr.mr_base + vram_size;
-
-  if (sys_privctl(SELF, SYS_PRIV_ADD_MEM, &mr) != OK) {
-    return NULL;
-  }
-
-  video_mem = vm_map_phys(SELF, (void *) (uintptr_t) info.PhysBasePtr, vram_size);
-  if (video_mem == MAP_FAILED) {
-    return NULL;
-  }
-
-  reg86_t r;
-  memset(&r, 0, sizeof(r));
-  r.intno = 0x10;
-  r.ax = 0x4F02;
-  r.bx = mode | BIT(14);
-
-  if (sys_int86(&r) != OK) {
-    return NULL;
-  }
-
-  if (r.ax != 0x004F) {
-    return NULL;
-  }
-
-  return video_mem;
+    return video_mem;
 }
 
 int vg_draw_pixel(uint16_t x, uint16_t y, uint32_t color) {
-  if (video_mem == NULL || (void *) video_mem == MAP_FAILED) {
-    return 1;
-  }
-  if (x >= h_res || y >= v_res) {
-    return 1;
-  }
+    // Do not draw outside the screen limits.
+    if (x >= vmi.XResolution || y >= vmi.YResolution) return 1;
 
-  unsigned bpp = (unsigned) ((bits_per_pixel + 7) / 8);
-  uint8_t *px = (uint8_t *) video_mem + ((uint32_t) y * h_res + x) * bpp;
+    // Calculate the pixel position in VRAM.
+    uint32_t offset = ((uint32_t)y * vmi.XResolution + x) * bytes_per_pixel;
 
-  for (unsigned b = 0; b < bpp; b++, px++) {
-    *px = (uint8_t) ((color >> (8 * b)) & 0xFF);
-  }
-
-  return 0;
+    // Copy only the bytes used by the current video mode.
+    uint8_t *pixel = video_mem + offset;
+    memcpy(pixel, &color, bytes_per_pixel);
+    return 0;
 }
 
 int (vg_draw_hline)(uint16_t x, uint16_t y, uint16_t len, uint32_t color) {
-  for (uint16_t i = 0; i < len; i++) {
-    if (vg_draw_pixel(x + i, y, color) != 0) {
-      return 1;
-    }
-  }
-  return 0;
-}
+    // If the whole line is below the screen, there is nothing to draw.
+    if (y >= vmi.YResolution) return 0;
 
-int (vg_draw_rectangle)(uint16_t x, uint16_t y,
-                        uint16_t width, uint16_t height,
-                        uint32_t color) {
-  for (uint16_t i = 0; i < height; i++) {
-    if (vg_draw_hline(x, y + i, width, color) != 0) {
-      return 1;
-    }
-  }
-  return 0;
-}
+    // Draw only the part of the line that is inside the screen.
+    for (uint16_t i = 0; i < len; i++) {
+        // Use uint32_t to avoid overflow when x + i is bigger than uint16_t.
+        uint32_t screen_x = (uint32_t)x + i;
 
-int vg_draw_pixmap(uint8_t *pixmap, xpm_image_t img, uint16_t x, uint16_t y) {
-    if (pixmap == NULL || video_mem == NULL) return 1;
+        // Skip pixels that would be outside the right side of the screen.
+        if (screen_x >= vmi.XResolution) continue;
 
-    for (uint16_t row = 0; row < img.height; row++) {
-        for (uint16_t col = 0; col < img.width; col++) {
-            uint32_t color = pixmap[row * img.width + col];
-            if (vg_draw_pixel(x + col, y + row, color) != 0)
-                return 1;
-        }
+        if (vg_draw_pixel((uint16_t)screen_x, y, color) != 0) return 1;
     }
     return 0;
 }
 
+int (vg_draw_rectangle)(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color) {
+    // A rectangle is drawn as several horizontal lines.
+    for (uint16_t row = 0; row < height; row++) {
+        // Use uint32_t to avoid overflow when y + row is too large.
+        uint32_t screen_y = (uint32_t)y + row;
+
+        // Skip rows that would be outside the bottom of the screen.
+        if (screen_y >= vmi.YResolution) continue;
+
+        // Draw the visible part of this row.
+        if (vg_draw_hline(x, (uint16_t)screen_y, width, color) != 0) return 1;
+    }
+    return 0;
+}
+
+int vg_draw_pixmap(uint8_t *pixmap, xpm_image_t img, uint16_t x, uint16_t y) {
+    if (pixmap == NULL) return 1;
+
+    // Draw every pixel from the flat pixmap array.
+    for (uint16_t row = 0; row < img.height; row++) {
+        for (uint16_t col = 0; col < img.width; col++) {
+            uint16_t screen_x = x + col;
+            uint16_t screen_y = y + row;
+
+            // Pixels outside the screen are ignored.
+            if (screen_x >= vmi.XResolution || screen_y >= vmi.YResolution)
+                continue;
+
+            uint32_t color = pixmap[(uint32_t)row * img.width + col];
+            if (vg_draw_pixel(screen_x, screen_y, color) != 0) return 1;
+        }
+    }
+    return 0;
+}
