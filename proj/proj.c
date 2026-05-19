@@ -1,7 +1,27 @@
 #include <lcom/lcf.h>
+#include "src/model/game/game.h"
+
+
 
 int proj_main_loop(int argc, char* argv[]){
-    return 1;
+    switch (game_get_state()) {
+            case MAIN_MENU:
+                // desenhar menu, esperar input "jogar"
+                break;
+            case GAMEPLAY:
+                // atualizar carros, obstáculos, scroll
+                break;
+            case PAUSE:
+                // mostrar ecrã de pausa
+                break;
+            case GAME_OVER:
+                // mostrar resultado, esperar reiniciar ou menu
+                break;
+            case EXIT:
+                // limpar e sair
+                break;
+        }
+        return 1;
 }
 
 int main(int argc, char *argv[]) {

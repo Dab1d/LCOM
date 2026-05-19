@@ -5,13 +5,18 @@
 //criando 
 
 typedef enum {
-    START,
+    MAIN_MENU,
+    GAMEPLAY,
     PAUSE,
-    GAME,
+    GAME_OVER, //diz qual jogador ganhou
     EXIT
-}
+} GameState;
 
-//fará sentido ter win ou lose visto que sao dois jogadores?
+
+
+void game_init(void);
+ GameState game_get_state(void);
+void game_set_state( GameState new_state);
 
 #endif /* __PROJ_GAME_H */
 
