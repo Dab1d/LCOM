@@ -1,4 +1,4 @@
-int nothing(){
+int nothing5(){
     return 1;
 }
 

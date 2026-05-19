@@ -1,6 +1,6 @@
 #include <lcom/lcf.h>
 
-int nothing(){
+int nothing3(){
     return 1;
 }
 
