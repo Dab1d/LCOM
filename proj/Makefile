@@ -1,4 +1,4 @@
-PROG=project
+PROG=proj
 
 # additional compilation flags
 # "-Wall -Wextra -Werror -I . -std=c11 -Wno-unused-parameter" are already set

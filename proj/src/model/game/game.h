@@ -14,3 +14,4 @@ typedef enum {
 //fará sentido ter win ou lose visto que sao dois jogadores?
 
 #endif /* __PROJ_GAME_H */
+
