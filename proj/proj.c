@@ -3,25 +3,50 @@
 
 
 
-int proj_main_loop(int argc, char* argv[]){
-    switch (game_get_state()) {
-            case MAIN_MENU:
-                // desenhar menu, esperar input "jogar"
-                break;
-            case GAMEPLAY:
-                // atualizar carros, obstáculos, scroll
-                break;
-            case PAUSE:
-                // mostrar ecrã de pausa
-                break;
-            case GAME_OVER:
-                // mostrar resultado, esperar reiniciar ou menu
-                break;
-            case EXIT:
-                // limpar e sair
-                break;
+int proj_main_loop(int argc, char* argv[]) {
+    uint8_t bit_no;
+    if (timer_set_frequency(0, 60) != 0) return 1;
+    if (timer_subscribe_int(&bit_no) != 0) return 1;
+    uint32_t irq_set = BIT(bit_no);
+
+    game_init();
+
+    int ipc_status;
+    message msg;
+    int r;
+
+    while (game_get_state() != EXIT) {//como frequencia esta a 60 recebemos 60 interrupts por segundo (60hz)
+        if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
+            printf("driver_receive failed: %d\n", r);
+            continue;
         }
-        return 1;
+        if (is_ipc_notify(ipc_status)) {
+            switch (_ENDPOINT_P(msg.m_source)) {
+                case HARDWARE:
+                    if (msg.m_notify.interrupts & irq_set) {
+                        timer_int_handler(); //aumentamos o counter aqui caso seja preciso contar tempo para mais algo 
+                        switch (game_get_state()) {
+                            case MAIN_MENU:
+                                break;
+                            case GAMEPLAY:
+                                break;
+                            case PAUSE:
+                                break;
+                            case GAME_OVER:
+                                break;
+                            case EXIT:
+                                break;
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    if (timer_unsubscribe_int() != 0) return 1;
+    return 0;
 }
 
 int main(int argc, char *argv[]) {
