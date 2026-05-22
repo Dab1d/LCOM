@@ -59,6 +59,10 @@ void(timer_int_handler)() {
     counter++;
 }
 
+int timer_get_counter() {
+    return counter;
+}
+
 
 int (timer_get_conf)(uint8_t timer, uint8_t *st) {
   if (timer > 2) return 1;

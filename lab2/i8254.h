@@ -54,4 +54,6 @@
 
 /**@}*/
 
+int timer_get_counter();
+
 #endif /* _LCOM_I8254_H */

@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-extern int counter;
+#include "i8254.h"
 int main(int argc, char *argv[]) {
   // sets the language of LCF messages (can be either EN-US or PT-PT)
   lcf_set_language("EN-US");
@@ -51,9 +51,7 @@ int(timer_test_int)(uint8_t time) {
     int ipc_status;
     message msg;
     int r;
-    extern int counter;
-    //meti extern pq estava a dar erro a compilar quando o tentava aceder
-    while (counter < time * 60) { // 60 Hz * segundos
+    while (timer_get_counter() < time * 60) { // 60 Hz * segundos
         if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
             printf("driver_receive failed: %d\n", r);
             continue;
@@ -63,7 +61,7 @@ int(timer_test_int)(uint8_t time) {
                 case HARDWARE:
                     if (msg.m_notify.interrupts & irq_set) {
                         timer_int_handler();
-                        if (counter % 60 == 0) // a cada segundo
+                        if (timer_get_counter() % 60 == 0) // a cada segundo
                             timer_print_elapsed_time();
                     }
                     break;
