@@ -15,3 +15,6 @@ GameState game_get_state(void) {
 void game_set_state( GameState new_state) {
     current_state = new_state;
 }
+
+int game_check_collision(void) { return 0; }
+//preencher este quandon os obstaculos estiverem implementados

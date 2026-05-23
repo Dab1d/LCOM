@@ -27,16 +27,32 @@ int proj_main_loop(int argc, char* argv[]) {
                         timer_int_handler(); //aumentamos o counter aqui caso seja preciso contar tempo para mais algo 
                         switch (game_get_state()) {
                             case MAIN_MENU:
+                                if (input_menu_start_pressed())
+                                    game_set_state(GAMEPLAY);
                                 break;
                             case GAMEPLAY:
+                                if (game_check_collision())
+                                    game_set_state(GAME_OVER);
                                 break;
                             case PAUSE:
                                 break;
                             case GAME_OVER:
+                                if (input_gameover_restart_pressed())
+                                    game_set_state(GAMEPLAY);
+                                else if (input_gameover_menu_pressed())
+                                    game_set_state(MAIN_MENU);
                                 break;
                             case EXIT:
                                 break;
                         }
+                    }
+                    //keyboard - player 1
+                    if (msg.m_notify.interrupts & keyboard_irq_set) {
+                        keyboard_int_handler(); // atualiza estado interno do teclado
+                    }
+                    //mouse - player 2
+                    if (msg.m_notify.interrupts & mouse_irq_set) {
+                        mouse_int_handler(); // atualiza estado interno do rato
                     }
                     break;
                 default:
