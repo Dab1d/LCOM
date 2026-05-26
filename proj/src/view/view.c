@@ -1,5 +1,16 @@
 #include "view.h"
-#include "../../lab5/video_gr.h"  // vg_draw_pixel, vg_draw_rectangle
+#include "video_gr.h"
+#include <stdlib.h>   // malloc
+#include <string.h>   // memcpy
+
+// back_buffer tem de estar declarado ANTES de ser usado
+static uint32_t *back_buffer = NULL;
+
+void view_init_buffers(void) {
+    uint16_t w = vg_get_x_res();
+    uint16_t h = vg_get_y_res();
+    back_buffer = (uint32_t*) malloc(w * h * vg_get_bytes_per_pixel());
+}
 
 void draw_sprite(Sprite *sp) {
     if (sp == NULL || sp->pixmap == NULL) return;
@@ -17,33 +28,23 @@ void draw_sprite(Sprite *sp) {
             back_buffer[screen_y * w + screen_x] = color;
         }
     }
-} //passa a escrever no back_buffer em vez de chamar vg_draw_pixel
+}
 
 void draw_car(Car *car) {
     if (car == NULL) return;
-    draw_sprite(car->sprite);
+    draw_sprite(car->base.sprite);  // sprite está em base, não diretamente em Car
 }
 
 void draw_obstacle(Obstacle *obs) {
     if (obs == NULL) return;
-    draw_sprite(obs->sprite);
+    draw_sprite(obs->base.sprite);  // idem
 }
 
-// pinta o ecrã inteiro com a cor de fundo antes de cada frame
 void draw_clear(uint32_t bg_color) {
     uint16_t w = vg_get_x_res();
     uint16_t h = vg_get_y_res();
     for (int i = 0; i < w * h; i++)
         back_buffer[i] = bg_color;
-}
-
-
-static uint32_t *back_buffer = NULL;
-
-void view_init_buffers(void) {
-    uint16_t w = vg_get_x_res();
-    uint16_t h = vg_get_y_res();
-    back_buffer = malloc(w * h * vg_get_bytes_per_pixel());
 }
 
 void copy_buffer_to_video(void) {
