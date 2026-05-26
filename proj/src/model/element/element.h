@@ -2,8 +2,8 @@
 #define ELEMENT_H
 
 #include <stdbool.h>
+#include "../sprite/sprite.h"
 
-struct Sprite;
 
 /**
  * @brief Estrutura base para qualquer objeto físico do jogo.
@@ -15,7 +15,7 @@ typedef struct {
     int width;              // Largura da hitbox
     int height;             // Altura da hitbox
     bool is_active;         // false = já não existe no jogo (explodiu, foi apanhado, etc.)
-    struct Sprite* sprite;  // Gerido pela View — nunca libertado aqui
+    Sprite* sprite;  // Gerido pela View — nunca libertado aqui
 } Element;
 
 // Inicializa um Element já alocado (sem malloc — para usar em composição)

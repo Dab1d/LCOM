@@ -2,38 +2,50 @@
 PROG = proj
 
 CFLAGS += -pedantic -D __LCOM_OPTIMIZED__
+CFLAGS += -I/home/lcom/labs/lab3
+#CFLAGS += -I/home/lcom/labs/lab4
+CFLAGS += -I/home/lcom/labs/lab5
 
-DPADD += ${LIBLCF}
-LDADD += -llcf
+DPADD += ${LIBLCF} \
+         /home/lcom/labs/lab2/libtimer.a \
+         /home/lcom/labs/lab3/libkbc.a \
+         /home/lcom/labs/lab4/libmouse.a \
+         /home/lcom/labs/lab5/libvideo.a
+
+LDADD += -llcf \
+         /home/lcom/labs/lab2/libtimer.a \
+         /home/lcom/labs/lab3/libkbc.a \
+         /home/lcom/labs/lab4/libmouse.a \
+         /home/lcom/labs/lab5/libvideo.a
 LDLIBS += -lm
 
 SRCS = proj.c \
        src/model/game/game.c \
        src/model/element/element.c \
        src/model/car/car.c \
+       src/model/track/track.c \
+       src/model/obstacle/obstacle.c \
        src/model/sprite/sprite.c \
-       src/controller/timer/timer.c \
-       src/controller/rtc/rtc.c \
-       src/controller/kbc/kbc.c \
-       src/controller/kbc/kbd.c \
        src/controller/input/input.c \
-       src/view/view.c \
-       src/controller/graphics/graphics.c
+       src/controller/graphics/graphics.c \
+       src/view/view.c
+
 
 # Headers — listados explicitamente para dependências corretas
-HDRS = proj.h \
-       src/model/game/game.h \
+HDRS = src/model/game/game.h \
        src/model/element/element.h \
        src/model/car/car.h \
+       src/model/track/track.h \
+       src/model/obstacle/obstacle.h \
        src/model/sprite/sprite.h \
-       src/controller/timer/timer.h \
-       src/controller/rtc/rtc.h \
-       src/controller/kbc/kbc.h \
-       src/controller/kbc/kbd.h \
        src/controller/input/input.h \
-       src/view/view.h \
-       src/controller/graphics/graphics.h
+       src/controller/graphics/graphics.h \
+       src/view/view.h
 
+#       src/controller/timer/timer.h \
+#       src/controller/rtc/rtc.h \
+#       src/controller/kbc/kbc.h \
+#       src/controller/kbc/kbd.h \
 # Regras de compilação
 proj.o: proj.c ${HDRS}
 	${CC} ${CFLAGS} -c $< -o $@
@@ -45,6 +57,12 @@ src/model/element/element.o: src/model/element/element.c src/model/element/eleme
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/model/car/car.o: src/model/car/car.c src/model/car/car.h
+	${CC} ${CFLAGS} -c $< -o $@
+
+src/model/track/track.o: src/model/track src/model/track
+	${CC} ${CFLAGS} -c $< -o $@
+
+src/model/obstacle/obstacle.o: src/model/obstacle/obstacle.c src/model/obstacle/obstacle.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/model/sprite/sprite.o: src/model/sprite/sprite.c src/model/sprite/sprite.h

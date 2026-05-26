@@ -6,7 +6,7 @@ static double lane_to_x(int lane) {
     return (double)(lane * CAR_LANE_WIDTH);
 }
 
-Car* create_car(int initial_lane, int car_width, int car_height) {
+Car* create_car(int initial_lane, int lane_min, int lane_max, int car_width, int car_height) {
     Car* car = (Car*) malloc(sizeof(Car));
     if (car == NULL) return NULL;
 
@@ -15,6 +15,8 @@ Car* create_car(int initial_lane, int car_width, int car_height) {
     car->lane           = initial_lane;
     car->track_progress = 0;
     car->state          = CAR_STATE_NORMAL;
+    car->lane_min = lane_min;
+    car->lane_max = lane_max;
 
     return car;
 }
