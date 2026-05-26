@@ -1,12 +1,19 @@
 #include <lcom/lcf.h>
 #include "src/model/game/game.h"
+//#include "mouse.h"
+#include "video_gr.h"
+#include "/home/lcom/labs/lab3/kbc.h"
+
+int mouse_subscribe_int(uint8_t *bit_no);
+int mouse_unsubscribe_int();
+void mouse_ih(); //pq dá conflitos com o lab3
 
 int proj_main_loop(int argc, char* argv[]) {
     // --- Subscrever interrupções ---
     uint8_t timer_bit, kbd_bit, mouse_bit;
     if (timer_set_frequency(0, 60) != 0)       return 1;
     if (timer_subscribe_int(&timer_bit) != 0)   return 1;
-    if (keyboard_subscribe_int(&kbd_bit) != 0)  return 1;
+    if (kbc_subscribe_int(&kbd_bit) != 0)  return 1;
     if (mouse_subscribe_int(&mouse_bit) != 0)   return 1;
 
     uint32_t timer_irq_set    = BIT(timer_bit);
@@ -52,9 +59,9 @@ int proj_main_loop(int argc, char* argv[]) {
                         }
                     }
                     if (msg.m_notify.interrupts & keyboard_irq_set)
-                        keyboard_int_handler();
+                        kbc_ih();
                     if (msg.m_notify.interrupts & mouse_irq_set)
-                        mouse_int_handler();
+                        mouse_ih();
                     break;
                 default:
                     break;
@@ -63,7 +70,7 @@ int proj_main_loop(int argc, char* argv[]) {
     }
 
     timer_unsubscribe_int();
-    keyboard_unsubscribe_int();
+    kbc_unsubscribe_int();
     mouse_unsubscribe_int();
     return 0;
 }

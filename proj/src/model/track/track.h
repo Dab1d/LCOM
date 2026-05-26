@@ -15,6 +15,8 @@
 #define TRACK_VISIBLE_ROWS 12     // Linhas visíveis no ecrã em simultâneo
 #define TRACK_TILE_HEIGHT  50     // Altura de cada tile em píxeis
 
+#define CAR_SCREEN_ROW (TRACK_VISIBLE_ROWS - 2)
+
 // Tipos de tile possíveis em cada célula da grelha
 typedef enum {
     TILE_EMPTY    = 0,  // Estrada livre

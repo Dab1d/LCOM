@@ -2,11 +2,12 @@
 #define CAR_H
 
 #include "../element/element.h"
+#include "../track/track.h"
 #include <stdbool.h>
 
-#define TRACK_LANES     4
 #define CAR_LANE_WIDTH  100  // Largura de cada faixa em píxeis
-
+#define CAR_WIDTH  CAR_LANE_WIDTH       // largura = largura de uma faixa
+#define CAR_HEIGHT TRACK_TILE_HEIGHT    // altura = altura de um tile
 /**
  * @brief Os 4 estados visuais/de saúde do carro.
  * O índice corresponde diretamente ao sprite a carregar na View.
@@ -22,14 +23,16 @@ typedef enum {
  * @brief Estrutura que representa um carro jogador.
  */
 typedef struct {
-    Element base;        // Posição, hitbox, is_active, sprite (View injeta)
-    int lane;            // Faixa atual: 0 (esquerda) a TRACK_LANES-1 (direita)
-    int track_progress;  // Progresso na pista em tiles — aumenta com o tempo e com boosts
-    CarState state;      // Estado atual de dano — determina o sprite ativo
+    Element base;
+    int lane;
+    int lane_min;
+    int lane_max;
+    int track_progress;
+    CarState state;
 } Car;
 
 // Construtor / Destrutor
-Car* create_car(int initial_lane, int car_width, int car_height);
+Car* create_car(int initial_lane, int lane_min, int lane_max, int car_width, int car_height);
 void destroy_car(Car* car);
 
 // Move o carro uma faixa: direction = -1 (esquerda) ou +1 (direita)

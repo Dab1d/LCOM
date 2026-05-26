@@ -3,27 +3,18 @@
 #include <string.h>
 
 // Probabilidades de geração aleatória (em percentagem aproximada)
-#define PROB_OBSTACLE 15  // 15% de chance de obstáculo por tile
 #define PROB_BOOST     8  // 8% de chance de boost por tile
-
-// Linha lógica onde o carro está no ecrã (perto do fundo, visualmente fixo)
-#define CAR_SCREEN_ROW (TRACK_VISIBLE_ROWS - 2)
 
 // ---------------------------------------------------------------------------
 // Geração aleatória da grelha
 // ---------------------------------------------------------------------------
 
 static TileType generate_tile(int row, int lane) {
-    // A última linha é sempre a meta em todas as faixas
     if (row == TRACK_TOTAL_ROWS - 1) return TILE_FINISH;
-
-    // As primeiras linhas são sempre livres (zona de arranque)
-    if (row < 5) return TILE_EMPTY;
+    if (row < 5)                     return TILE_EMPTY;
 
     int r = rand() % 100;
-
-    if (r < PROB_OBSTACLE)               return TILE_OBSTACLE;
-    if (r < PROB_OBSTACLE + PROB_BOOST)  return TILE_BOOST;
+    if (r < PROB_BOOST) return TILE_BOOST;
 
     return TILE_EMPTY;
 }
@@ -34,8 +25,8 @@ static void generate_grid(Track* track) {
         // Gerar cada metade da pista independentemente
         // para garantir que cada jogador tem sempre pelo menos uma faixa livre
         for (int player = 0; player < 2; player++) {
+
             int lane_start = (player == 0) ? PLAYER1_LANE_START : PLAYER2_LANE_START;
-            int lane_end   = (player == 0) ? PLAYER1_LANE_END   : PLAYER2_LANE_END;
 
             int obstacle_count = 0;
             TileType proposed[TRACK_LANES_PER_PLAYER];
