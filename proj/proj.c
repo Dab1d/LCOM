@@ -31,6 +31,10 @@ int proj_main_loop(int argc, char* argv[]) {
                                     game_set_state(GAMEPLAY);
                                 break;
                             case GAMEPLAY:
+                                draw_clear(0x333333);  // limpa o ecrã
+                                draw_car(car1);   // jogador 1
+                                draw_car(car2);    // jogador 2
+                                draw_obstacle(obs);     //desenha os obstaculos
                                 if (game_check_collision())
                                     game_set_state(GAME_OVER);
                                 break;
