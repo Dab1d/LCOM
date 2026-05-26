@@ -22,7 +22,6 @@ int game_check_collision(void);
 
 typedef struct{
     Sprite *sprite;
-    int speed;
 } Car;
 
 typedef struct{

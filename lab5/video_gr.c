@@ -118,3 +118,10 @@ int vg_draw_pixmap(uint8_t *pixmap, xpm_image_t img, uint16_t x, uint16_t y) {
     }
     return 0;
 }
+
+
+uint8_t* vg_get_video_mem(void)      { return video_mem; }
+uint16_t vg_get_x_res(void)          { return vmi.XResolution; }
+uint16_t vg_get_y_res(void)          { return vmi.YResolution; }
+uint8_t  vg_get_bytes_per_pixel(void){ return bytes_per_pixel; }
+
