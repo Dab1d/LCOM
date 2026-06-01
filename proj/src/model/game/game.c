@@ -2,6 +2,7 @@
 #include "game.h"
 #include "../../controller/input/input.h"
 #include "../../view/car/car_view.h"
+#include "../../view/obstacle/obstacle_view.h"
 #include "../../view/view.h"
 #define MAX_OBSTACLES ((TRACK_TOTAL_ROWS / 8) * 2) // conta para uma distribuição equilibrada de obstacles
 
@@ -12,8 +13,9 @@ static Car*      car1           = NULL;
 static Car*      car2           = NULL;
 static CarView*  car1_view      = NULL;
 static CarView*  car2_view      = NULL;
-static Obstacle* obstacles[MAX_OBSTACLES];
-static int       obstacle_count = 0;
+static Obstacle*     obstacles[MAX_OBSTACLES];
+static ObstacleView* obstacle_views[MAX_OBSTACLES];
+static int           obstacle_count = 0;
 static int       winner         = 0;
 
 
@@ -33,8 +35,15 @@ void game_init(void) {
     winner = 0;
     obstacle_count = 0;
     for (int row = 10; row < TRACK_TOTAL_ROWS - 10 && obstacle_count < MAX_OBSTACLES - 1; row += 8) {
-        obstacles[obstacle_count++] = create_obstacle(row,     PLAYER1_LANE_START, PLAYER1_LANE_END);
-        obstacles[obstacle_count++] = create_obstacle(row + 4, PLAYER2_LANE_START, PLAYER2_LANE_END);
+        obstacles[obstacle_count] = create_obstacle(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
+        obstacle_views[obstacle_count] = obstacle_view_create(obstacles[obstacle_count]->base.width,
+                                                              obstacles[obstacle_count]->base.height);
+        obstacle_count++;
+
+        obstacles[obstacle_count] = create_obstacle(row + 4, PLAYER2_LANE_START, PLAYER2_LANE_END);
+        obstacle_views[obstacle_count] = obstacle_view_create(obstacles[obstacle_count]->base.width,
+                                                              obstacles[obstacle_count]->base.height);
+        obstacle_count++;
     }
 }
 
@@ -83,6 +92,13 @@ void game_render(void) {
 
     car_view_update(car2_view, car2);
     draw_car(car2);
+
+    for (int i = 0; i < obstacle_count; i++) {
+        if (obstacle_is_visible(obstacles[i])) {
+            obstacle_view_update(obstacle_views[i], obstacles[i]);
+            draw_obstacle(obstacles[i]);
+        }
+    }
 
     copy_buffer_to_video();
 }
