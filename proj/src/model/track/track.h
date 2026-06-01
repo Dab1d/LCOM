@@ -39,8 +39,8 @@ typedef enum {
 typedef struct {
     TileType grid[TRACK_TOTAL_ROWS][TRACK_LANES]; // Grelha lógica completa
     int      scroll_row;    // Linha lógica no topo do ecrã (avança a cada tick)
-    int      scroll_offset; // Offset em píxeis dentro do tile atual (0..TRACK_TILE_HEIGHT-1)
-    int      scroll_speed;  // Píxeis de scroll por tick (velocidade da pista)
+    float    scroll_offset; // Offset em píxeis dentro do tile atual (0..TRACK_TILE_HEIGHT-1)
+    float    scroll_speed;  // Píxeis de scroll por tick (velocidade da pista)
     TrackTheme theme;       // Tema visual desta corrida
 } Track;
 

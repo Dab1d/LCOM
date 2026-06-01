@@ -14,10 +14,9 @@ static double lane_to_x(int lane) {
     return (double)(lane * CAR_LANE_WIDTH);
 }
 
-static double row_to_y(int logical_row, int scroll_row, int scroll_offset) {
-    // Converte linha lógica para posição Y em píxeis no ecrã
+static double row_to_y(int logical_row, int scroll_row, float scroll_offset) {
     int screen_row = logical_row - scroll_row;
-    return (double)(screen_row * TRACK_TILE_HEIGHT - scroll_offset);
+    return (double)(screen_row * TRACK_TILE_HEIGHT) - (double)scroll_offset;
 }
 
 // ---------------------------------------------------------------------------
@@ -84,7 +83,7 @@ void destroy_obstacle(Obstacle* obs) {
 // Update e colisão
 // ---------------------------------------------------------------------------
 
-void obstacle_update(Obstacle* obs, int scroll_row, int scroll_offset) {
+void obstacle_update(Obstacle* obs, int scroll_row, float scroll_offset) {
     if (obs == NULL || !obs->base.is_active) return;
 
     // Atualiza Y em píxeis com base no scroll atual da pista
