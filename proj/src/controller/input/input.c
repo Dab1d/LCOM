@@ -1,4 +1,11 @@
 #include "input.h"
+#include "kbc.h"
+
+#define ESC_MAKECODE 0x01
+
+int input_esc_pressed(void) {
+    return get_current_scancode() == ESC_MAKECODE;
+}
 
 //place holders
 int input_keyboard_start_pressed(void)   { return 0; }

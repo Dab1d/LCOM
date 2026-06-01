@@ -29,7 +29,8 @@ SRCS = proj.c \
        src/model/sprite/sprite.c \
        src/controller/input/input.c \
        src/controller/graphics/graphics.c \
-       src/view/view.c
+       src/view/view.c \
+       src/view/car/car_view.c
 
 
 # Headers — listados explicitamente para dependências corretas
@@ -60,7 +61,7 @@ src/model/element/element.o: src/model/element/element.c src/model/element/eleme
 src/model/car/car.o: src/model/car/car.c src/model/car/car.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/model/track/track.o: src/model/track src/model/track
+src/model/track/track.o: src/model/track/track.c src/model/track/track.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/model/obstacle/obstacle.o: src/model/obstacle/obstacle.c src/model/obstacle/obstacle.h
@@ -85,6 +86,9 @@ src/controller/input/input.o: src/controller/input/input.c src/controller/input/
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/view/view.o: src/view/view.c src/view/view.h
+	${CC} ${CFLAGS} -c $< -o $@
+
+src/view/car/car_view.o: src/view/car/car_view.c src/view/car/car_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/controller/graphics/graphics.o: src/controller/graphics/graphics.c src/controller/graphics/graphics.h
