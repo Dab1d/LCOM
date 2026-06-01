@@ -3,7 +3,10 @@
 #include <string.h>
 
 // Probabilidades de geração aleatória (em percentagem aproximada)
-#define PROB_BOOST     8  // 8% de chance de boost por tile
+#define PROB_BOOST          8     // 8% de chance de boost por tile
+#define SCROLL_SPEED_INITIAL 2.0f
+#define SCROLL_SPEED_MAX    12.0f
+#define SCROLL_ACCELERATION  0.002f
 
 // ---------------------------------------------------------------------------
 // Geração aleatória da grelha
@@ -59,8 +62,8 @@ Track* create_track(TrackTheme theme) {
     memset(track->grid, TILE_EMPTY, sizeof(track->grid));
 
     track->scroll_row    = 0;
-    track->scroll_offset = 0;
-    track->scroll_speed  = 2; // píxeis por tick — ajustar para dificuldade
+    track->scroll_offset = 0.0f;
+    track->scroll_speed  = SCROLL_SPEED_INITIAL;
     track->theme         = theme;
 
     generate_grid(track);
@@ -82,9 +85,11 @@ void track_update(Track* track) {
     if (track == NULL) return;
     if (track_is_finished(track)) return;
 
+    if (track->scroll_speed < SCROLL_SPEED_MAX)
+        track->scroll_speed += SCROLL_ACCELERATION;
+
     track->scroll_offset += track->scroll_speed;
 
-    // Quando o offset acumula um tile inteiro, avança a linha lógica
     while (track->scroll_offset >= TRACK_TILE_HEIGHT) {
         track->scroll_offset -= TRACK_TILE_HEIGHT;
         track->scroll_row++;

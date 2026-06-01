@@ -35,7 +35,7 @@ void      destroy_obstacle(Obstacle* obs);
  * @brief Atualiza a posição em píxeis do obstáculo com base no scroll atual da pista.
  * Deve ser chamado a cada tick antes de desenhar.
  */
-void obstacle_update(Obstacle* obs, int scroll_row, int scroll_offset);
+void obstacle_update(Obstacle* obs, int scroll_row, float scroll_offset);
 
 /**
  * @brief Verifica se o obstáculo está dentro da zona visível do ecrã.
