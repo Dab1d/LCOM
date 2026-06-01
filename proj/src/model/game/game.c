@@ -3,6 +3,7 @@
 #include "../../controller/input/input.h"
 #include "../../view/car/car_view.h"
 #include "../../view/obstacle/obstacle_view.h"
+#include "../../view/track/track_view.h"
 #include "../../view/view.h"
 #define MAX_OBSTACLES ((TRACK_TOTAL_ROWS / 8) * 2) // conta para uma distribuição equilibrada de obstacles
 
@@ -11,8 +12,9 @@ static GameState current_state = MAIN_MENU;
 static Track*    track          = NULL;
 static Car*      car1           = NULL;
 static Car*      car2           = NULL;
-static CarView*  car1_view      = NULL;
-static CarView*  car2_view      = NULL;
+static CarView*   car1_view      = NULL;
+static CarView*   car2_view      = NULL;
+static TrackView* track_view     = NULL;
 static Obstacle*     obstacles[MAX_OBSTACLES];
 static ObstacleView* obstacle_views[MAX_OBSTACLES];
 static int           obstacle_count = 0;
@@ -29,8 +31,9 @@ void game_init(void) {
     // Jogador 2: faixas 5-9, começa na faixa 7 (centro da sua metade)
     car2 = create_car(7, PLAYER2_LANE_START, PLAYER2_LANE_END, CAR_WIDTH, CAR_HEIGHT);
 
-    car1_view = car_view_create(CAR_WIDTH, CAR_HEIGHT);
-    car2_view = car_view_create(CAR_WIDTH, CAR_HEIGHT);
+    car1_view  = car_view_create(CAR_WIDTH, CAR_HEIGHT);
+    car2_view  = car_view_create(CAR_WIDTH, CAR_HEIGHT);
+    track_view = track_view_create();
 
     winner = 0;
     obstacle_count = 0;
@@ -86,6 +89,8 @@ void game_process_input(void) {
 
 void game_render(void) {
     draw_clear(0x000000);
+
+    track_view_draw(track_view, track);
 
     car_view_update(car1_view, car1);
     draw_car(car1);

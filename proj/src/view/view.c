@@ -25,6 +25,9 @@ void draw_sprite(Sprite *sp) {
             int screen_x = sp->x + col;
             int screen_y = sp->y + row;
 
+            if (screen_x < 0 || screen_x >= w) continue;
+            if (screen_y < 0 || screen_y >= vg_get_y_res()) continue;
+
             back_buffer[screen_y * w + screen_x] = color;
         }
     }
