@@ -42,7 +42,6 @@ int proj_main_loop(int argc, char* argv[]) {
                                 // TODO: game_process_input() + game_render_menu()
                                 break;
                             case GAMEPLAY:
-                                game_process_input();
                                 game_update();
                                 game_process_collisions();
                                 if (game_is_over())
@@ -58,8 +57,10 @@ int proj_main_loop(int argc, char* argv[]) {
                                 break;
                         }
                     }
-                    if (msg.m_notify.interrupts & keyboard_irq_set)
+                    if (msg.m_notify.interrupts & keyboard_irq_set) {
                         kbc_ih();
+                        game_process_input();
+                    }
                     if (msg.m_notify.interrupts & mouse_irq_set)
                         mouse_ih();
                     break;
