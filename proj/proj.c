@@ -2,7 +2,7 @@
 #include "src/model/game/game.h"
 //#include "mouse.h"
 #include "video_gr.h"
-#include "/home/lcom/labs/lab3/kbc.h"
+#include "kbc.h" // caminho resolvido via -I../lab3 no Makefile; evita path absoluto hardcoded
 
 int mouse_subscribe_int(uint8_t *bit_no);
 int mouse_unsubscribe_int();

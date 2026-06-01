@@ -2,21 +2,22 @@
 PROG = proj
 
 CFLAGS += -pedantic -D __LCOM_OPTIMIZED__
-CFLAGS += -I/home/lcom/labs/lab3
-#CFLAGS += -I/home/lcom/labs/lab4
-CFLAGS += -I/home/lcom/labs/lab5
+# Caminhos relativos em vez de /home/lcom/labs/labX — funcionam independentemente
+# do mount point da pasta partilhada no MINIX
+CFLAGS += -I../lab3
+#CFLAGS += -I../lab4
+CFLAGS += -I../lab5
 
-DPADD += ${LIBLCF} \
-         /home/lcom/labs/lab2/libtimer.a \
-         /home/lcom/labs/lab3/libkbc.a \
-         /home/lcom/labs/lab4/libmouse.a \
-         /home/lcom/labs/lab5/libvideo.a
+DPADD += ${LIBLCF}
 
-LDADD += -llcf \
-         /home/lcom/labs/lab2/libtimer.a \
-         /home/lcom/labs/lab3/libkbc.a \
-         /home/lcom/labs/lab4/libmouse.a \
-         /home/lcom/labs/lab5/libvideo.a
+# Os .a dos labs têm de vir ANTES de -llcf. O linker resolve símbolos pela ordem
+# em que encontra as bibliotecas: se -llcf viesse primeiro, usaria os stubs do LCF
+# (ex: timer_set_frequency "not implemented") em vez das implementações dos labs.
+LDADD += ../lab2/libtimer.a \
+         ../lab3/libkbc.a \
+         ../lab4/libmouse.a \
+         ../lab5/libvideo.a \
+         -llcf
 LDLIBS += -lm
 
 SRCS = proj.c \
