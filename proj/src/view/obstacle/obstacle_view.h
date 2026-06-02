@@ -3,12 +3,6 @@
 
 #include "../../model/obstacle/obstacle.h"
 
-typedef struct {
-    Sprite *sprite;
-} ObstacleView;
-
-ObstacleView* obstacle_view_create(void);
-void          obstacle_view_update(ObstacleView *ov, Obstacle *obs);
-void          obstacle_view_destroy(ObstacleView *ov);
+void obstacle_view_update(Obstacle *obs);
 
 #endif /* __PROJ_OBSTACLE_VIEW_H */

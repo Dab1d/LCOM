@@ -25,6 +25,7 @@ typedef enum {
  */
 typedef struct {
     Element base;
+    int player;       // 1 ou 2
     int lane;
     int lane_min;
     int lane_max;

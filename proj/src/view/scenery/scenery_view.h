@@ -2,23 +2,20 @@
 #define __PROJ_SCENERY_VIEW_H
 
 #include "../../model/track/track.h"
-#include "../../model/sprite/sprite.h"
 
 #define MAX_TREES  120
-#define TREE_SIZE   32  // square sprite, centered in the grass strip
+#define TREE_SIZE   32
 
 typedef struct {
-    int    screen_x;    // fixed screen x (within grass strip)
-    int    logical_row; // track row — used to compute scroll y
-    double screen_y;    // updated each tick
+    int    screen_x;
+    int    logical_row;
+    double screen_y;
 } TreeInstance;
 
 typedef struct {
     TreeInstance trees[MAX_TREES];
     int          count;
-    Sprite      *grass_sprite;
-    Sprite      *tree_sprite;
-    float        scroll_offset;  // cached from last update, used in draw
+    float        scroll_offset;
 } SceneryView;
 
 SceneryView* scenery_view_create(void);

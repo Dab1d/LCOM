@@ -13,7 +13,7 @@ typedef struct {
     uint32_t *pixmap;   // pixels do XPM já convertidos
 } Sprite;
 
-Sprite* sprite_from_xpm(xpm_map_t map);
+Sprite* create_sprite(xpm_map_t map);
 void    sprite_destroy(Sprite *sp);
 
 #endif /* __PROJ_SPRITE_H */

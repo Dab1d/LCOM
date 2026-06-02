@@ -2,7 +2,7 @@
 #include <lcom/lcf.h>
 #include <stdlib.h>
 
-Sprite* sprite_from_xpm(xpm_map_t map) {
+Sprite* create_sprite(xpm_map_t map) {
     xpm_image_t img;
     uint8_t *data = xpm_load(map, XPM_8_8_8_8, &img);
     if (!data) return NULL;

@@ -8,7 +8,7 @@ static double lane_to_x(int lane) {
 
 static double row_to_y(int logical_row, int scroll_row, float scroll_offset) {
     int screen_row = logical_row - scroll_row;
-    return (double)(screen_row * TRACK_TILE_HEIGHT) - (double)scroll_offset;
+    return (double)((2 * CAR_SCREEN_ROW - screen_row) * TRACK_TILE_HEIGHT) + (double)scroll_offset;
 }
 
 Obstacle* create_obstacle(int row, int lane) {
@@ -32,7 +32,7 @@ void obstacle_update(Obstacle* obs, int scroll_row, float scroll_offset) {
 
     obs->base.y = row_to_y(obs->row, scroll_row, scroll_offset);
 
-    if (obs->base.y + obs->base.height < 0)
+    if (obs->base.y > (double)(TRACK_VISIBLE_ROWS * TRACK_TILE_HEIGHT))
         obs->base.is_active = false;
 }
 

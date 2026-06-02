@@ -1,14 +1,5 @@
-#ifndef __PROJ_CAR_XPM_H
-#define __PROJ_CAR_XPM_H
-
-#include <lcom/xpm.h>
-
-// Set to 1 and fill in the arrays below when sprites are ready.
-// Each array must match CAR_WIDTH x CAR_HEIGHT pixels.
-#define HAS_CAR_XPM 0  // muda para 1 quando os 4 sprites estiverem preenchidos
-
-#if HAS_CAR_XPM
-static xpm_row_t car_normal_xpm[] = {
+/* XPM */
+char * redcar_s1_1_xpm[] = {
 "64 64 37 1",
 " 	c #000000",
 ".	c #000100",
@@ -111,15 +102,3 @@ static xpm_row_t car_normal_xpm[] = {
 "                                                                ",
 "                                                                ",
 "                                                                "};
-static xpm_row_t car_damaged_xpm[] = {
-    /* paste XPM data here */
-};
-static xpm_row_t car_burning_xpm[] = {
-    /* paste XPM data here */
-};
-static xpm_row_t car_exploded_xpm[] = {
-    /* paste XPM data here */
-};
-#endif
-
-#endif /* __PROJ_CAR_XPM_H */

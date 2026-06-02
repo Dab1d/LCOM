@@ -32,6 +32,7 @@ SRCS = proj.c \
        src/controller/input/input.c \
        src/controller/graphics/graphics.c \
        src/view/view.c \
+       src/model/resources/resources.c \
        src/view/car/car_view.c \
        src/view/obstacle/obstacle_view.c \
        src/view/track/track_view.c \
@@ -50,6 +51,7 @@ HDRS = src/model/game/game.h \
        src/controller/input/input.h \
        src/controller/graphics/graphics.h \
        src/view/view.h \
+       src/model/resources/resources.h \
        src/view/obstacle/obstacle_view.h \
        src/view/track/track_view.h \
        src/view/scenery/scenery_view.h \
@@ -104,6 +106,9 @@ src/controller/input/input.o: src/controller/input/input.c src/controller/input/
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/view/view.o: src/view/view.c src/view/view.h
+	${CC} ${CFLAGS} -c $< -o $@
+
+src/model/resources/resources.o: src/model/resources/resources.c src/model/resources/resources.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/view/car/car_view.o: src/view/car/car_view.c src/view/car/car_view.h
