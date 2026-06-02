@@ -79,6 +79,7 @@ int proj_main_loop(int argc, char* argv[]) {
     timer_unsubscribe_int();
     kbc_unsubscribe_int();
     mouse_unsubscribe_int();
+    vg_exit();
     return 0;
 }
 
