@@ -7,13 +7,15 @@ CFLAGS += -pedantic -D __LCOM_OPTIMIZED__
 CFLAGS += -I../lab3
 #CFLAGS += -I../lab4
 CFLAGS += -I../lab5
+CFLAGS += -I../lab1proj
 
 DPADD += ${LIBLCF}
 
 # Os .a dos labs têm de vir ANTES de -llcf. O linker resolve símbolos pela ordem
 # em que encontra as bibliotecas: se -llcf viesse primeiro, usaria os stubs do LCF
 # (ex: timer_set_frequency "not implemented") em vez das implementações dos labs.
-LDADD += ../lab2/libtimer.a \
+LDADD += ../lab1proj/liblab1proj.a \
+         ../lab2/libtimer.a \
          ../lab3/libkbc.a \
          ../lab4/libmouse.a \
          ../lab5/libvideo.a \
@@ -33,7 +35,8 @@ SRCS = proj.c \
        src/view/car/car_view.c \
        src/view/obstacle/obstacle_view.c \
        src/view/track/track_view.c \
-       src/model/cursor/cursor.c
+       src/model/cursor/cursor.c \
+       src/model/leaderboard/leaderboard.c
 
 
 # Headers — listados explicitamente para dependências corretas
@@ -48,7 +51,8 @@ HDRS = src/model/game/game.h \
        src/view/view.h \
        src/view/obstacle/obstacle_view.h \
        src/view/track/track_view.h \
-       src/model/cursor/cursor.h
+       src/model/cursor/cursor.h \
+       src/model/leaderboard/leaderboard.h
 
 #       src/controller/timer/timer.h \
 #       src/controller/rtc/rtc.h \
@@ -77,6 +81,9 @@ src/model/sprite/sprite.o: src/model/sprite/sprite.c src/model/sprite/sprite.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/model/cursor/cursor.o: src/model/cursor/cursor.c src/model/cursor/cursor.h
+	${CC} ${CFLAGS} -c $< -o $@
+
+src/model/leaderboard/leaderboard.o: src/model/leaderboard/leaderboard.c src/model/leaderboard/leaderboard.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/controller/timer/timer.o: src/controller/timer/timer.c src/controller/timer/timer.h
