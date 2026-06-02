@@ -1,8 +1,11 @@
 #include <lcom/lcf.h>
 #include "src/model/game/game.h"
+#include "src/view/view.h"
 //#include "mouse.h"
 #include "video_gr.h"
 #include "kbc.h" // caminho resolvido via -I../lab3 no Makefile; evita path absoluto hardcoded
+
+#define VIDEO_MODE 0x14c  // 1024x768 32bpp
 
 int mouse_subscribe_int(uint8_t *bit_no);
 int mouse_unsubscribe_int();
@@ -19,6 +22,9 @@ int proj_main_loop(int argc, char* argv[]) {
     uint32_t timer_irq_set    = BIT(timer_bit);
     uint32_t keyboard_irq_set = BIT(kbd_bit);
     uint32_t mouse_irq_set    = BIT(mouse_bit);
+
+    if (vg_init(VIDEO_MODE) == NULL) return 1;
+    view_init_buffers();
 
     game_init();
 
@@ -73,6 +79,7 @@ int proj_main_loop(int argc, char* argv[]) {
     timer_unsubscribe_int();
     kbc_unsubscribe_int();
     mouse_unsubscribe_int();
+    vg_exit();
     return 0;
 }
 

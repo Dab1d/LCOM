@@ -4,7 +4,9 @@
 #include "../model/sprite/sprite.h"
 #include "../model/game/game.h"
 
-#define TRANSPARENT_COLOR 0xFF00FF
+// Screen layout: 192px grass | 640px road (10x64) | 192px grass
+#define ROAD_OFFSET_X 192
+
 
 void view_init_buffers(void);
 void draw_sprite(Sprite *sp);
