@@ -8,7 +8,7 @@
 #include "../../view/view.h"
 #define MAX_OBSTACLES    200
 #define CLUSTER_CHANCE    70  // % chance of cluster vs single obstacle
-#define BOOST_TILES       5   // tiles de avanço concedidos por um tile TILE_BOOST
+#define BOOST_TILES       2   // tiles de avanço concedidos por um tile TILE_BOOST
 
 
 static GameState current_state = MAIN_MENU;
