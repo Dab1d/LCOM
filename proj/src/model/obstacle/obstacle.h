@@ -3,6 +3,7 @@
 
 #include "../element/element.h"
 #include "../track/track.h"
+#include "../car/car.h"
 
 /**
  * @brief Representa um obstáculo de um tile (CAR_LANE_WIDTH x TRACK_TILE_HEIGHT).
@@ -23,6 +24,6 @@ void      destroy_obstacle(Obstacle* obs);
  */
 void obstacle_update(Obstacle* obs, int scroll_row, float scroll_offset);
 bool obstacle_is_visible(const Obstacle* obs);
-bool obstacle_collides_with_car(const Obstacle* obs, int car_lane);
+bool obstacle_collides_with_car(const Obstacle* obs, const Car* car);
 
 #endif // OBSTACLE_H

@@ -8,6 +8,7 @@
 #include "../../view/view.h"
 #define MAX_OBSTACLES    200
 #define CLUSTER_CHANCE    70  // % chance of cluster vs single obstacle
+#define BOOST_TILES       5   // tiles de avanço concedidos por um tile TILE_BOOST
 
 
 static GameState current_state = MAIN_MENU;
@@ -94,17 +95,46 @@ void game_set_state(GameState new_state) {
 }
 
 void game_process_collisions(void) {
+    // Colisões com obstáculos (objetos Obstacle)
     for (int i = 0; i < obstacle_count; i++) {
         Obstacle* obs = obstacles[i];
         if (obs == NULL || !obs->base.is_active) continue;
 
-        if (obstacle_collides_with_car(obs, car1->lane)) {
+        if (car1->base.is_active && obstacle_collides_with_car(obs, car1)) {
             car_take_damage(car1);
             obs->base.is_active = false;
         }
-        if (obstacle_collides_with_car(obs, car2->lane)) {
+        if (car2->base.is_active && obstacle_collides_with_car(obs, car2)) {
             car_take_damage(car2);
             obs->base.is_active = false;
+        }
+    }
+
+    // Colisões com tiles da grelha (TILE_OBSTACLE e TILE_BOOST)
+    // Usa a posição Y real do carro para determinar a linha lógica correta
+    if (car1->base.is_active) {
+        int c1_screen_row  = (int)(car1->base.y / TRACK_TILE_HEIGHT);
+        int c1_logical_row = track->scroll_row + c1_screen_row;
+        TileType t1 = track_get_tile(track, c1_logical_row, car1->lane);
+        if (t1 == TILE_OBSTACLE) {
+            car_take_damage(car1);
+            track_clear_tile(track, c1_logical_row, car1->lane);
+        } else if (t1 == TILE_BOOST) {
+            car_apply_boost(car1, BOOST_TILES);
+            track_clear_tile(track, c1_logical_row, car1->lane);
+        }
+    }
+
+    if (car2->base.is_active) {
+        int c2_screen_row  = (int)(car2->base.y / TRACK_TILE_HEIGHT);
+        int c2_logical_row = track->scroll_row + c2_screen_row;
+        TileType t2 = track_get_tile(track, c2_logical_row, car2->lane);
+        if (t2 == TILE_OBSTACLE) {
+            car_take_damage(car2);
+            track_clear_tile(track, c2_logical_row, car2->lane);
+        } else if (t2 == TILE_BOOST) {
+            car_apply_boost(car2, BOOST_TILES);
+            track_clear_tile(track, c2_logical_row, car2->lane);
         }
     }
 }

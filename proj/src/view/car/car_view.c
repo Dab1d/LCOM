@@ -58,7 +58,7 @@ void car_view_update(CarView *cv, Car *car) {
 
     Sprite *sp = cv->sprites[car->state];
     sp->x = (int)car->base.x + ROAD_OFFSET_X;
-    sp->y = CAR_SCREEN_ROW * TRACK_TILE_HEIGHT;
+    sp->y = (int)car->base.y;
 
     car->base.sprite = sp;
 }
