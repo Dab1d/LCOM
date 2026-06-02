@@ -10,7 +10,13 @@
 
 int mouse_subscribe_int(uint8_t *bit_no);
 int mouse_unsubscribe_int();
-void mouse_ih(); //pq dá conflitos com o lab3
+void mouse_ih();
+int mouse_write(uint8_t command);
+bool mouse_packet_ready(void);
+void mouse_bytes_to_packet(void);
+struct packet *get_mouse_packet(void);
+
+#define ENABLE_DATA_REPORTING 0xF4
 
 int proj_main_loop(int argc, char* argv[]) {
     // --- Subscrever interrupções ---
@@ -26,6 +32,8 @@ int proj_main_loop(int argc, char* argv[]) {
 
     if (vg_init(VIDEO_MODE) == NULL) return 1;
     view_init_buffers();
+
+    if (mouse_write(ENABLE_DATA_REPORTING) != 0) return 1;
 
     game_init();
 
@@ -69,8 +77,14 @@ int proj_main_loop(int argc, char* argv[]) {
                         game_process_input();
                         input_update();
                     }
-                    if (msg.m_notify.interrupts & mouse_irq_set)
+                    if (msg.m_notify.interrupts & mouse_irq_set) {
                         mouse_ih();
+                        if (mouse_packet_ready()) {
+                            mouse_bytes_to_packet();
+                            struct packet *pkt = get_mouse_packet();
+                            game_process_mouse(pkt->delta_x, pkt->delta_y, pkt->lb);
+                        }
+                    }
                     break;
                 default:
                     break;

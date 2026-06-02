@@ -6,9 +6,12 @@
 #include "../../view/track/track_view.h"
 #include "../../view/scenery/scenery_view.h"
 #include "../../view/view.h"
-#define MAX_OBSTACLES    200
-#define CLUSTER_CHANCE    70  // % chance of cluster vs single obstacle
-#define BOOST_TILES       2   // tiles de avanço concedidos por um tile TILE_BOOST
+#define MAX_OBSTACLES       200
+#define CLUSTER_CHANCE       70
+#define BOOST_TILES           2
+#define SCREEN_WIDTH       1024
+#define SCREEN_HEIGHT       768
+#define LANE_CHANGE_THRESHOLD 40
 
 
 static GameState current_state = MAIN_MENU;
@@ -23,6 +26,8 @@ static Obstacle*     obstacles[MAX_OBSTACLES];
 static ObstacleView* obstacle_views[MAX_OBSTACLES];
 static int           obstacle_count = 0;
 static int       winner         = 0;
+static Cursor*   cursor         = NULL;
+static int       car2_dx_acc    = 0;
 
 
 static void spawn_single(int row, int lane_min, int lane_max) {
@@ -73,6 +78,9 @@ void game_init(void) {
 
     winner = 0;
     obstacle_count = 0;
+    car2_dx_acc = 0;
+    if (cursor == NULL)
+        cursor = create_cursor(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT);
     for (int row = 10; row < TRACK_TOTAL_ROWS - 10 && obstacle_count < MAX_OBSTACLES - 6; row += 8) {
         if (rand() % 100 < CLUSTER_CHANCE)
             spawn_cluster(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
@@ -196,6 +204,26 @@ void game_render(void) {
     }
 
     copy_buffer_to_video();
+}
+
+void game_process_mouse(int dx, int dy, bool lb) {
+    if (cursor != NULL)
+        cursor_update(cursor, dx, dy, lb);
+
+    if (current_state != GAMEPLAY) return;
+
+    car2_dx_acc += dx;
+    if (car2_dx_acc > LANE_CHANGE_THRESHOLD) {
+        car_move_lane(car2, +1);
+        car2_dx_acc = 0;
+    } else if (car2_dx_acc < -LANE_CHANGE_THRESHOLD) {
+        car_move_lane(car2, -1);
+        car2_dx_acc = 0;
+    }
+}
+
+const Cursor *game_get_cursor(void) {
+    return cursor;
 }
 
 bool game_is_over(void) {
