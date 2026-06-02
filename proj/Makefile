@@ -32,7 +32,8 @@ SRCS = proj.c \
        src/view/view.c \
        src/view/car/car_view.c \
        src/view/obstacle/obstacle_view.c \
-       src/view/track/track_view.c
+       src/view/track/track_view.c \
+       src/model/cursor/cursor.c
 
 
 # Headers — listados explicitamente para dependências corretas
@@ -46,7 +47,8 @@ HDRS = src/model/game/game.h \
        src/controller/graphics/graphics.h \
        src/view/view.h \
        src/view/obstacle/obstacle_view.h \
-       src/view/track/track_view.h
+       src/view/track/track_view.h \
+       src/model/cursor/cursor.h
 
 #       src/controller/timer/timer.h \
 #       src/controller/rtc/rtc.h \
@@ -72,6 +74,9 @@ src/model/obstacle/obstacle.o: src/model/obstacle/obstacle.c src/model/obstacle/
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/model/sprite/sprite.o: src/model/sprite/sprite.c src/model/sprite/sprite.h
+	${CC} ${CFLAGS} -c $< -o $@
+
+src/model/cursor/cursor.o: src/model/cursor/cursor.c src/model/cursor/cursor.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/controller/timer/timer.o: src/controller/timer/timer.c src/controller/timer/timer.h
