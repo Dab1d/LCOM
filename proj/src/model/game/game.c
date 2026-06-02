@@ -148,8 +148,30 @@ void game_update(void) {
 }
 
 void game_process_input(void) {
-    if (input_esc_pressed())
-        game_set_state(EXIT);
+    switch (current_state) {
+        case MAIN_MENU:
+            if (input_menu_start_pressed())
+                game_set_state(GAMEPLAY);
+            break;
+        case GAMEPLAY:
+            if (input_esc_pressed())
+                game_set_state(EXIT);
+            if (input_keyboard_car_left_pressed())
+                car_move_lane(car1, -1);
+            if (input_keyboard_car_right_pressed())
+                car_move_lane(car1, +1);
+            break;
+        case PAUSE:
+            break;
+        case GAME_OVER:
+            if (input_gameover_restart_pressed())
+                game_set_state(GAMEPLAY);
+            if (input_gameover_menu_pressed())
+                game_set_state(MAIN_MENU);
+            break;
+        case EXIT:
+            break;
+    }
 }
 
 void game_render(void) {
