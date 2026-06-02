@@ -10,7 +10,8 @@ Car* create_car(int initial_lane, int lane_min, int lane_max, int car_width, int
     Car* car = (Car*) malloc(sizeof(Car));
     if (car == NULL) return NULL;
 
-    init_element(&car->base, lane_to_x(initial_lane), 0.0, car_width, car_height);
+    init_element(&car->base, lane_to_x(initial_lane),
+                 (double)(CAR_SCREEN_ROW * TRACK_TILE_HEIGHT), car_width, car_height);
 
     car->lane           = initial_lane;
     car->track_progress = 0;
@@ -33,7 +34,7 @@ void car_move_lane(Car* car, int direction) {
     if (car->state == CAR_STATE_EXPLODED)    return;
 
     int new_lane = car->lane + direction;
-    if (new_lane < 0 || new_lane >= TRACK_LANES) return;
+    if (new_lane < car->lane_min || new_lane > car->lane_max) return;
 
     car->lane   = new_lane;
     car->base.x = lane_to_x(new_lane);
@@ -43,6 +44,11 @@ void car_take_damage(Car* car) {
     if (car == NULL || !car->base.is_active) return;
 
     if (car->lives > 0) car->lives--;
+
+    // Knockback: move down one tile, capped so the car stays fully visible
+    int max_y = (TRACK_VISIBLE_ROWS - 1) * TRACK_TILE_HEIGHT;
+    if (car->base.y + TRACK_TILE_HEIGHT <= (double)max_y)
+        car->base.y += TRACK_TILE_HEIGHT;
 
     switch (car->state) {
         case CAR_STATE_NORMAL:
@@ -72,7 +78,7 @@ void reset_car(Car* car, int initial_lane) {
 
     car->lane           = initial_lane;
     car->base.x         = lane_to_x(initial_lane);
-    car->base.y         = 0.0;
+    car->base.y         = (double)(CAR_SCREEN_ROW * TRACK_TILE_HEIGHT);
     car->base.is_active = true;
     car->track_progress = 0;
     car->state          = CAR_STATE_NORMAL;
