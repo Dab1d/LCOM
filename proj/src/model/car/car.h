@@ -5,7 +5,7 @@
 #include "../track/track.h"
 #include <stdbool.h>
 
-#define CAR_LANE_WIDTH  100  // Largura de cada faixa em píxeis
+#define CAR_LANE_WIDTH  64   // Largura de cada faixa em píxeis
 #define CAR_WIDTH  CAR_LANE_WIDTH       // largura = largura de uma faixa
 #define CAR_HEIGHT TRACK_TILE_HEIGHT    // altura = altura de um tile
 /**
