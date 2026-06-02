@@ -8,6 +8,7 @@
 #define CAR_LANE_WIDTH  100  // Largura de cada faixa em píxeis
 #define CAR_WIDTH  CAR_LANE_WIDTH       // largura = largura de uma faixa
 #define CAR_HEIGHT TRACK_TILE_HEIGHT    // altura = altura de um tile
+#define CAR_INITIAL_LIVES 3
 /**
  * @brief Os 4 estados visuais/de saúde do carro.
  * O índice corresponde diretamente ao sprite a carregar na View.
@@ -29,6 +30,8 @@ typedef struct {
     int lane_max;
     int track_progress;
     CarState state;
+    int score;
+    int lives;
 } Car;
 
 // Construtor / Destrutor
@@ -46,5 +49,8 @@ void car_apply_boost(Car* car, int tiles);
 
 // Repõe o carro para o estado inicial
 void reset_car(Car* car, int initial_lane);
+
+// Inicializa score e lives com o número de vidas escolhido pelo jogador
+void car_init_session(Car* car, int initial_lives);
 
 #endif // CAR_H

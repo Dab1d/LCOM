@@ -17,6 +17,7 @@ Car* create_car(int initial_lane, int lane_min, int lane_max, int car_width, int
     car->state          = CAR_STATE_NORMAL;
     car->lane_min = lane_min;
     car->lane_max = lane_max;
+    car_init_session(car, CAR_INITIAL_LIVES);
 
     return car;
 }
@@ -40,6 +41,8 @@ void car_move_lane(Car* car, int direction) {
 
 void car_take_damage(Car* car) {
     if (car == NULL || !car->base.is_active) return;
+
+    if (car->lives > 0) car->lives--;
 
     switch (car->state) {
         case CAR_STATE_NORMAL:
@@ -73,4 +76,11 @@ void reset_car(Car* car, int initial_lane) {
     car->base.is_active = true;
     car->track_progress = 0;
     car->state          = CAR_STATE_NORMAL;
+    car_init_session(car, CAR_INITIAL_LIVES);
+}
+
+void car_init_session(Car* car, int initial_lives) {
+    if (car == NULL) return;
+    car->score = 0;
+    car->lives = initial_lives;
 }
