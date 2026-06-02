@@ -1,6 +1,7 @@
 #include <lcom/lcf.h>
 #include "src/model/game/game.h"
 #include "src/view/view.h"
+#include "src/controller/input/input.h"
 //#include "mouse.h"
 #include "video_gr.h"
 #include "kbc.h" // caminho resolvido via -I../lab3 no Makefile; evita path absoluto hardcoded
@@ -66,6 +67,7 @@ int proj_main_loop(int argc, char* argv[]) {
                     if (msg.m_notify.interrupts & keyboard_irq_set) {
                         kbc_ih();
                         game_process_input();
+                        input_update();
                     }
                     if (msg.m_notify.interrupts & mouse_irq_set)
                         mouse_ih();

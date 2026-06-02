@@ -1,19 +1,41 @@
 #include "input.h"
 #include "kbc.h"
+#include <stdbool.h>
 
-#define ESC_MAKECODE 0x01
+#define ESC_MAKECODE        0x01
+#define ENTER_MAKECODE      0x1C
+#define ARROW_PREFIX        0xE0
+#define ARROW_LEFT_CODE     0x4B
+#define ARROW_RIGHT_CODE    0x4D
+
+static bool prev_extended = false;
+
+// Must be called at the end of each keyboard interrupt so the next
+// interrupt knows whether the current byte was an E0 prefix.
+void input_update(void) {
+    prev_extended = (get_current_scancode() == ARROW_PREFIX);
+}
 
 int input_esc_pressed(void) {
     return get_current_scancode() == ESC_MAKECODE;
 }
 
-//place holders
-int input_keyboard_start_pressed(void)   { return 0; }
-int input_mouse_start_pressed(void)      { return 0; }
-int input_keyboard_restart_pressed(void) { return 0; }
-int input_mouse_restart_pressed(void)    { return 0; }
-int input_keyboard_menu_pressed(void)    { return 0; }
-int input_mouse_menu_pressed(void)       { return 0; }
+int input_keyboard_start_pressed(void)   { return get_current_scancode() == ENTER_MAKECODE; }
+int input_keyboard_restart_pressed(void) { return get_current_scancode() == ENTER_MAKECODE; }
+int input_keyboard_menu_pressed(void)    { return get_current_scancode() == ESC_MAKECODE; }
+
+int input_keyboard_car_left_pressed(void) {
+    return prev_extended && get_current_scancode() == ARROW_LEFT_CODE;
+}
+
+int input_keyboard_car_right_pressed(void) {
+    return prev_extended && get_current_scancode() == ARROW_RIGHT_CODE;
+}
+
+// Mouse stubs — filled in when the mouse player is wired up
+int input_mouse_start_pressed(void)   { return 0; }
+int input_mouse_restart_pressed(void) { return 0; }
+int input_mouse_menu_pressed(void)    { return 0; }
 
 int input_menu_start_pressed(void) {
     return input_keyboard_start_pressed() || input_mouse_start_pressed();
