@@ -1,7 +1,8 @@
 #include "car_view.h"
+#include "car_xpm.h"
+#include "../view.h"
 #include <stdlib.h>
 
-// Cores placeholder por estado (0x00RRGGBB) — substituir por XPMs quando existirem
 static const uint32_t STATE_COLORS[4] = {
     0x0055FF,  // NORMAL   - azul
     0xFFCC00,  // DAMAGED  - amarelo
@@ -28,17 +29,27 @@ CarView* car_view_create(int width, int height) {
     CarView *cv = malloc(sizeof(CarView));
     if (!cv) return NULL;
 
+#if HAS_CAR_XPM
+    xpm_row_t *xpms[4] = {car_normal_xpm, car_damaged_xpm, car_burning_xpm, car_exploded_xpm};
     for (int s = 0; s < 4; s++) {
-        cv->sprites[s] = make_solid_sprite(STATE_COLORS[s], width, height);
+        cv->sprites[s] = sprite_from_xpm((xpm_map_t)xpms[s]);
         if (!cv->sprites[s]) {
-            for (int j = 0; j < s; j++) {
-                free(cv->sprites[j]->pixmap);
-                free(cv->sprites[j]);
-            }
+            for (int j = 0; j < s; j++) sprite_destroy(cv->sprites[j]);
             free(cv);
             return NULL;
         }
     }
+#else
+    for (int s = 0; s < 4; s++) {
+        cv->sprites[s] = make_solid_sprite(STATE_COLORS[s], width, height);
+        if (!cv->sprites[s]) {
+            for (int j = 0; j < s; j++) sprite_destroy(cv->sprites[j]);
+            free(cv);
+            return NULL;
+        }
+    }
+#endif
+
     return cv;
 }
 
@@ -46,7 +57,7 @@ void car_view_update(CarView *cv, Car *car) {
     if (!cv || !car) return;
 
     Sprite *sp = cv->sprites[car->state];
-    sp->x = (int)car->base.x;
+    sp->x = (int)car->base.x + ROAD_OFFSET_X;
     sp->y = CAR_SCREEN_ROW * TRACK_TILE_HEIGHT;
 
     car->base.sprite = sp;
@@ -55,11 +66,8 @@ void car_view_update(CarView *cv, Car *car) {
 void car_view_destroy(CarView *cv) {
     if (!cv) return;
 
-    for (int s = 0; s < 4; s++) {
-        if (cv->sprites[s]) {
-            free(cv->sprites[s]->pixmap);
-            free(cv->sprites[s]);
-        }
-    }
+    for (int s = 0; s < 4; s++)
+        sprite_destroy(cv->sprites[s]);
+
     free(cv);
 }

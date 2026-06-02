@@ -13,7 +13,7 @@
 
 #define TRACK_TOTAL_ROWS   200    // Linhas totais da pista até à meta
 #define TRACK_VISIBLE_ROWS 12     // Linhas visíveis no ecrã em simultâneo
-#define TRACK_TILE_HEIGHT  50     // Altura de cada tile em píxeis
+#define TRACK_TILE_HEIGHT  64     // Altura de cada tile em píxeis
 
 #define CAR_SCREEN_ROW (TRACK_VISIBLE_ROWS - 2)
 
