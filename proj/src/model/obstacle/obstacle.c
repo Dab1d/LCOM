@@ -43,14 +43,16 @@ bool obstacle_is_visible(const Obstacle* obs) {
     return obs->base.y < screen_height && obs->base.y + obs->base.height > 0;
 }
 
-bool obstacle_collides_with_car(const Obstacle* obs, int car_lane) {
+bool obstacle_collides_with_car(const Obstacle* obs, const Car* car) {
     if (obs == NULL || !obs->base.is_active) return false;
+    if (car == NULL || !car->base.is_active) return false;
 
-    if (car_lane != obs->lane) return false;
+    if (car->lane != obs->lane) return false;
 
-    int car_y     = CAR_SCREEN_ROW * TRACK_TILE_HEIGHT;
+    int car_y_top = (int)car->base.y;
+    int car_y_bot = car_y_top + CAR_HEIGHT;
     int obs_y_top = (int)obs->base.y;
-    int obs_y_bot = obs_y_top + obs->base.height;
+    int obs_y_bot = obs_y_top + (int)obs->base.height;
 
-    return car_y >= obs_y_top && car_y < obs_y_bot;
+    return car_y_top < obs_y_bot && car_y_bot > obs_y_top;
 }
