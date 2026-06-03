@@ -78,13 +78,8 @@ static void game_process_input(void) {
             if (input_keyboard_pause_pressed()) {
                 pause_selected = 0;
                 current_state = PAUSE;
+                break;
             }
-            if (input_keyboard_car_left_pressed())
-                car_move_lane(car1, -1);
-            if (input_keyboard_car_right_pressed())
-                car_move_lane(car1, +1);
-            if (input_esc_pressed())
-                current_state = MAIN_MENU;
             /* car1: arrows */
             if (input_keyboard_car_left_pressed())  car_move_lane(car1, -1);
             if (input_keyboard_car_right_pressed()) car_move_lane(car1, +1);
