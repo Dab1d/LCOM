@@ -125,6 +125,8 @@ static void game_process_input(void) {
             }
             if (input_keyboard_car_left_pressed()  || input_keyboard_car1_left_pressed())  car_move_lane(game.car1, -1);
             if (input_keyboard_car_right_pressed() || input_keyboard_car1_right_pressed()) car_move_lane(game.car1, +1);
+            if (input_mouse_car2_left())  car_move_lane(game.car2, -1);
+            if (input_mouse_car2_right()) car_move_lane(game.car2, +1);
             break;
         case PAUSE:
             if (input_keyboard_pause_pressed()) {
@@ -294,6 +296,7 @@ static void game_render(void) {
 void game_init(void) {
     resources_destroy();
     resources_load();
+    input_init_cursor(SCREEN_W, SCREEN_H);
     game.state = MAIN_MENU;
     game.winner = 0;
     game.pause_selected = 0;
