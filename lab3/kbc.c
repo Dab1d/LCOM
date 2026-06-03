@@ -54,21 +54,20 @@ bool check_kbc_error() {
 
 
 // Lê um byte do Output Buffer
-int kbc_read_outbuf(uint8_t *byte) {
+// mouse=true: espera dados do rato (AUX=1); mouse=false: espera dados do teclado (AUX=0)
+int kbc_read_outbuf(uint8_t *byte, bool mouse) {
     uint8_t status;
 
     for (int i = 0; i < KBC_MAX_TRIES; i++) {
         if (util_sys_inb(KBC_STATUS_REG, &status) != OK) return -1;
 
-        // Verificar se o Output Buffer tem dados
         if (status & KBC_OBF) {
             if (util_sys_inb(KBC_OUTBUF_REG, byte) != OK) return -1;
 
-            // Paridade ou Timeout
             if (status & (KBC_PARITY | KBC_TIMEOUT)) return -1;
 
-            // Verificar rato
-            if (status & KBC_AUX) return -1;
+            if ( mouse && !(status & KBC_AUX)) return -1; // esperava rato, veio teclado
+            if (!mouse &&  (status & KBC_AUX)) return -1; // esperava teclado, veio rato
 
             return OK;
         }
@@ -78,8 +77,8 @@ int kbc_read_outbuf(uint8_t *byte) {
     return -1; // Timeout
 }
 
-// Escreve um comando no KBC (espera IBF estar livre)
-int kbc_write_cmd(uint8_t cmd) {
+// Escreve um comando no porto KBC indicado (espera IBF estar livre)
+int kbc_write_cmd(uint8_t port, uint8_t cmd) {
     uint8_t status;
     uint32_t tries = 0;
 
@@ -87,8 +86,7 @@ int kbc_write_cmd(uint8_t cmd) {
         if (util_sys_inb(KBC_STATUS_REG, &status) != OK) return 1;
 
         if (!(status & KBC_IBF)) {
-            // Se o bit IBF não está ativo, o buffer está livre para escrita
-            return sys_outb(KBC_CMD_REG, cmd); 
+            return sys_outb(port, cmd);
         }
 
         tickdelay(micros_to_ticks(KBC_DELAY_US));

@@ -92,10 +92,10 @@ int (kbd_test_scan)() {
 //Lê e imprime scancodes do teclado usando polling (sem interrupções).
 int (kbd_test_poll)() {
     uint8_t cmd_byte;
-    if (kbc_write_cmd(KBC_READ_CMD) != OK) return 1;
-    if (kbc_read_outbuf(&cmd_byte) != OK) return 1;
+    if (kbc_write_cmd(KBC_CMD_REG, KBC_READ_CMD) != OK) return 1;
+    if (kbc_read_outbuf(&cmd_byte, false) != OK) return 1;
     uint8_t cmd_byte_without_kbd_int = cmd_byte & ~KBC_INT_BIT;
-    if (kbc_write_cmd(KBC_WRITE_CMD) != OK) return 1;
+    if (kbc_write_cmd(KBC_CMD_REG, KBC_WRITE_CMD) != OK) return 1;
     if (kbc_write_arg(cmd_byte_without_kbd_int) != OK) return 1;
 
 
@@ -107,7 +107,7 @@ int (kbd_test_poll)() {
         uint8_t byte;
 
         // Tentar ler um byte
-        if (kbc_read_outbuf(&byte) != OK) continue;
+        if (kbc_read_outbuf(&byte, false) != OK) continue;
 
         if (size == 0 && byte == SCANCODE_2BYTE) {
             //1 byte, guardar e esperar pelo 2º
@@ -131,7 +131,7 @@ int (kbd_test_poll)() {
     }
 
     // reativa interrupções
-    if (kbc_write_cmd(KBC_WRITE_CMD) != OK) return 1;
+    if (kbc_write_cmd(KBC_CMD_REG, KBC_WRITE_CMD) != OK) return 1;
     if (kbc_write_arg(cmd_byte) != OK) return 1;
 
     return 0;

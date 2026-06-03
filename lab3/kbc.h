@@ -33,8 +33,8 @@
 #define SCANCODE_2BYTE  0xE0   // prefixo de scancode 2 bytes
 
 
-int kbc_read_outbuf(uint8_t *byte);
-int kbc_write_cmd(uint8_t cmd);
+int kbc_read_outbuf(uint8_t *byte, bool mouse);
+int kbc_write_cmd(uint8_t port, uint8_t cmd);
 int kbc_write_arg(uint8_t arg);
 int kbc_subscribe_int(uint8_t *bit_no);
 int kbc_unsubscribe_int();

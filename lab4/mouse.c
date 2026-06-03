@@ -6,15 +6,13 @@ static uint8_t byte_index = 0;
 static uint8_t mouse_bytes[3];
 static uint8_t current_byte;
 static bool packet_complete = false;
-// Subscrição das interrupções
-// Modo REENABLE e modo EXCLUSIVE
+
 int (mouse_subscribe_int)(uint8_t *bit_no){
   if (bit_no == NULL) return 1;
   *bit_no = (hook_id_mouse);
   return sys_irqsetpolicy(IRQ_MOUSE, IRQ_REENABLE | IRQ_EXCLUSIVE, &hook_id_mouse);
 }
 
-// Desativação das interrupções
 int (mouse_unsubscribe_int)(){
   return sys_irqrmpolicy(&hook_id_mouse);
 }
@@ -22,13 +20,10 @@ int (mouse_unsubscribe_int)(){
 void (mouse_ih)() {
   if (kbc_read_outbuf(&current_byte, true) != 0)
     return;
-
   mouse_sync_bytes();
-
 }
 
 void (mouse_sync_bytes)() {
-  // Se estou à espera do 1.º byte, ele tem de ter o bit 3 a 1
   if (byte_index == 0 && !(current_byte & BIT(3))) {
     return;
   }
@@ -79,16 +74,9 @@ int (mouse_write)(uint8_t command) {
   uint8_t response;
 
   for (int attempt = 0; attempt < KBC_MAX_TRIES; attempt++) {
-
-    if (kbc_write_cmd(KBC_CMD_REG, WRITE_BYTE_MOUSE) != 0)
-      continue;
-
-    if (kbc_write_cmd(KBC_INBUF_REG, command) != 0)
-      continue;
-
-    if (kbc_read_outbuf(&response, true) != 0)
-      continue;
-
+    if (kbc_write_cmd(KBC_CMD_REG, WRITE_BYTE_MOUSE) != 0) continue;
+    if (kbc_write_cmd(KBC_INBUF_REG, command) != 0)        continue;
+    if (kbc_read_outbuf(&response, true) != 0)              continue;
     if (response == ACK) return 0;
     if (response == NACK || response == ERROR) continue;
   }
