@@ -13,6 +13,11 @@ typedef struct {
 
 int  resources_load(void);
 void resources_destroy(void);
-const Resources *get_resources(void);
+
+Sprite* resources_get_car_sprite(int player, int state);
+Sprite* resources_get_obstacle_sprite(void);
+Sprite* resources_get_tile_sprite(int type);
+Sprite* resources_get_grass_sprite(void);
+Sprite* resources_get_tree_sprite(void);
 
 #endif /* __PROJ_RESOURCES_H */

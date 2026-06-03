@@ -4,109 +4,79 @@
 #include "../track/track.h"
 #include <stdlib.h>
 
-#include "../../../assets/xpm/redcar_s1_1.xpm"
-#include "../../../assets/xpm/xpm_assets.h"
-
-/* -------------------------------------------------------------------------
- * Helpers
- * ------------------------------------------------------------------------- */
-
-static Sprite *make_solid_sprite(uint32_t color, int w, int h) {
-    Sprite *sp = malloc(sizeof(Sprite));
-    if (!sp) return NULL;
-    sp->pixmap = malloc(w * h * sizeof(uint32_t));
-    if (!sp->pixmap) { free(sp); return NULL; }
-    for (int i = 0; i < w * h; i++) sp->pixmap[i] = color;
-    sp->x = sp->y = 0;
-    sp->width  = w;
-    sp->height = h;
-    return sp;
-}
-
-static Sprite *make_grass_sprite(void) {
-    int sz = TRACK_TILE_HEIGHT;
-    Sprite *sp = malloc(sizeof(Sprite));
-    if (!sp) return NULL;
-    sp->pixmap = malloc(sz * sz * sizeof(uint32_t));
-    if (!sp->pixmap) { free(sp); return NULL; }
-    for (int i = 0; i < sz * sz; i++)
-        sp->pixmap[i] = (rand() % 4 == 0) ? 0x2A6030 : 0x3A7D44;
-    sp->x = sp->y = 0;
-    sp->width = sp->height = sz;
-    return sp;
-}
-
-/* -------------------------------------------------------------------------
- * Resources
- * ------------------------------------------------------------------------- */
+#include "../../assets/xpm/tiles/tile_road.xpm"
+#include "../../assets/xpm/tiles/tile_obstacle.xpm"
+#include "../../assets/xpm/tiles/tile_boost.xpm"
+#include "../../assets/xpm/tiles/tile_finish.xpm"
+#include "../../assets/xpm/obstacle.xpm"
+#include "../../assets/xpm/scenery/grass.xpm"
+#include "../../assets/xpm/scenery/tree.xpm"
+#include "../../assets/car_blue.xpm"
+#include "../../assets/car_red.xpm"
 
 static Resources res;
 
-static const uint32_t P1_CAR_COLORS[4] = {0x0055FF, 0x4488FF, 0x0022AA, 0x555555};
-static const uint32_t P2_CAR_COLORS[4] = {0xFF2200, 0xFF8800, 0xAA1100, 0x555555};
-static const uint32_t TILE_COLORS[4]   = {0x444444, 0x00CC44, 0x888888, 0xFFFFFF};
-
 int resources_load(void) {
-    int s, t;
-    char **p1_xpms[4];
-    char **p2_xpms[4];
+    res.car_sprites[0][CAR_STATE_NORMAL]   = create_sprite((xpm_map_t)car_blue);
+    res.car_sprites[0][CAR_STATE_DAMAGED]  = NULL;
+    res.car_sprites[0][CAR_STATE_BURNING]  = NULL;
+    res.car_sprites[0][CAR_STATE_EXPLODED] = NULL;
+    if (!res.car_sprites[0][CAR_STATE_NORMAL]) return 1;
 
-    /* --- player 1 car sprites (azul) --- */
-    p1_xpms[0] = NULL;
-    p1_xpms[1] = NULL;
-    p1_xpms[2] = NULL;
-    p1_xpms[3] = NULL;
-    for (s = 0; s < 4; s++) {
-        if (p1_xpms[s] != NULL)
-            res.car_sprites[0][s] = create_sprite((xpm_map_t)p1_xpms[s]);
-        else
-            res.car_sprites[0][s] = make_solid_sprite(P1_CAR_COLORS[s], CAR_WIDTH, CAR_HEIGHT);
-        if (!res.car_sprites[0][s]) return 1;
-    }
+    res.car_sprites[1][CAR_STATE_NORMAL]   = create_sprite((xpm_map_t)car_red);
+    res.car_sprites[1][CAR_STATE_DAMAGED]  = NULL;
+    res.car_sprites[1][CAR_STATE_BURNING]  = NULL;
+    res.car_sprites[1][CAR_STATE_EXPLODED] = NULL;
+    if (!res.car_sprites[1][CAR_STATE_NORMAL]) return 1;
 
-    /* --- player 2 car sprites (vermelho) --- */
-    p2_xpms[0] = redcar_s1_1_xpm;
-    p2_xpms[1] = NULL;
-    p2_xpms[2] = NULL;
-    p2_xpms[3] = NULL;
-    for (s = 0; s < 4; s++) {
-        if (p2_xpms[s] != NULL)
-            res.car_sprites[1][s] = create_sprite((xpm_map_t)p2_xpms[s]);
-        else
-            res.car_sprites[1][s] = make_solid_sprite(P2_CAR_COLORS[s], CAR_WIDTH, CAR_HEIGHT);
-        if (!res.car_sprites[1][s]) return 1;
-    }
+    res.tile_sprites[TILE_EMPTY]    = create_sprite((xpm_map_t)tile_road_xpm);
+    res.tile_sprites[TILE_OBSTACLE] = create_sprite((xpm_map_t)tile_obstacle_xpm);
+    res.tile_sprites[TILE_BOOST]    = create_sprite((xpm_map_t)tile_boost_xpm);
+    res.tile_sprites[TILE_FINISH]   = create_sprite((xpm_map_t)tile_finish_xpm);
+    for (int t = 0; t < 4; t++)
+        if (!res.tile_sprites[t]) return 1;
 
-    /* --- obstacle sprite --- */
-    res.obstacle_sprite = make_solid_sprite(0xFF2222, CAR_LANE_WIDTH, TRACK_TILE_HEIGHT);
+    res.obstacle_sprite = create_sprite((xpm_map_t)obstacle_xpm);
     if (!res.obstacle_sprite) return 1;
 
-    /* --- tile sprites --- */
-    for (t = 0; t < 4; t++) {
-        res.tile_sprites[t] = make_solid_sprite(TILE_COLORS[t], CAR_LANE_WIDTH, TRACK_TILE_HEIGHT);
-        if (!res.tile_sprites[t]) return 1;
-    }
-
-    /* --- scenery sprites --- */
-    res.grass_sprite = make_grass_sprite();
+    res.grass_sprite = create_sprite((xpm_map_t)grass_xpm);
     if (!res.grass_sprite) return 1;
 
-    res.tree_sprite = make_solid_sprite(0x1A5C1A, 32, 32);
+    res.tree_sprite = create_sprite((xpm_map_t)tree_xpm);
     if (!res.tree_sprite) return 1;
 
     return 0;
 }
 
 void resources_destroy(void) {
-    int p, s, t;
-    for (p = 0; p < 2; p++)
-        for (s = 0; s < 4; s++) { sprite_destroy(res.car_sprites[p][s]); res.car_sprites[p][s] = NULL; }
-    for (t = 0; t < 4; t++) { sprite_destroy(res.tile_sprites[t]); res.tile_sprites[t] = NULL; }
-    sprite_destroy(res.obstacle_sprite); res.obstacle_sprite = NULL;
-    sprite_destroy(res.grass_sprite);    res.grass_sprite    = NULL;
-    sprite_destroy(res.tree_sprite);     res.tree_sprite     = NULL;
+    for (int p = 0; p < 2; p++)
+        for (int s = 0; s < 4; s++)
+            if (res.car_sprites[p][s]) { sprite_destroy(res.car_sprites[p][s]); res.car_sprites[p][s] = NULL; }
+    for (int t = 0; t < 4; t++)
+        if (res.tile_sprites[t]) { sprite_destroy(res.tile_sprites[t]); res.tile_sprites[t] = NULL; }
+    if (res.obstacle_sprite) { sprite_destroy(res.obstacle_sprite); res.obstacle_sprite = NULL; }
+    if (res.grass_sprite)    { sprite_destroy(res.grass_sprite);    res.grass_sprite    = NULL; }
+    if (res.tree_sprite)     { sprite_destroy(res.tree_sprite);     res.tree_sprite     = NULL; }
 }
 
-const Resources *get_resources(void) {
-    return &res;
+Sprite* resources_get_car_sprite(int player, int state) {
+    Sprite *sp = res.car_sprites[player][state];
+    if (!sp) sp = res.car_sprites[player][CAR_STATE_NORMAL];
+    return sp;
+}
+
+Sprite* resources_get_obstacle_sprite(void) {
+    return res.obstacle_sprite;
+}
+
+Sprite* resources_get_tile_sprite(int type) {
+    return res.tile_sprites[type];
+}
+
+Sprite* resources_get_grass_sprite(void) {
+    return res.grass_sprite;
+}
+
+Sprite* resources_get_tree_sprite(void) {
+    return res.tree_sprite;
 }
