@@ -30,6 +30,7 @@ SRCS = proj.c \
        src/model/obstacle/obstacle.c \
        src/model/sprite/sprite.c \
        src/controller/input/input.c \
+       src/controller/palette/palette.c \
        src/controller/graphics/graphics.c \
        src/view/view.c \
        src/model/resources/resources.c \
@@ -49,6 +50,7 @@ HDRS = src/model/game/game.h \
        src/model/obstacle/obstacle.h \
        src/model/sprite/sprite.h \
        src/controller/input/input.h \
+       src/controller/palette/palette.h \
        src/controller/graphics/graphics.h \
        src/view/view.h \
        src/model/resources/resources.h \
@@ -63,7 +65,7 @@ HDRS = src/model/game/game.h \
 #       src/controller/kbc/kbc.h \
 #       src/controller/kbc/kbd.h \
 # Regras de compilação
-proj.o: proj.c ${HDRS}
+proj.o: src/proj.c ${HDRS}
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/model/game/game.o: src/model/game/game.c src/model/game/game.h
@@ -103,6 +105,9 @@ src/controller/kbc/kbd.o: src/controller/kbc/kbd.c src/controller/kbc/kbd.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/controller/input/input.o: src/controller/input/input.c src/controller/input/input.h
+	${CC} ${CFLAGS} -c $< -o $@
+
+src/controller/palette/palette.o: src/controller/palette/palette.c src/controller/palette/palette.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/view/view.o: src/view/view.c src/view/view.h
