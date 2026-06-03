@@ -15,6 +15,8 @@
 
 #define CLUSTER_CHANCE    70
 #define BOOST_TILES       2
+#define MENU_START        0
+#define MENU_EXIT         1
 
 static Game game;
 
@@ -104,16 +106,25 @@ void game_reset(Game *game) {
 static void game_process_input(void) {
     switch (game.state) {
         case MAIN_MENU:
-            if (input_esc_pressed()) game.state = EXIT;
-            if (input_menu_start_pressed()) game_reset(&game);
+            if (input_esc_pressed()) { game.state = EXIT; break; }
+            if (input_menu_nav_up())      game.menu_selection = MENU_START;
+            if (input_menu_nav_down())    game.menu_selection = MENU_EXIT;
+            if (input_mouse_over_start()) game.menu_selection = MENU_START;
+            if (input_mouse_over_exit())  game.menu_selection = MENU_EXIT;
+            if (input_keyboard_start_pressed()) {
+                if (game.menu_selection == MENU_START) game_reset(&game);
+                else game.state = EXIT;
+            }
+            if (input_mouse_start_pressed()) game_reset(&game);
+            if (input_mouse_exit_pressed())  game.state = EXIT;
             break;
         case GAMEPLAY:
             if (input_keyboard_pause_pressed()) {
                 game.pause_selected = 0;
                 game.state = PAUSE;
             }
-            if (input_keyboard_car_left_pressed()) car_move_lane(game.car1, -1);
-            if (input_keyboard_car_right_pressed()) car_move_lane(game.car1, +1);
+            if (input_keyboard_car_left_pressed()  || input_keyboard_car1_left_pressed())  car_move_lane(game.car1, -1);
+            if (input_keyboard_car_right_pressed() || input_keyboard_car1_right_pressed()) car_move_lane(game.car1, +1);
             break;
         case PAUSE:
             if (input_keyboard_pause_pressed()) {
@@ -123,8 +134,10 @@ static void game_process_input(void) {
             } else if (input_keyboard_confirm_pressed()) {
                 if (game.pause_selected == 0)
                     game.state = GAMEPLAY;
-                else
+                else {
+                    game.menu_selection = 0;
                     game.state = MAIN_MENU;
+                }
             }
             break;
         case GAME_OVER:
@@ -221,8 +234,33 @@ static void game_render(void) {
     draw_clear(PAL_BLACK);
 
     switch (game.state) {
-        case MAIN_MENU:
+        case MAIN_MENU: {
+            Sprite *title     = resources_get_menu_title();
+            Sprite *start_btn = resources_get_menu_start_btn();
+            Sprite *exit_btn  = resources_get_menu_exit_btn();
+            if (title) draw_sprite(title, (SCREEN_W - title->width) / 2, 200);
+            if (start_btn) {
+                if (game.menu_selection == MENU_START) {
+                    int w = start_btn->width  * 9 / 8;
+                    int h = start_btn->height * 9 / 8;
+                    draw_sprite_scaled(start_btn, (SCREEN_W - w) / 2,
+                                       420 - (h - start_btn->height) / 2, w, h);
+                } else {
+                    draw_sprite(start_btn, (SCREEN_W - start_btn->width) / 2, 420);
+                }
+            }
+            if (exit_btn) {
+                if (game.menu_selection == MENU_EXIT) {
+                    int w = exit_btn->width  * 9 / 8;
+                    int h = exit_btn->height * 9 / 8;
+                    draw_sprite_scaled(exit_btn, (SCREEN_W - w) / 2,
+                                       510 - (h - exit_btn->height) / 2, w, h);
+                } else {
+                    draw_sprite(exit_btn, (SCREEN_W - exit_btn->width) / 2, 510);
+                }
+            }
             break;
+        }
         case GAMEPLAY:
             track_view_draw(game.track);
             scenery_view_draw(game.scenery);
@@ -259,6 +297,7 @@ void game_init(void) {
     game.state = MAIN_MENU;
     game.winner = 0;
     game.pause_selected = 0;
+    game.menu_selection = 0;
     game.track = NULL;
     game.car1 = NULL;
     game.car2 = NULL;

@@ -11,6 +11,8 @@
 #define ARROW_RIGHT_CODE    0x4D
 #define ARROW_UP_CODE       0x48
 #define ARROW_DOWN_CODE     0x50
+#define KEY_A_CODE          0x1E
+#define KEY_D_CODE          0x20
 
 /* Menu button layout — must match the positions used in game_render */
 #define MENU_BTN_W    256
@@ -78,6 +80,9 @@ int input_keyboard_car_left_pressed(void) {
 int input_keyboard_car_right_pressed(void) {
     return scancode_ready && prev_extended && get_current_scancode() == ARROW_RIGHT_CODE;
 }
+
+int input_keyboard_car1_left_pressed(void)  { return scancode_ready && get_current_scancode() == KEY_A_CODE; }
+int input_keyboard_car1_right_pressed(void) { return scancode_ready && get_current_scancode() == KEY_D_CODE; }
 
 int input_keyboard_pause_pressed(void)   { return scancode_ready && get_current_scancode() == ESC_MAKECODE; }
 int input_keyboard_up_pressed(void)      { return scancode_ready && prev_extended && get_current_scancode() == ARROW_UP_CODE; }
