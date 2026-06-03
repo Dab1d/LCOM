@@ -50,7 +50,6 @@ int input_mouse_car2_right(void) {
 #define ARROW_UP_CODE       0x48
 #define ARROW_DOWN_CODE     0x50
 
-static bool prev_extended = false;
 
 // Must be called at the end of each keyboard interrupt so the next
 // interrupt knows whether the current byte was an E0 prefix.
