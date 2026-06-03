@@ -23,32 +23,26 @@
 #define MENU_EXIT_X   ((MENU_SCREEN_W - MENU_BTN_W) / 2)
 #define MENU_EXIT_Y   510
 
-#define MOUSE_LANE_THRESHOLD 10
-
 static bool     prev_extended  = false;
 static bool     scancode_ready = false;
 static Cursor  *menu_cursor    = NULL;
-static int      mouse_dx_accum = 0;
+static bool     mouse_lb_event = false;
+static bool     mouse_rb_event = false;
 
 void input_init_cursor(int screen_w, int screen_h) {
     if (menu_cursor) destroy_cursor(menu_cursor);
     menu_cursor = create_cursor(screen_w / 2, screen_h / 2, screen_w, screen_h);
 }
 
-void input_mouse_update(int dx, int dy, bool lb) {
-    if (menu_cursor) cursor_update(menu_cursor, dx, dy, lb);
-    mouse_dx_accum += dx;
+void input_mouse_update(int dx, int dy, bool lb, bool rb) {
+    if (!menu_cursor) return;
+    cursor_update(menu_cursor, dx, dy, lb, rb);
+    if (cursor_left_clicked(menu_cursor))  mouse_lb_event = true;
+    if (cursor_right_clicked(menu_cursor)) mouse_rb_event = true;
 }
 
-int input_mouse_car2_left(void) {
-    if (mouse_dx_accum <= -MOUSE_LANE_THRESHOLD) { mouse_dx_accum = 0; return 1; }
-    return 0;
-}
-
-int input_mouse_car2_right(void) {
-    if (mouse_dx_accum >= MOUSE_LANE_THRESHOLD) { mouse_dx_accum = 0; return 1; }
-    return 0;
-}
+int input_mouse_car2_left(void)  { return mouse_lb_event; }
+int input_mouse_car2_right(void) { return mouse_rb_event; }
 
 void input_update(void) {
     uint8_t sc = get_current_scancode();
@@ -63,6 +57,8 @@ void input_update(void) {
 void input_flush(void) {
     scancode_ready = false;
     prev_extended  = false;
+    mouse_lb_event = false;
+    mouse_rb_event = false;
 }
 
 int input_esc_pressed(void) {

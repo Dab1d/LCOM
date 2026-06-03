@@ -12,7 +12,7 @@ void input_flush(void);
 void input_init_cursor(int screen_w, int screen_h);
 
 // Call on every complete mouse packet to move the cursor
-void input_mouse_update(int dx, int dy, bool lb);
+void input_mouse_update(int dx, int dy, bool lb, bool rb);
 
 int input_esc_pressed(void);
 
