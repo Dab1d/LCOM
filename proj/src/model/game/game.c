@@ -186,8 +186,8 @@ static void game_render(void) {
             /* hovered button drawn at 9/8 scale, kept vertically centred */
             if (start_btn) {
                 if (menu_selection == MENU_START) {
-                    int w = start_btn->width  * 9 / 8;
-                    int h = start_btn->height * 9 / 8;
+                    int w = start_btn->width  * 3 / 2;
+                    int h = start_btn->height * 3 / 2;
                     draw_sprite_scaled(start_btn, (SCREEN_W - w) / 2,
                                        420 - (h - start_btn->height) / 2, w, h);
                 } else {
@@ -196,8 +196,8 @@ static void game_render(void) {
             }
             if (exit_btn) {
                 if (menu_selection == MENU_EXIT) {
-                    int w = exit_btn->width  * 9 / 8;
-                    int h = exit_btn->height * 9 / 8;
+                    int w = exit_btn->width  * 3 / 2;
+                    int h = exit_btn->height * 3 / 2;
                     draw_sprite_scaled(exit_btn, (SCREEN_W - w) / 2,
                                        510 - (h - exit_btn->height) / 2, w, h);
                 } else {

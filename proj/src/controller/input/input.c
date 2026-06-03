@@ -49,12 +49,18 @@ int input_mouse_car2_right(void) {
 }
 
 void input_update(void) {
-    prev_extended  = (get_current_scancode() == ARROW_PREFIX);
-    scancode_ready = true;
+    uint8_t sc = get_current_scancode();
+    if (sc == ARROW_PREFIX) {
+        prev_extended  = true;
+        scancode_ready = false; /* prefix byte — wait for the actual key code */
+    } else {
+        scancode_ready = true;
+    }
 }
 
 void input_flush(void) {
     scancode_ready = false;
+    prev_extended  = false;
 }
 
 int input_esc_pressed(void) {
