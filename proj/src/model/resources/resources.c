@@ -12,7 +12,13 @@
 #include "../../assets/xpm/scenery/grass.xpm"
 #include "../../assets/xpm/scenery/tree.xpm"
 #include "../../assets/car_blue.xpm"
+#include "../../../assets/car_blue_dmg1.xpm"
+#include "../../../assets/car_blue_dmg2.xpm"
+#include "../../../assets/car_blue_destroyed.xpm"
 #include "../../assets/car_red.xpm"
+#include "../../../assets/car_red_dmg1.xpm"
+#include "../../../assets/car_red_dmg2.xpm"
+#include "../../../assets/car_red_destroyed.xpm"
 #include "../../assets/xpm/pause/pause_panel.xpm"
 #include "../../assets/xpm/pause/pause_resume_btn.xpm"
 #include "../../assets/xpm/pause/pause_resume_btn_sel.xpm"
@@ -26,16 +32,18 @@ static Resources res;
 
 int resources_load(void) {
     res.car_sprites[0][CAR_STATE_NORMAL]   = create_sprite((xpm_map_t)car_blue);
-    res.car_sprites[0][CAR_STATE_DAMAGED]  = NULL;
-    res.car_sprites[0][CAR_STATE_BURNING]  = NULL;
-    res.car_sprites[0][CAR_STATE_EXPLODED] = NULL;
-    if (!res.car_sprites[0][CAR_STATE_NORMAL]) return 1;
+    res.car_sprites[0][CAR_STATE_DAMAGED]  = create_sprite((xpm_map_t)car_blue_dmg1);
+    res.car_sprites[0][CAR_STATE_BURNING]  = create_sprite((xpm_map_t)car_blue_dmg2);
+    res.car_sprites[0][CAR_STATE_EXPLODED] = create_sprite((xpm_map_t)car_blue_destroyed);
+    for (int s = 0; s < 4; s++)
+        if (!res.car_sprites[0][s]) return 1;
 
     res.car_sprites[1][CAR_STATE_NORMAL]   = create_sprite((xpm_map_t)car_red);
-    res.car_sprites[1][CAR_STATE_DAMAGED]  = NULL;
-    res.car_sprites[1][CAR_STATE_BURNING]  = NULL;
-    res.car_sprites[1][CAR_STATE_EXPLODED] = NULL;
-    if (!res.car_sprites[1][CAR_STATE_NORMAL]) return 1;
+    res.car_sprites[1][CAR_STATE_DAMAGED]  = create_sprite((xpm_map_t)car_red_dmg1);
+    res.car_sprites[1][CAR_STATE_BURNING]  = create_sprite((xpm_map_t)car_red_dmg2);
+    res.car_sprites[1][CAR_STATE_EXPLODED] = create_sprite((xpm_map_t)car_red_destroyed);
+    for (int s = 0; s < 4; s++)
+        if (!res.car_sprites[1][s]) return 1;
 
     res.tile_sprites[TILE_EMPTY]    = create_sprite((xpm_map_t)tile_road_xpm);
     res.tile_sprites[TILE_OBSTACLE] = create_sprite((xpm_map_t)tile_obstacle_xpm);
