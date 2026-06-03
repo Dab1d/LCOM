@@ -4,7 +4,7 @@
 #include "../car/car.h"
 #include "../track/track.h"
 #include "../obstacle/obstacle.h"
-#include "../../view/scenery/scenery_view.h"
+#include "../scenery/scenery.h"
 
 #define MAX_OBSTACLES 200
 
@@ -23,7 +23,7 @@ typedef struct {
     Track       *track;          /* velocidade: track->scroll_speed */
     Car         *car1;           /* vidas: car1->lives  score: car1->score */
     Car         *car2;
-    SceneryView *scenery;
+    Scenery     *scenery;
     Obstacle    *obstacles[MAX_OBSTACLES];
     int          obstacle_count;
 } Game;
