@@ -24,6 +24,7 @@ LDLIBS += -lm
 
 SRCS = proj.c \
        src/model/game/game.c \
+       src/model/scenery/scenery.c \
        src/model/element/element.c \
        src/model/car/car.c \
        src/model/track/track.c \
@@ -39,12 +40,14 @@ SRCS = proj.c \
        src/view/track/track_view.c \
        src/view/scenery/scenery_view.c \
        src/view/pause/pause_view.c \
+       src/view/win/win_view.c \
        src/model/cursor/cursor.c \
        src/model/leaderboard/leaderboard.c
 
 
 # Headers — listados explicitamente para dependências corretas
 HDRS = src/model/game/game.h \
+       src/model/scenery/scenery.h \
        src/model/element/element.h \
        src/model/car/car.h \
        src/model/track/track.h \
@@ -59,6 +62,7 @@ HDRS = src/model/game/game.h \
        src/view/track/track_view.h \
        src/view/scenery/scenery_view.h \
        src/view/pause/pause_view.h \
+       src/view/win/win_view.h \
        src/model/cursor/cursor.h \
        src/model/leaderboard/leaderboard.h
 
@@ -127,10 +131,16 @@ src/view/obstacle/obstacle_view.o: src/view/obstacle/obstacle_view.c src/view/ob
 src/view/track/track_view.o: src/view/track/track_view.c src/view/track/track_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
+src/model/scenery/scenery.o: src/model/scenery/scenery.c src/model/scenery/scenery.h
+	${CC} ${CFLAGS} -c $< -o $@
+
 src/view/scenery/scenery_view.o: src/view/scenery/scenery_view.c src/view/scenery/scenery_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/view/pause/pause_view.o: src/view/pause/pause_view.c src/view/pause/pause_view.h
+	${CC} ${CFLAGS} -c $< -o $@
+
+src/view/win/win_view.o: src/view/win/win_view.c src/view/win/win_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/controller/graphics/graphics.o: src/controller/graphics/graphics.c src/controller/graphics/graphics.h

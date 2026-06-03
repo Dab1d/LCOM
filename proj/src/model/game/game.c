@@ -6,9 +6,11 @@
 #include "../../view/car/car_view.h"
 #include "../../view/obstacle/obstacle_view.h"
 #include "../../view/track/track_view.h"
+#include "../scenery/scenery.h"
 #include "../../view/scenery/scenery_view.h"
 #include "../../view/view.h"
 #include "../../view/pause/pause_view.h"
+#include "../../view/win/win_view.h"
 #include "../../controller/palette/palette.h"
 
 #define CLUSTER_CHANCE    70
@@ -50,7 +52,7 @@ void game_create(Game *game) {
     game->car1->player = 1;
     game->car2 = create_car(7, PLAYER2_LANE_START, PLAYER2_LANE_END, CAR_WIDTH, CAR_HEIGHT);
     game->car2->player = 2;
-    game->scenery = scenery_view_create();
+    game->scenery = scenery_create();
     game->winner = 0;
     game->pause_selected = 0;
     game->obstacle_count = 0;
@@ -84,7 +86,7 @@ void game_reset(Game *game) {
         game->car2 = NULL;
     }
     if (game->scenery) {
-        scenery_view_destroy(game->scenery);
+        scenery_destroy(game->scenery);
         game->scenery = NULL;
     }
     for (int i = 0; i < game->obstacle_count; i++) {
@@ -139,6 +141,7 @@ static void game_process_input(void) {
 
 static void game_update(void) {
     track_update(game.track);
+    scenery_update(game.scenery, game.track);
     for (int i = 0; i < game.obstacle_count; i++) {
         if (game.obstacles[i] != NULL)
             obstacle_update(game.obstacles[i], game.track->scroll_row, game.track->scroll_offset);
@@ -205,6 +208,16 @@ static bool game_is_over(void) {
 #define SCREEN_H  768
 
 static void game_render(void) {
+    switch (game.state) {
+        case GAME_OVER:
+            draw_clear(PAL_HUD_BG);
+            win_view_draw(game.winner);
+            copy_buffer_to_video();
+            return;
+        default:
+            break;
+    }
+
     draw_clear(PAL_BLACK);
 
     switch (game.state) {
@@ -212,7 +225,6 @@ static void game_render(void) {
             break;
         case GAMEPLAY:
             track_view_draw(game.track);
-            scenery_view_update(game.scenery, game.track);
             scenery_view_draw(game.scenery);
             car_view_draw(game.car1);
             car_view_draw(game.car2);
@@ -225,7 +237,6 @@ static void game_render(void) {
             break;
         case PAUSE:
             track_view_draw(game.track);
-            scenery_view_update(game.scenery, game.track);
             scenery_view_draw(game.scenery);
             car_view_draw(game.car1);
             car_view_draw(game.car2);
