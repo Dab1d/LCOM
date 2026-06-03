@@ -126,16 +126,16 @@ uint16_t vg_get_y_res(void)          { return vmi.YResolution; }
 uint8_t  vg_get_bytes_per_pixel(void){ return bytes_per_pixel; }
 
 int vg_draw_xpm_to_buffer(uint8_t *dest, uint16_t dest_width, uint16_t dest_height,
-                          const uint8_t *pixmap, xpm_image_t img,
+                          const uint8_t *pixmap, int pixmap_width, int pixmap_height,
                           int x, int y, uint8_t transparent_index) {
     if (!dest || !pixmap) return 1;
-    for (int row = 0; row < img.height; row++) {
+    for (int row = 0; row < pixmap_height; row++) {
         int screen_y = y + row;
         if (screen_y < 0 || screen_y >= dest_height) continue;
-        for (int col = 0; col < img.width; col++) {
+        for (int col = 0; col < pixmap_width; col++) {
             int screen_x = x + col;
             if (screen_x < 0 || screen_x >= dest_width) continue;
-            uint8_t color = pixmap[(uint32_t)row * img.width + col];
+            uint8_t color = pixmap[(uint32_t)row * pixmap_width + col];
             if (color == transparent_index) continue;
             dest[(uint32_t)screen_y * dest_width + screen_x] = color;
         }
