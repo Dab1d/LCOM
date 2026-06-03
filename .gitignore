@@ -38,5 +38,6 @@ trace.txt
 .idea/
 .vscode/
 .codex
-
-.claude/
+.minix-src/
+.claude
+CMakeLists.txt

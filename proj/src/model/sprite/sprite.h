@@ -1,13 +1,16 @@
 #ifndef __PROJ_SPRITE_H
 #define __PROJ_SPRITE_H
 
+#include <stddef.h>
 #include <stdint.h>
+#include <lcom/xpm.h>
 
 typedef struct {
-    int x, y;           // posição no ecrã
-    int width, height;  // dimensões
-    uint32_t *pixmap;   // pixels do XPM já convertidos
+    int width, height;
+    uint8_t *pixmap;   /* índices de paleta, 1 byte/pixel (XPM_INDEXED) */
 } Sprite;
 
-#endif /* __PROJ_SPRITE_H */
+Sprite* create_sprite(xpm_map_t map);
+void    sprite_destroy(Sprite *sp);
 
+#endif /* __PROJ_SPRITE_H */

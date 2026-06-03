@@ -1,0 +1,10 @@
+#include "obstacle_view.h"
+#include "../../model/resources/resources.h"
+#include "../view.h"
+
+void obstacle_view_draw(Obstacle *obs) {
+    if (!obs || !obs->base.is_active) return;
+    Sprite *sp = resources_get_obstacle_sprite();
+    if (!sp) return;
+    draw_sprite(sp, (int)obs->base.x + ROAD_OFFSET_X, (int)obs->base.y);
+}
