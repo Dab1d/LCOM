@@ -1,57 +1,30 @@
 #include "view.h"
 #include "video_gr.h"
-#include <stdlib.h>   // malloc
-#include <string.h>   // memcpy
+#include "../controller/palette/palette.h"
+#include <stdlib.h>
+#include <string.h>
 
-// back_buffer tem de estar declarado ANTES de ser usado
-static uint32_t *back_buffer = NULL;
+static uint8_t *back_buffer = NULL;
 
 void view_init_buffers(void) {
     uint16_t w = vg_get_x_res();
     uint16_t h = vg_get_y_res();
-    back_buffer = (uint32_t*) malloc(w * h * vg_get_bytes_per_pixel());
+    back_buffer = (uint8_t *) malloc((uint32_t)w * h);
 }
 
-void draw_sprite(Sprite *sp) {
-    if (sp == NULL || sp->pixmap == NULL) return;
-
-    uint16_t w = vg_get_x_res();
-
-    for (int row = 0; row < sp->height; row++) {
-        for (int col = 0; col < sp->width; col++) {
-            uint32_t color = sp->pixmap[row * sp->width + col];
-            if (color == TRANSPARENT_COLOR) continue;
-
-            int screen_x = sp->x + col;
-            int screen_y = sp->y + row;
-
-            if (screen_x < 0 || screen_x >= w) continue;
-            if (screen_y < 0 || screen_y >= vg_get_y_res()) continue;
-
-            back_buffer[screen_y * w + screen_x] = color;
-        }
-    }
+void draw_sprite(Sprite *sp, int x, int y) {
+    if (!sp || !sp->pixmap) return;
+    vg_draw_xpm_to_buffer(back_buffer, vg_get_x_res(), vg_get_y_res(),
+                          sp->pixmap, sp->width, sp->height,
+                          x, y, PAL_TRANSPARENT);
 }
 
-void draw_car(Car *car) {
-    if (car == NULL) return;
-    draw_sprite(car->base.sprite);  // sprite está em base, não diretamente em Car
-}
-
-void draw_obstacle(Obstacle *obs) {
-    if (obs == NULL) return;
-    draw_sprite(obs->base.sprite);  // idem
-}
-
-void draw_clear(uint32_t bg_color) {
-    uint16_t w = vg_get_x_res();
-    uint16_t h = vg_get_y_res();
-    for (int i = 0; i < w * h; i++)
-        back_buffer[i] = bg_color;
+void draw_clear(uint8_t color_index) {
+    uint32_t size = (uint32_t)vg_get_x_res() * vg_get_y_res();
+    memset(back_buffer, color_index, size);
 }
 
 void copy_buffer_to_video(void) {
-    uint16_t w = vg_get_x_res();
-    uint16_t h = vg_get_y_res();
-    memcpy(vg_get_video_mem(), back_buffer, w * h * vg_get_bytes_per_pixel());
+    uint32_t size = (uint32_t)vg_get_x_res() * vg_get_y_res();
+    memcpy(vg_get_video_mem(), back_buffer, size);
 }
