@@ -51,12 +51,14 @@ static void spawn_cluster(int base_row, int lane_min, int lane_max) {
 static void game_process_input(void) {
     switch (current_state) {
         case MAIN_MENU:
+            if (input_esc_pressed())
+                current_state = EXIT;
             if (input_menu_start_pressed())
                 current_state = GAMEPLAY;
             break;
         case GAMEPLAY:
             if (input_esc_pressed())
-                current_state = EXIT;
+                current_state = MAIN_MENU;
             if (input_keyboard_car_left_pressed())
                 car_move_lane(car1, -1);
             if (input_keyboard_car_right_pressed())
