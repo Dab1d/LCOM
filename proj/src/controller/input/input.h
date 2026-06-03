@@ -6,6 +6,7 @@
 
 // Call at the end of every keyboard interrupt to update extended-key state
 void input_update(void);
+void input_flush(void);
 
 // Call once at startup to create the menu cursor
 void input_init_cursor(int screen_w, int screen_h);

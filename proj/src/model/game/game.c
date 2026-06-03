@@ -57,6 +57,7 @@ static void game_start(void);
 
 static void game_process_input(void) {
     switch (current_state) {
+
         case MAIN_MENU:
             if (input_esc_pressed()) { current_state = EXIT; break; }
             /* keyboard navigation */
@@ -112,6 +113,7 @@ static void game_process_input(void) {
         case EXIT:
             break;
     }
+    input_flush();
 }
 
 static void game_update(void) {

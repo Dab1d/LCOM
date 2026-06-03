@@ -23,12 +23,13 @@
 
 #define MOUSE_LANE_THRESHOLD 10
 
-static bool prev_extended  = false;
-static Cursor *menu_cursor = NULL;
-static int mouse_dx_accum  = 0;
+static bool     prev_extended  = false;
+static bool     scancode_ready = false;
+static Cursor  *menu_cursor    = NULL;
+static int      mouse_dx_accum = 0;
 
 void input_init_cursor(int screen_w, int screen_h) {
-    if (menu_cursor) { destroy_cursor(menu_cursor); }
+    if (menu_cursor) destroy_cursor(menu_cursor);
     menu_cursor = create_cursor(screen_w / 2, screen_h / 2, screen_w, screen_h);
 }
 
@@ -47,44 +48,38 @@ int input_mouse_car2_right(void) {
     return 0;
 }
 
-#define ARROW_UP_CODE       0x48
-#define ARROW_DOWN_CODE     0x50
-
-
-// Must be called at the end of each keyboard interrupt so the next
-// interrupt knows whether the current byte was an E0 prefix.
 void input_update(void) {
-    prev_extended = (get_current_scancode() == ARROW_PREFIX);
+    prev_extended  = (get_current_scancode() == ARROW_PREFIX);
+    scancode_ready = true;
+}
+
+void input_flush(void) {
+    scancode_ready = false;
 }
 
 int input_esc_pressed(void) {
-    return get_current_scancode() == ESC_MAKECODE;
+    return scancode_ready && get_current_scancode() == ESC_MAKECODE;
 }
 
-int input_keyboard_start_pressed(void)   { return get_current_scancode() == ENTER_MAKECODE; }
-int input_keyboard_restart_pressed(void) { return get_current_scancode() == ENTER_MAKECODE; }
-int input_keyboard_menu_pressed(void)    { return get_current_scancode() == ESC_MAKECODE; }
+int input_keyboard_start_pressed(void)   { return scancode_ready && get_current_scancode() == ENTER_MAKECODE; }
+int input_keyboard_restart_pressed(void) { return scancode_ready && get_current_scancode() == ENTER_MAKECODE; }
+int input_keyboard_menu_pressed(void)    { return scancode_ready && get_current_scancode() == ESC_MAKECODE; }
 
 int input_keyboard_car_left_pressed(void) {
-    return prev_extended && get_current_scancode() == ARROW_LEFT_CODE;
+    return scancode_ready && prev_extended && get_current_scancode() == ARROW_LEFT_CODE;
 }
 
 int input_keyboard_car_right_pressed(void) {
-    return prev_extended && get_current_scancode() == ARROW_RIGHT_CODE;
+    return scancode_ready && prev_extended && get_current_scancode() == ARROW_RIGHT_CODE;
 }
 
-int input_keyboard_pause_pressed(void)  { return get_current_scancode() == ESC_MAKECODE; }
-int input_keyboard_up_pressed(void)     { return prev_extended && get_current_scancode() == ARROW_UP_CODE; }
-int input_keyboard_down_pressed(void)   { return prev_extended && get_current_scancode() == ARROW_DOWN_CODE; }
-int input_keyboard_confirm_pressed(void){ return get_current_scancode() == ENTER_MAKECODE; }
+int input_keyboard_pause_pressed(void)   { return scancode_ready && get_current_scancode() == ESC_MAKECODE; }
+int input_keyboard_up_pressed(void)      { return scancode_ready && prev_extended && get_current_scancode() == ARROW_UP_CODE; }
+int input_keyboard_down_pressed(void)    { return scancode_ready && prev_extended && get_current_scancode() == ARROW_DOWN_CODE; }
+int input_keyboard_confirm_pressed(void) { return scancode_ready && get_current_scancode() == ENTER_MAKECODE; }
 
-int input_menu_nav_up(void) {
-    return prev_extended && get_current_scancode() == ARROW_UP_CODE;
-}
-
-int input_menu_nav_down(void) {
-    return prev_extended && get_current_scancode() == ARROW_DOWN_CODE;
-}
+int input_menu_nav_up(void)   { return scancode_ready && prev_extended && get_current_scancode() == ARROW_UP_CODE; }
+int input_menu_nav_down(void) { return scancode_ready && prev_extended && get_current_scancode() == ARROW_DOWN_CODE; }
 
 static int over_rect(int rx, int ry, int rw, int rh) {
     if (!menu_cursor) return 0;
