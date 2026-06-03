@@ -7,20 +7,20 @@
 #include "../../view/track/track_view.h"
 #include "../../view/scenery/scenery_view.h"
 #include "../../view/view.h"
+#include "../../controller/palette/palette.h"
+
 #define MAX_OBSTACLES    200
 #define CLUSTER_CHANCE    70
 #define BOOST_TILES       2
 
-
-static GameState current_state = MAIN_MENU;
-static Track*    track         = NULL;
-static Car*      car1          = NULL;
-static Car*      car2          = NULL;
-static SceneryView* scenery_view = NULL;
+static GameState    current_state  = MAIN_MENU;
+static Track*       track          = NULL;
+static Car*         car1           = NULL;
+static Car*         car2           = NULL;
+static SceneryView* scenery_view   = NULL;
 static Obstacle*    obstacles[MAX_OBSTACLES];
 static int          obstacle_count = 0;
 static int          winner         = 0;
-
 
 static void spawn_single(int row, int lane_min, int lane_max) {
     if (obstacle_count >= MAX_OBSTACLES) return;
@@ -48,42 +48,42 @@ static void spawn_cluster(int base_row, int lane_min, int lane_max) {
     }
 }
 
-void game_init(void) {
-    current_state = GAMEPLAY;
-
-    resources_load();
-
-    track = create_track(TRACK_THEME_CITY);
-    car1  = create_car(2, PLAYER1_LANE_START, PLAYER1_LANE_END, CAR_WIDTH, CAR_HEIGHT);
-    car1->player = 1;
-    car2  = create_car(7, PLAYER2_LANE_START, PLAYER2_LANE_END, CAR_WIDTH, CAR_HEIGHT);
-    car2->player = 2;
-    scenery_view = scenery_view_create();
-
-    winner = 0;
-    obstacle_count = 0;
-    for (int row = 10; row < TRACK_TOTAL_ROWS - 10 && obstacle_count < MAX_OBSTACLES - 6; row += 8) {
-        if (rand() % 100 < CLUSTER_CHANCE)
-            spawn_cluster(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
-        else
-            spawn_single(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
-
-        if (rand() % 100 < CLUSTER_CHANCE)
-            spawn_cluster(row + 4, PLAYER2_LANE_START, PLAYER2_LANE_END);
-        else
-            spawn_single(row + 4, PLAYER2_LANE_START, PLAYER2_LANE_END);
+static void game_process_input(void) {
+    switch (current_state) {
+        case MAIN_MENU:
+            if (input_menu_start_pressed())
+                current_state = GAMEPLAY;
+            break;
+        case GAMEPLAY:
+            if (input_esc_pressed())
+                current_state = EXIT;
+            if (input_keyboard_car_left_pressed())
+                car_move_lane(car1, -1);
+            if (input_keyboard_car_right_pressed())
+                car_move_lane(car1, +1);
+            break;
+        case PAUSE:
+            break;
+        case GAME_OVER:
+            if (input_gameover_restart_pressed())
+                current_state = GAMEPLAY;
+            if (input_gameover_menu_pressed())
+                current_state = MAIN_MENU;
+            break;
+        case EXIT:
+            break;
     }
 }
 
-GameState game_get_state(void) {
-    return current_state;
+static void game_update(void) {
+    track_update(track);
+    for (int i = 0; i < obstacle_count; i++) {
+        if (obstacles[i] != NULL)
+            obstacle_update(obstacles[i], track->scroll_row, track->scroll_offset);
+    }
 }
 
-void game_set_state(GameState new_state) {
-    current_state = new_state;
-}
-
-void game_process_collisions(void) {
+static void game_process_collisions(void) {
     for (int i = 0; i < obstacle_count; i++) {
         Obstacle* obs = obstacles[i];
         if (obs == NULL || !obs->base.is_active) continue;
@@ -125,65 +125,7 @@ void game_process_collisions(void) {
     }
 }
 
-void game_update(void) {
-    track_update(track);
-    for (int i = 0; i < obstacle_count; i++) {
-        if (obstacles[i] != NULL)
-            obstacle_update(obstacles[i], track->scroll_row, track->scroll_offset);
-    }
-}
-
-void game_process_input(void) {
-    switch (current_state) {
-        case MAIN_MENU:
-            if (input_menu_start_pressed())
-                game_set_state(GAMEPLAY);
-            break;
-        case GAMEPLAY:
-            if (input_esc_pressed())
-                game_set_state(EXIT);
-            if (input_keyboard_car_left_pressed())
-                car_move_lane(car1, -1);
-            if (input_keyboard_car_right_pressed())
-                car_move_lane(car1, +1);
-            break;
-        case PAUSE:
-            break;
-        case GAME_OVER:
-            if (input_gameover_restart_pressed())
-                game_set_state(GAMEPLAY);
-            if (input_gameover_menu_pressed())
-                game_set_state(MAIN_MENU);
-            break;
-        case EXIT:
-            break;
-    }
-}
-
-void game_render(void) {
-    draw_clear(0x000000);
-
-    track_view_draw(track);
-
-    scenery_view_update(scenery_view, track);
-    scenery_view_draw(scenery_view);
-
-    car_view_update(car1);
-    draw_car(car1);
-
-    car_view_update(car2);
-    draw_car(car2);
-
-    for (int i = 0; i < obstacle_count; i++) {
-        if (obstacle_is_visible(obstacles[i])) {
-            obstacle_view_update(obstacles[i]);
-            draw_obstacle(obstacles[i]);
-        }
-    }
-
-    copy_buffer_to_video();
-}
-bool game_is_over(void) {
+static bool game_is_over(void) {
     if (!car1->base.is_active) { winner = 2; return true; }
     if (!car2->base.is_active) { winner = 1; return true; }
     if (track_is_finished(track)) {
@@ -191,4 +133,87 @@ bool game_is_over(void) {
         return true;
     }
     return false;
+}
+
+static void game_render(void) {
+    draw_clear(PAL_BLACK);
+
+    switch (current_state) {
+        case MAIN_MENU:
+            break;
+        case GAMEPLAY:
+            track_view_draw(track);
+            scenery_view_update(scenery_view, track);
+            scenery_view_draw(scenery_view);
+            car_view_draw(car1);
+            car_view_draw(car2);
+            for (int i = 0; i < obstacle_count; i++) {
+                if (obstacle_is_visible(obstacles[i]))
+                    obstacle_view_draw(obstacles[i]);
+            }
+            break;
+        case GAME_OVER:
+            break;
+        case PAUSE:
+        case EXIT:
+            break;
+    }
+
+    copy_buffer_to_video();
+}
+
+void game_init(void) {
+    resources_destroy();
+    resources_load();
+
+    track = create_track(TRACK_THEME_CITY);
+    car1  = create_car(2, PLAYER1_LANE_START, PLAYER1_LANE_END, CAR_WIDTH, CAR_HEIGHT);
+    car1->player = 1;
+    car2  = create_car(7, PLAYER2_LANE_START, PLAYER2_LANE_END, CAR_WIDTH, CAR_HEIGHT);
+    car2->player = 2;
+    scenery_view = scenery_view_create();
+
+    winner = 0;
+    obstacle_count = 0;
+    for (int row = 10; row < TRACK_TOTAL_ROWS - 10 && obstacle_count < MAX_OBSTACLES - 6; row += 8) {
+        if (rand() % 100 < CLUSTER_CHANCE)
+            spawn_cluster(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
+        else
+            spawn_single(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
+
+        if (rand() % 100 < CLUSTER_CHANCE)
+            spawn_cluster(row + 4, PLAYER2_LANE_START, PLAYER2_LANE_END);
+        else
+            spawn_single(row + 4, PLAYER2_LANE_START, PLAYER2_LANE_END);
+    }
+
+    current_state = GAMEPLAY;
+}
+
+GameState game_get_state(void) {
+    return current_state;
+}
+
+void game_set_state(GameState new_state) {
+    current_state = new_state;
+}
+
+void game_tick(void) {
+    game_process_input();
+
+    switch (current_state) {
+        case GAMEPLAY:
+            game_update();
+            game_process_collisions();
+            if (game_is_over())
+                current_state = GAME_OVER;
+            break;
+        case MAIN_MENU:
+        case PAUSE:
+        case GAME_OVER:
+        case EXIT:
+            break;
+    }
+
+    game_render();
 }

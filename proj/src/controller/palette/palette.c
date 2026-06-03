@@ -297,3 +297,17 @@ void palette_load(void) {
         sys_outb(0x3C9, (uint32_t)(GAME_PALETTE[i][2] >> 2));
     }
 }
+
+uint8_t palette_find_index(uint8_t r, uint8_t g, uint8_t b) {
+    if (r == 0xFF && g == 0x00 && b == 0xFF)
+        return PAL_TRANSPARENT;
+    int best = 0, best_dist = 0x7FFFFFFF;
+    for (int i = 0; i < 255; i++) {
+        int dr = (int)r - (int)GAME_PALETTE[i][0];
+        int dg = (int)g - (int)GAME_PALETTE[i][1];
+        int db = (int)b - (int)GAME_PALETTE[i][2];
+        int d  = dr*dr + dg*dg + db*db;
+        if (d < best_dist) { best_dist = d; best = i; if (d == 0) break; }
+    }
+    return (uint8_t)best;
+}

@@ -123,6 +123,7 @@
 /* ── Tabela de 256 cores RGB ────────────────────────────────────── */
 extern const uint8_t GAME_PALETTE[256][3];
 
-void palette_load(void);
+void    palette_load(void);
+uint8_t palette_find_index(uint8_t r, uint8_t g, uint8_t b);
 
 #endif /* __PROJ_PALETTE_H */
