@@ -7,6 +7,8 @@
 #define ARROW_PREFIX        0xE0
 #define ARROW_LEFT_CODE     0x4B
 #define ARROW_RIGHT_CODE    0x4D
+#define ARROW_UP_CODE       0x48
+#define ARROW_DOWN_CODE     0x50
 
 static bool prev_extended = false;
 
@@ -31,6 +33,11 @@ int input_keyboard_car_left_pressed(void) {
 int input_keyboard_car_right_pressed(void) {
     return prev_extended && get_current_scancode() == ARROW_RIGHT_CODE;
 }
+
+int input_keyboard_pause_pressed(void)  { return get_current_scancode() == ESC_MAKECODE; }
+int input_keyboard_up_pressed(void)     { return prev_extended && get_current_scancode() == ARROW_UP_CODE; }
+int input_keyboard_down_pressed(void)   { return prev_extended && get_current_scancode() == ARROW_DOWN_CODE; }
+int input_keyboard_confirm_pressed(void){ return get_current_scancode() == ENTER_MAKECODE; }
 
 // Mouse stubs — filled in when the mouse player is wired up
 int input_mouse_start_pressed(void)   { return 0; }

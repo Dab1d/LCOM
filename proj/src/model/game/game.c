@@ -7,6 +7,7 @@
 #include "../../view/track/track_view.h"
 #include "../../view/scenery/scenery_view.h"
 #include "../../view/view.h"
+#include "../../view/pause/pause_view.h"
 #include "../../controller/palette/palette.h"
 
 #define MAX_OBSTACLES    200
@@ -14,6 +15,7 @@
 #define BOOST_TILES       2
 
 static GameState    current_state  = MAIN_MENU;
+static int          pause_selected = 0; /* 0=RESUME 1=QUIT */
 static Track*       track          = NULL;
 static Car*         car1           = NULL;
 static Car*         car2           = NULL;
@@ -57,14 +59,26 @@ static void game_process_input(void) {
                 current_state = GAMEPLAY;
             break;
         case GAMEPLAY:
-            if (input_esc_pressed())
-                current_state = MAIN_MENU;
+            if (input_keyboard_pause_pressed()) {
+                pause_selected = 0;
+                current_state = PAUSE;
+            }
             if (input_keyboard_car_left_pressed())
                 car_move_lane(car1, -1);
             if (input_keyboard_car_right_pressed())
                 car_move_lane(car1, +1);
             break;
         case PAUSE:
+            if (input_keyboard_pause_pressed()) {
+                current_state = GAMEPLAY;
+            } else if (input_keyboard_up_pressed() || input_keyboard_down_pressed()) {
+                pause_selected = 1 - pause_selected;
+            } else if (input_keyboard_confirm_pressed()) {
+                if (pause_selected == 0)
+                    current_state = GAMEPLAY;
+                else
+                    current_state = MAIN_MENU;
+            }
             break;
         case GAME_OVER:
             if (input_gameover_restart_pressed())
@@ -157,6 +171,17 @@ static void game_render(void) {
         case GAME_OVER:
             break;
         case PAUSE:
+            track_view_draw(track);
+            scenery_view_update(scenery_view, track);
+            scenery_view_draw(scenery_view);
+            car_view_draw(car1);
+            car_view_draw(car2);
+            for (int i = 0; i < obstacle_count; i++) {
+                if (obstacle_is_visible(obstacles[i]))
+                    obstacle_view_draw(obstacles[i]);
+            }
+            pause_view_draw(pause_selected);
+            break;
         case EXIT:
             break;
     }

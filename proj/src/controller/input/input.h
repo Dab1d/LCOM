@@ -19,6 +19,10 @@ int input_keyboard_restart_pressed(void);
 int input_keyboard_menu_pressed(void);
 int input_keyboard_car_left_pressed(void);
 int input_keyboard_car_right_pressed(void);
+int input_keyboard_pause_pressed(void);
+int input_keyboard_up_pressed(void);
+int input_keyboard_down_pressed(void);
+int input_keyboard_confirm_pressed(void);
 
 // Mouse (stubs until mouse player is wired up)
 int input_mouse_start_pressed(void);
