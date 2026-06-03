@@ -47,6 +47,13 @@ int input_mouse_car2_right(void) {
     return 0;
 }
 
+#define ARROW_UP_CODE       0x48
+#define ARROW_DOWN_CODE     0x50
+
+static bool prev_extended = false;
+
+// Must be called at the end of each keyboard interrupt so the next
+// interrupt knows whether the current byte was an E0 prefix.
 void input_update(void) {
     prev_extended = (get_current_scancode() == ARROW_PREFIX);
 }
@@ -66,6 +73,11 @@ int input_keyboard_car_left_pressed(void) {
 int input_keyboard_car_right_pressed(void) {
     return prev_extended && get_current_scancode() == ARROW_RIGHT_CODE;
 }
+
+int input_keyboard_pause_pressed(void)  { return get_current_scancode() == ESC_MAKECODE; }
+int input_keyboard_up_pressed(void)     { return prev_extended && get_current_scancode() == ARROW_UP_CODE; }
+int input_keyboard_down_pressed(void)   { return prev_extended && get_current_scancode() == ARROW_DOWN_CODE; }
+int input_keyboard_confirm_pressed(void){ return get_current_scancode() == ENTER_MAKECODE; }
 
 int input_menu_nav_up(void) {
     return prev_extended && get_current_scancode() == ARROW_UP_CODE;

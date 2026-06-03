@@ -13,6 +13,11 @@
 #include "../../assets/xpm/scenery/tree.xpm"
 #include "../../assets/car_blue.xpm"
 #include "../../assets/car_red.xpm"
+#include "../../assets/xpm/pause/pause_panel.xpm"
+#include "../../assets/xpm/pause/pause_resume_btn.xpm"
+#include "../../assets/xpm/pause/pause_resume_btn_sel.xpm"
+#include "../../assets/xpm/pause/pause_quit_btn.xpm"
+#include "../../assets/xpm/pause/pause_quit_btn_sel.xpm"
 #include "../../assets/getaway_car_title.xpm"
 #include "../../assets/start_button.xpm"
 #include "../../assets/exit_button.xpm"
@@ -57,6 +62,14 @@ int resources_load(void) {
     res.menu_exit_btn  = create_sprite((xpm_map_t)exit_button);
     if (!res.menu_exit_btn) return 1;
 
+    res.pause_panel        = create_sprite((xpm_map_t)pause_panel_xpm);
+    res.pause_resume_btn[0] = create_sprite((xpm_map_t)pause_resume_btn_xpm);
+    res.pause_resume_btn[1] = create_sprite((xpm_map_t)pause_resume_btn_sel_xpm);
+    res.pause_quit_btn[0]   = create_sprite((xpm_map_t)pause_quit_btn_xpm);
+    res.pause_quit_btn[1]   = create_sprite((xpm_map_t)pause_quit_btn_sel_xpm);
+    if (!res.pause_panel || !res.pause_resume_btn[0] || !res.pause_resume_btn[1]
+     || !res.pause_quit_btn[0] || !res.pause_quit_btn[1]) return 1;
+
     return 0;
 }
 
@@ -69,6 +82,11 @@ void resources_destroy(void) {
     if (res.obstacle_sprite) { sprite_destroy(res.obstacle_sprite); res.obstacle_sprite = NULL; }
     if (res.grass_sprite)    { sprite_destroy(res.grass_sprite);    res.grass_sprite    = NULL; }
     if (res.tree_sprite)     { sprite_destroy(res.tree_sprite);     res.tree_sprite     = NULL; }
+    if (res.pause_panel)     { sprite_destroy(res.pause_panel);     res.pause_panel     = NULL; }
+    for (int i = 0; i < 2; i++) {
+        if (res.pause_resume_btn[i]) { sprite_destroy(res.pause_resume_btn[i]); res.pause_resume_btn[i] = NULL; }
+        if (res.pause_quit_btn[i])   { sprite_destroy(res.pause_quit_btn[i]);   res.pause_quit_btn[i]   = NULL; }
+    }
     if (res.menu_title)      { sprite_destroy(res.menu_title);      res.menu_title      = NULL; }
     if (res.menu_start_btn)  { sprite_destroy(res.menu_start_btn);  res.menu_start_btn  = NULL; }
     if (res.menu_exit_btn)   { sprite_destroy(res.menu_exit_btn);   res.menu_exit_btn   = NULL; }
@@ -94,6 +112,18 @@ Sprite* resources_get_grass_sprite(void) {
 
 Sprite* resources_get_tree_sprite(void) {
     return res.tree_sprite;
+}
+
+Sprite* resources_get_pause_panel(void) {
+    return res.pause_panel;
+}
+
+Sprite* resources_get_pause_resume_btn(int selected) {
+    return res.pause_resume_btn[selected ? 1 : 0];
+}
+
+Sprite* resources_get_pause_quit_btn(int selected) {
+    return res.pause_quit_btn[selected ? 1 : 0];
 }
 
 Sprite* resources_get_menu_title(void)     { return res.menu_title; }
