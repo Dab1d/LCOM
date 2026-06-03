@@ -3,6 +3,6 @@
 
 #include "../../model/obstacle/obstacle.h"
 
-void obstacle_view_update(Obstacle *obs);
+void obstacle_view_draw(Obstacle *obs);
 
 #endif /* __PROJ_OBSTACLE_VIEW_H */

@@ -58,7 +58,8 @@ void scenery_view_update(SceneryView *sv, const Track *track) {
 
 void scenery_view_draw(SceneryView *sv) {
     if (!sv) return;
-    const Resources *res = get_resources();
+    Sprite *grass = resources_get_grass_sprite();
+    Sprite *tree  = resources_get_tree_sprite();
 
     int tile     = TRACK_TILE_HEIGHT;
     int off      = (int)sv->scroll_offset;
@@ -67,24 +68,19 @@ void scenery_view_draw(SceneryView *sv) {
     for (int screen_row = 0; screen_row <= TRACK_VISIBLE_ROWS; screen_row++) {
         int y = screen_row * tile - off;
         for (int col = 0; col < STRIP_TILES; col++) {
-            res->grass_sprite->x = col * tile;
-            res->grass_sprite->y = y;
-            draw_sprite(res->grass_sprite);
-
-            res->grass_sprite->x = road_end + col * tile;
-            res->grass_sprite->y = y;
-            draw_sprite(res->grass_sprite);
+            if (grass) {
+                draw_sprite(grass, col * tile, y);
+                draw_sprite(grass, road_end + col * tile, y);
+            }
         }
     }
 
+    if (!tree) return;
     int screen_height = TRACK_VISIBLE_ROWS * tile;
     for (int i = 0; i < sv->count; i++) {
         int y = (int)sv->trees[i].screen_y;
         if (y + TREE_SIZE < 0 || y >= screen_height) continue;
-
-        res->tree_sprite->x = sv->trees[i].screen_x;
-        res->tree_sprite->y = y;
-        draw_sprite(res->tree_sprite);
+        draw_sprite(tree, sv->trees[i].screen_x, y);
     }
 }
 

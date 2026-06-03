@@ -2,11 +2,9 @@
 #include "../../model/resources/resources.h"
 #include "../view.h"
 
-void car_view_update(Car *car) {
+void car_view_draw(Car *car) {
     if (!car) return;
-    const Resources *res = get_resources();
-    Sprite *sp = res->car_sprites[car->player - 1][car->state];
-    sp->x = (int)car->base.x + ROAD_OFFSET_X;
-    sp->y = (int)car->base.y;
-    car->base.sprite = sp;
+    Sprite *sp = resources_get_car_sprite(car->player - 1, car->state);
+    if (!sp) return;
+    draw_sprite(sp, (int)car->base.x + ROAD_OFFSET_X, (int)car->base.y);
 }

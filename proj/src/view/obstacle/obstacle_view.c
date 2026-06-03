@@ -2,11 +2,9 @@
 #include "../../model/resources/resources.h"
 #include "../view.h"
 
-void obstacle_view_update(Obstacle *obs) {
-    if (!obs) return;
-    const Resources *res = get_resources();
-    Sprite *sp = res->obstacle_sprite;
-    sp->x = (int)obs->base.x + ROAD_OFFSET_X;
-    sp->y = (int)obs->base.y;
-    obs->base.sprite = sp;
+void obstacle_view_draw(Obstacle *obs) {
+    if (!obs || !obs->base.is_active) return;
+    Sprite *sp = resources_get_obstacle_sprite();
+    if (!sp) return;
+    draw_sprite(sp, (int)obs->base.x + ROAD_OFFSET_X, (int)obs->base.y);
 }
