@@ -11,6 +11,7 @@
 
 void view_init_buffers(void);
 void draw_sprite(Sprite *sp, int x, int y);
+void draw_sprite_scaled(Sprite *sp, int x, int y, int w, int h);
 void draw_clear(uint8_t color_index);
 void copy_buffer_to_video(void);
 

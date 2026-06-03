@@ -13,6 +13,9 @@
 #include "../../assets/xpm/scenery/tree.xpm"
 #include "../../assets/car_blue.xpm"
 #include "../../assets/car_red.xpm"
+#include "../../assets/getaway_car_title.xpm"
+#include "../../assets/start_button.xpm"
+#include "../../assets/exit_button.xpm"
 
 static Resources res;
 
@@ -45,6 +48,15 @@ int resources_load(void) {
     res.tree_sprite = create_sprite((xpm_map_t)tree_xpm);
     if (!res.tree_sprite) return 1;
 
+    res.menu_title     = create_sprite((xpm_map_t)getaway_car_title);
+    if (!res.menu_title) return 1;
+
+    res.menu_start_btn = create_sprite((xpm_map_t)start_button);
+    if (!res.menu_start_btn) return 1;
+
+    res.menu_exit_btn  = create_sprite((xpm_map_t)exit_button);
+    if (!res.menu_exit_btn) return 1;
+
     return 0;
 }
 
@@ -57,6 +69,9 @@ void resources_destroy(void) {
     if (res.obstacle_sprite) { sprite_destroy(res.obstacle_sprite); res.obstacle_sprite = NULL; }
     if (res.grass_sprite)    { sprite_destroy(res.grass_sprite);    res.grass_sprite    = NULL; }
     if (res.tree_sprite)     { sprite_destroy(res.tree_sprite);     res.tree_sprite     = NULL; }
+    if (res.menu_title)      { sprite_destroy(res.menu_title);      res.menu_title      = NULL; }
+    if (res.menu_start_btn)  { sprite_destroy(res.menu_start_btn);  res.menu_start_btn  = NULL; }
+    if (res.menu_exit_btn)   { sprite_destroy(res.menu_exit_btn);   res.menu_exit_btn   = NULL; }
 }
 
 Sprite* resources_get_car_sprite(int player, int state) {
@@ -80,3 +95,7 @@ Sprite* resources_get_grass_sprite(void) {
 Sprite* resources_get_tree_sprite(void) {
     return res.tree_sprite;
 }
+
+Sprite* resources_get_menu_title(void)     { return res.menu_title; }
+Sprite* resources_get_menu_start_btn(void) { return res.menu_start_btn; }
+Sprite* resources_get_menu_exit_btn(void)  { return res.menu_exit_btn; }

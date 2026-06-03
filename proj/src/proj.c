@@ -3,17 +3,18 @@
 #include "view/view.h"
 #include "controller/input/input.h"
 #include "controller/palette/palette.h"
-//#include "mouse.h"
 #include "video_gr.h"
-#include "kbc.h" // caminho resolvido via -I../lab3 no Makefile; evita path absoluto hardcoded
+#include "kbc.h"
 
 #define VIDEO_MODE 0x105 // 1024x768 8-bit indexed color
 
-int mouse_subscribe_int(uint8_t *bit_no);
-
-int mouse_unsubscribe_int();
-
-void mouse_ih(); //pq dá conflitos com o lab3
+/* lab4 mouse — linked via ../lab4/libmouse.a, header path not on CFLAGS */
+int  mouse_subscribe_int(uint8_t *bit_no);
+int  mouse_unsubscribe_int(void);
+void mouse_ih(void);
+bool mouse_packet_ready(void);
+void mouse_bytes_to_packet(void);
+struct packet *get_mouse_packet(void);
 
 int proj_main_loop(int argc, char *argv[]) {
     uint8_t timer_bit, kbd_bit, mouse_bit;
@@ -52,8 +53,14 @@ int proj_main_loop(int argc, char *argv[]) {
                     kbc_ih();
                     input_update();
                 }
-                if (msg.m_notify.interrupts & mouse_irq_set)
+                if (msg.m_notify.interrupts & mouse_irq_set) {
                     mouse_ih();
+                    if (mouse_packet_ready()) {
+                        mouse_bytes_to_packet();
+                        struct packet *p = get_mouse_packet();
+                        input_mouse_update((int)p->delta_x, (int)p->delta_y, p->lb);
+                    }
+                }
                 break;
         }
     }

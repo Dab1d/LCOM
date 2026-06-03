@@ -117,6 +117,20 @@
 #define PAL_P1_INDICATOR 145
 #define PAL_P2_INDICATOR 146
 
+/* ── Bloco 9 cont.: Menu / Botões (147-158) ────────────────────── */
+#define PAL_MENU_DARK      147
+#define PAL_BTN_RED        148
+#define PAL_BTN_RED_DRK    149
+#define PAL_BTN_RED_LGT    150
+#define PAL_BTN_YLW        151
+#define PAL_BTN_YLW_LGT    152
+#define PAL_BTN_YLW_DRK    153
+#define PAL_TTL_BLUE       154
+#define PAL_TTL_NEAR_BLACK 155
+#define PAL_TTL_BLUE_LGT   156
+#define PAL_TTL_PINK       157
+#define PAL_TTL_GREY       158
+
 /* ── Transparente (255) ─────────────────────────────────────────── */
 #define PAL_TRANSPARENT  255
 

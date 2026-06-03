@@ -9,6 +9,9 @@ typedef struct {
     Sprite *tile_sprites[4];   // indexed by TileType
     Sprite *grass_sprite;
     Sprite *tree_sprite;
+    Sprite *menu_title;
+    Sprite *menu_start_btn;
+    Sprite *menu_exit_btn;
 } Resources;
 
 int  resources_load(void);
@@ -19,5 +22,8 @@ Sprite* resources_get_obstacle_sprite(void);
 Sprite* resources_get_tile_sprite(int type);
 Sprite* resources_get_grass_sprite(void);
 Sprite* resources_get_tree_sprite(void);
+Sprite* resources_get_menu_title(void);
+Sprite* resources_get_menu_start_btn(void);
+Sprite* resources_get_menu_exit_btn(void);
 
 #endif /* __PROJ_RESOURCES_H */

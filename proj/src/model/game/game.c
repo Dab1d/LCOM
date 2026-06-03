@@ -13,7 +13,10 @@
 #define CLUSTER_CHANCE    70
 #define BOOST_TILES       2
 
+typedef enum { MENU_START, MENU_EXIT } MenuOption;
+
 static GameState    current_state  = MAIN_MENU;
+static MenuOption   menu_selection = MENU_START;
 static Track*       track          = NULL;
 static Car*         car1           = NULL;
 static Car*         car2           = NULL;
@@ -48,27 +51,41 @@ static void spawn_cluster(int base_row, int lane_min, int lane_max) {
     }
 }
 
+static void game_start(void);
+
 static void game_process_input(void) {
     switch (current_state) {
         case MAIN_MENU:
-            if (input_esc_pressed())
-                current_state = EXIT;
-            if (input_menu_start_pressed())
-                current_state = GAMEPLAY;
+            if (input_esc_pressed()) { current_state = EXIT; break; }
+            /* keyboard navigation */
+            if (input_menu_nav_up())   menu_selection = MENU_START;
+            if (input_menu_nav_down()) menu_selection = MENU_EXIT;
+            /* mouse hover */
+            if (input_mouse_over_start()) menu_selection = MENU_START;
+            if (input_mouse_over_exit())  menu_selection = MENU_EXIT;
+            /* confirm selection */
+            if (input_keyboard_start_pressed()) {
+                if (menu_selection == MENU_START) game_start();
+                else current_state = EXIT;
+            }
+            if (input_mouse_start_pressed()) game_start();
+            if (input_mouse_exit_pressed())  current_state = EXIT;
             break;
         case GAMEPLAY:
             if (input_esc_pressed())
                 current_state = MAIN_MENU;
-            if (input_keyboard_car_left_pressed())
-                car_move_lane(car1, -1);
-            if (input_keyboard_car_right_pressed())
-                car_move_lane(car1, +1);
+            /* car1: arrows */
+            if (input_keyboard_car_left_pressed())  car_move_lane(car1, -1);
+            if (input_keyboard_car_right_pressed()) car_move_lane(car1, +1);
+            /* car2: mouse */
+            if (input_mouse_car2_left())  car_move_lane(car2, -1);
+            if (input_mouse_car2_right()) car_move_lane(car2, +1);
             break;
         case PAUSE:
             break;
         case GAME_OVER:
             if (input_gameover_restart_pressed())
-                current_state = GAMEPLAY;
+                game_start();
             if (input_gameover_menu_pressed())
                 current_state = MAIN_MENU;
             break;
@@ -137,12 +154,41 @@ static bool game_is_over(void) {
     return false;
 }
 
+#define SCREEN_W 1024
+#define SCREEN_H  768
+
 static void game_render(void) {
     draw_clear(PAL_BLACK);
 
     switch (current_state) {
-        case MAIN_MENU:
+        case MAIN_MENU: {
+            Sprite *title     = resources_get_menu_title();
+            Sprite *start_btn = resources_get_menu_start_btn();
+            Sprite *exit_btn  = resources_get_menu_exit_btn();
+            if (title) draw_sprite(title, (SCREEN_W - title->width) / 2, 200);
+            /* hovered button drawn at 9/8 scale, kept vertically centred */
+            if (start_btn) {
+                if (menu_selection == MENU_START) {
+                    int w = start_btn->width  * 9 / 8;
+                    int h = start_btn->height * 9 / 8;
+                    draw_sprite_scaled(start_btn, (SCREEN_W - w) / 2,
+                                       420 - (h - start_btn->height) / 2, w, h);
+                } else {
+                    draw_sprite(start_btn, (SCREEN_W - start_btn->width) / 2, 420);
+                }
+            }
+            if (exit_btn) {
+                if (menu_selection == MENU_EXIT) {
+                    int w = exit_btn->width  * 9 / 8;
+                    int h = exit_btn->height * 9 / 8;
+                    draw_sprite_scaled(exit_btn, (SCREEN_W - w) / 2,
+                                       510 - (h - exit_btn->height) / 2, w, h);
+                } else {
+                    draw_sprite(exit_btn, (SCREEN_W - exit_btn->width) / 2, 510);
+                }
+            }
             break;
+        }
         case GAMEPLAY:
             track_view_draw(track);
             scenery_view_update(scenery_view, track);
@@ -164,10 +210,7 @@ static void game_render(void) {
     copy_buffer_to_video();
 }
 
-void game_init(void) {
-    resources_destroy();
-    resources_load();
-
+static void game_start(void) {
     track = create_track(TRACK_THEME_CITY);
     car1  = create_car(2, PLAYER1_LANE_START, PLAYER1_LANE_END, CAR_WIDTH, CAR_HEIGHT);
     car1->player = 1;
@@ -190,6 +233,14 @@ void game_init(void) {
     }
 
     current_state = GAMEPLAY;
+}
+
+void game_init(void) {
+    resources_destroy();
+    resources_load();
+    input_init_cursor(SCREEN_W, SCREEN_H);
+    menu_selection = MENU_START;
+    current_state  = MAIN_MENU;
 }
 
 GameState game_get_state(void) {

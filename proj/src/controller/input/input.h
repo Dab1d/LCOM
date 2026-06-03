@@ -2,9 +2,16 @@
 #define __PROJ_INPUT_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 // Call at the end of every keyboard interrupt to update extended-key state
 void input_update(void);
+
+// Call once at startup to create the menu cursor
+void input_init_cursor(int screen_w, int screen_h);
+
+// Call on every complete mouse packet to move the cursor
+void input_mouse_update(int dx, int dy, bool lb);
 
 int input_esc_pressed(void);
 
@@ -20,8 +27,19 @@ int input_keyboard_menu_pressed(void);
 int input_keyboard_car_left_pressed(void);
 int input_keyboard_car_right_pressed(void);
 
-// Mouse (stubs until mouse player is wired up)
+// Menu keyboard navigation
+int input_menu_nav_up(void);
+int input_menu_nav_down(void);
+
+// Gameplay mouse → car2 lane control (consumes accumulated dx)
+int input_mouse_car2_left(void);
+int input_mouse_car2_right(void);
+
+// Mouse menu: position hover and click detection
+int input_mouse_over_start(void);
+int input_mouse_over_exit(void);
 int input_mouse_start_pressed(void);
+int input_mouse_exit_pressed(void);
 int input_mouse_restart_pressed(void);
 int input_mouse_menu_pressed(void);
 
