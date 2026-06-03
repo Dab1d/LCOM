@@ -1,20 +1,17 @@
 #include "palette.h"
 #include <lcom/lcf.h>
 
-/* ── GAME_PALETTE[256][3]: valores RGB para cada índice 0-255 ──── *
+/* ── GAME_PALETTE[256][3]: valores RGB para cada índice 0-255 ────────
+ * Bloco  0- 7: base          8-23: pista      24-39: cenário
+ * Bloco 40-55: carro 1      56-71: carro 2    72-87: carro 3
+ * Bloco 88-103: carro 4   104-119: boost    120-135: óleo
+ * Bloco 136-191: HUD/UI  192-254: (livres)      255: transparente
  *
- * Regras de unicidade: cada cor usada em ficheiros XPM deve aparecer
- * APENAS UMA VEZ na tabela para que xpm_load(XPM_INDEXED) faça o
- * match correto. As entradas sem uso ficam a preto.
- *
- * Blocos reservados:
- *   0-7   base        8-23  pista       24-39 cenário
- *  40-55  carro 1    56-71  carro 2     72-87  carro 3
- *  88-103 carro 4   104-119 boost      120-135 óleo
- * 136-191 HUD/UI    192-254 (livres)    255 transparente
+ * Cada cor usada em ficheiros XPM aparece APENAS UMA VEZ para que
+ * xpm_load(XPM_INDEXED) faça match correto.
  */
 const uint8_t GAME_PALETTE[256][3] = {
-    /* ── Bloco 0: Base ── */
+    /* ── Bloco 0: Base (0-7) ── */
     /* 0  PAL_BLACK          */ {0x00, 0x00, 0x00},
     /* 1  PAL_WHITE          */ {0xFF, 0xFF, 0xFF},
     /* 2  PAL_GREY_LIGHT     */ {0xCC, 0xCC, 0xCC},
@@ -24,7 +21,7 @@ const uint8_t GAME_PALETTE[256][3] = {
     /* 6  PAL_OFF_WHITE      */ {0xF0, 0xF0, 0xF0},
     /* 7  PAL_CREAM          */ {0xFF, 0xFA, 0xCD},
 
-    /* ── Bloco 1: Pista ── */
+    /* ── Bloco 1: Pista (8-23) ── */
     /* 8  PAL_ASPHALT_DARK   */ {0x2A, 0x2A, 0x2A},
     /* 9  PAL_ASPHALT_MID    */ {0x38, 0x38, 0x38},
     /* 10 PAL_ASPHALT_BASE   */ {0x44, 0x44, 0x44},
@@ -42,7 +39,7 @@ const uint8_t GAME_PALETTE[256][3] = {
     /* 22 (livre)            */ {0x00, 0x00, 0x00},
     /* 23 (livre)            */ {0x00, 0x00, 0x00},
 
-    /* ── Bloco 2: Cenário ── */
+    /* ── Bloco 2: Cenário (24-39) ── */
     /* 24 PAL_GRASS_BASE     */ {0x3A, 0x7D, 0x44},
     /* 25 PAL_GRASS_DARK     */ {0x2A, 0x60, 0x30},
     /* 26 PAL_GRASS_LIGHT    */ {0x4A, 0x9A, 0x55},
@@ -60,7 +57,7 @@ const uint8_t GAME_PALETTE[256][3] = {
     /* 38 (livre)            */ {0x00, 0x00, 0x00},
     /* 39 (livre)            */ {0x00, 0x00, 0x00},
 
-    /* ── Bloco 3: Carro 1 – cores extraídas de car_blue.xpm ── */
+    /* ── Bloco 3: Carro 1 – azul (40-55) — cores de car_blue.xpm ── */
     /* 40 PAL_CAR1_NORMAL    */ {0x1A, 0x52, 0x76},
     /* 41 PAL_CAR1_HILITE    */ {0x24, 0x71, 0xA3},
     /* 42 PAL_CAR1_SHADOW    */ {0x15, 0x43, 0x60},
@@ -78,7 +75,7 @@ const uint8_t GAME_PALETTE[256][3] = {
     /* 54 PAL_CAR1_EXPLODED  */ {0x50, 0x50, 0x50},
     /* 55 PAL_CAR1_EXP_DRK   */ {0x30, 0x30, 0x30},
 
-    /* ── Bloco 4: Carro 2 – cores extraídas de car_red.xpm ── */
+    /* ── Bloco 4: Carro 2 – vermelho (56-71) — cores de car_red.xpm ── */
     /* 56 PAL_CAR2_NORMAL    */ {0xC0, 0x39, 0x2B},
     /* 57 PAL_CAR2_HILITE    */ {0xE7, 0x4C, 0x3C},
     /* 58 PAL_CAR2_SHADOW    */ {0xA9, 0x32, 0x26},
@@ -96,25 +93,43 @@ const uint8_t GAME_PALETTE[256][3] = {
     /* 70 (livre)            */ {0x00, 0x00, 0x00},
     /* 71 (livre)            */ {0x00, 0x00, 0x00},
 
-    /* ── Bloco 5: Carro 3 – Amarelo ── */
+    /* ── Bloco 5: Carro 3 – amarelo (72-87) ── */
     /* 72 PAL_CAR3_NORMAL    */ {0xFF, 0xDD, 0x00},
     /* 73 PAL_CAR3_HILITE    */ {0xFF, 0xEE, 0x66},
     /* 74 PAL_CAR3_SHADOW    */ {0xCC, 0xAA, 0x00},
     /* 75 PAL_CAR3_WINDOW    */ {0xFF, 0xFF, 0xAA},
     /* 76 PAL_CAR3_DAMAGED   */ {0xFF, 0xAA, 0x00},
-    /* 77-87 (livres)        */
-    {0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},
+    /* 77 (livre)            */ {0x00, 0x00, 0x00},
+    /* 78 (livre)            */ {0x00, 0x00, 0x00},
+    /* 79 (livre)            */ {0x00, 0x00, 0x00},
+    /* 80 (livre)            */ {0x00, 0x00, 0x00},
+    /* 81 (livre)            */ {0x00, 0x00, 0x00},
+    /* 82 (livre)            */ {0x00, 0x00, 0x00},
+    /* 83 (livre)            */ {0x00, 0x00, 0x00},
+    /* 84 (livre)            */ {0x00, 0x00, 0x00},
+    /* 85 (livre)            */ {0x00, 0x00, 0x00},
+    /* 86 (livre)            */ {0x00, 0x00, 0x00},
+    /* 87 (livre)            */ {0x00, 0x00, 0x00},
 
-    /* ── Bloco 6: Carro 4 – Verde ── */
+    /* ── Bloco 6: Carro 4 – verde (88-103) ── */
     /* 88 PAL_CAR4_NORMAL    */ {0x00, 0xCC, 0x44},
     /* 89 PAL_CAR4_HILITE    */ {0x44, 0xEE, 0x66},
     /* 90 PAL_CAR4_SHADOW    */ {0x00, 0x99, 0x33},
     /* 91 PAL_CAR4_WINDOW    */ {0xAA, 0xFF, 0xCC},
     /* 92 PAL_CAR4_DAMAGED   */ {0xFF, 0xAA, 0x00},
-    /* 93-103 (livres)       */
-    {0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},
+    /* 93 (livre)            */ {0x00, 0x00, 0x00},
+    /* 94 (livre)            */ {0x00, 0x00, 0x00},
+    /* 95 (livre)            */ {0x00, 0x00, 0x00},
+    /* 96 (livre)            */ {0x00, 0x00, 0x00},
+    /* 97 (livre)            */ {0x00, 0x00, 0x00},
+    /* 98 (livre)            */ {0x00, 0x00, 0x00},
+    /* 99 (livre)            */ {0x00, 0x00, 0x00},
+    /* 100 (livre)           */ {0x00, 0x00, 0x00},
+    /* 101 (livre)           */ {0x00, 0x00, 0x00},
+    /* 102 (livre)           */ {0x00, 0x00, 0x00},
+    /* 103 (livre)           */ {0x00, 0x00, 0x00},
 
-    /* ── Bloco 7: Boost ── */
+    /* ── Bloco 7: Boost (104-119) ── */
     /* 104 PAL_BOOST_BASE    */ {0x60, 0x60, 0xDD},
     /* 105 PAL_BOOST_GLOW    */ {0xAA, 0xAA, 0xFF},
     /* 106 PAL_BOOST_DARK    */ {0x40, 0x40, 0xBB},
@@ -122,10 +137,17 @@ const uint8_t GAME_PALETTE[256][3] = {
     /* 108 PAL_BOOST_STAR    */ {0xFF, 0xFF, 0x44},
     /* 109 PAL_BOOST_STAR2   */ {0xFF, 0xCC, 0x00},
     /* 110 PAL_BOOST_LIGHT   */ {0xCC, 0xCC, 0xFF},
-    /* 111-119 (livres)      */
-    {0},{0},{0},{0},{0},{0},{0},{0},{0},
+    /* 111 (livre)           */ {0x00, 0x00, 0x00},
+    /* 112 (livre)           */ {0x00, 0x00, 0x00},
+    /* 113 (livre)           */ {0x00, 0x00, 0x00},
+    /* 114 (livre)           */ {0x00, 0x00, 0x00},
+    /* 115 (livre)           */ {0x00, 0x00, 0x00},
+    /* 116 (livre)           */ {0x00, 0x00, 0x00},
+    /* 117 (livre)           */ {0x00, 0x00, 0x00},
+    /* 118 (livre)           */ {0x00, 0x00, 0x00},
+    /* 119 (livre)           */ {0x00, 0x00, 0x00},
 
-    /* ── Bloco 8: Óleo ── */
+    /* ── Bloco 8: Óleo (120-135) ── */
     /* 120 PAL_OIL_BASE      */ {0x1A, 0x1A, 0x2E},
     /* 121 PAL_OIL_SHEEN1    */ {0x22, 0x33, 0xAA},
     /* 122 PAL_OIL_SHEEN2    */ {0x33, 0x44, 0xBB},
@@ -133,10 +155,17 @@ const uint8_t GAME_PALETTE[256][3] = {
     /* 124 PAL_OIL_EDGE      */ {0x11, 0x11, 0x22},
     /* 125 PAL_OIL_REFLECT   */ {0x66, 0x77, 0xDD},
     /* 126 PAL_OIL_DARK      */ {0x0A, 0x0A, 0x1E},
-    /* 127-135 (livres)      */
-    {0},{0},{0},{0},{0},{0},{0},{0},{0},
+    /* 127 (livre)           */ {0x00, 0x00, 0x00},
+    /* 128 (livre)           */ {0x00, 0x00, 0x00},
+    /* 129 (livre)           */ {0x00, 0x00, 0x00},
+    /* 130 (livre)           */ {0x00, 0x00, 0x00},
+    /* 131 (livre)           */ {0x00, 0x00, 0x00},
+    /* 132 (livre)           */ {0x00, 0x00, 0x00},
+    /* 133 (livre)           */ {0x00, 0x00, 0x00},
+    /* 134 (livre)           */ {0x00, 0x00, 0x00},
+    /* 135 (livre)           */ {0x00, 0x00, 0x00},
 
-    /* ── Bloco 9: HUD/UI ── */
+    /* ── Bloco 9: HUD/UI (136-191) ── */
     /* 136 PAL_HUD_BG        */ {0x00, 0x00, 0x33},
     /* 137 PAL_HUD_BORDER    */ {0x44, 0x44, 0xAA},
     /* 138 PAL_HUD_TEXT      */ {0xF4, 0xF4, 0xF4},
@@ -148,14 +177,114 @@ const uint8_t GAME_PALETTE[256][3] = {
     /* 144 PAL_HEALTH_LOW    */ {0xEE, 0x00, 0x00},
     /* 145 PAL_P1_INDICATOR  */ {0x00, 0x50, 0xF8},
     /* 146 PAL_P2_INDICATOR  */ {0xF8, 0x20, 0x00},
-    /* 147-254 (livres)      */
-    {0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},
-    {0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},
-    {0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},
-    {0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},
-    {0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},
-    {0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},
-    {0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},
+    /* 147 (livre)           */ {0x00, 0x00, 0x00},
+    /* 148 (livre)           */ {0x00, 0x00, 0x00},
+    /* 149 (livre)           */ {0x00, 0x00, 0x00},
+    /* 150 (livre)           */ {0x00, 0x00, 0x00},
+    /* 151 (livre)           */ {0x00, 0x00, 0x00},
+    /* 152 (livre)           */ {0x00, 0x00, 0x00},
+    /* 153 (livre)           */ {0x00, 0x00, 0x00},
+    /* 154 (livre)           */ {0x00, 0x00, 0x00},
+    /* 155 (livre)           */ {0x00, 0x00, 0x00},
+    /* 156 (livre)           */ {0x00, 0x00, 0x00},
+    /* 157 (livre)           */ {0x00, 0x00, 0x00},
+    /* 158 (livre)           */ {0x00, 0x00, 0x00},
+    /* 159 (livre)           */ {0x00, 0x00, 0x00},
+    /* 160 (livre)           */ {0x00, 0x00, 0x00},
+    /* 161 (livre)           */ {0x00, 0x00, 0x00},
+    /* 162 (livre)           */ {0x00, 0x00, 0x00},
+    /* 163 (livre)           */ {0x00, 0x00, 0x00},
+    /* 164 (livre)           */ {0x00, 0x00, 0x00},
+    /* 165 (livre)           */ {0x00, 0x00, 0x00},
+    /* 166 (livre)           */ {0x00, 0x00, 0x00},
+    /* 167 (livre)           */ {0x00, 0x00, 0x00},
+    /* 168 (livre)           */ {0x00, 0x00, 0x00},
+    /* 169 (livre)           */ {0x00, 0x00, 0x00},
+    /* 170 (livre)           */ {0x00, 0x00, 0x00},
+    /* 171 (livre)           */ {0x00, 0x00, 0x00},
+    /* 172 (livre)           */ {0x00, 0x00, 0x00},
+    /* 173 (livre)           */ {0x00, 0x00, 0x00},
+    /* 174 (livre)           */ {0x00, 0x00, 0x00},
+    /* 175 (livre)           */ {0x00, 0x00, 0x00},
+    /* 176 (livre)           */ {0x00, 0x00, 0x00},
+    /* 177 (livre)           */ {0x00, 0x00, 0x00},
+    /* 178 (livre)           */ {0x00, 0x00, 0x00},
+    /* 179 (livre)           */ {0x00, 0x00, 0x00},
+    /* 180 (livre)           */ {0x00, 0x00, 0x00},
+    /* 181 (livre)           */ {0x00, 0x00, 0x00},
+    /* 182 (livre)           */ {0x00, 0x00, 0x00},
+    /* 183 (livre)           */ {0x00, 0x00, 0x00},
+    /* 184 (livre)           */ {0x00, 0x00, 0x00},
+    /* 185 (livre)           */ {0x00, 0x00, 0x00},
+    /* 186 (livre)           */ {0x00, 0x00, 0x00},
+    /* 187 (livre)           */ {0x00, 0x00, 0x00},
+    /* 188 (livre)           */ {0x00, 0x00, 0x00},
+    /* 189 (livre)           */ {0x00, 0x00, 0x00},
+    /* 190 (livre)           */ {0x00, 0x00, 0x00},
+    /* 191 (livre)           */ {0x00, 0x00, 0x00},
+    /* 192 (livre)           */ {0x00, 0x00, 0x00},
+    /* 193 (livre)           */ {0x00, 0x00, 0x00},
+    /* 194 (livre)           */ {0x00, 0x00, 0x00},
+    /* 195 (livre)           */ {0x00, 0x00, 0x00},
+    /* 196 (livre)           */ {0x00, 0x00, 0x00},
+    /* 197 (livre)           */ {0x00, 0x00, 0x00},
+    /* 198 (livre)           */ {0x00, 0x00, 0x00},
+    /* 199 (livre)           */ {0x00, 0x00, 0x00},
+    /* 200 (livre)           */ {0x00, 0x00, 0x00},
+    /* 201 (livre)           */ {0x00, 0x00, 0x00},
+    /* 202 (livre)           */ {0x00, 0x00, 0x00},
+    /* 203 (livre)           */ {0x00, 0x00, 0x00},
+    /* 204 (livre)           */ {0x00, 0x00, 0x00},
+    /* 205 (livre)           */ {0x00, 0x00, 0x00},
+    /* 206 (livre)           */ {0x00, 0x00, 0x00},
+    /* 207 (livre)           */ {0x00, 0x00, 0x00},
+    /* 208 (livre)           */ {0x00, 0x00, 0x00},
+    /* 209 (livre)           */ {0x00, 0x00, 0x00},
+    /* 210 (livre)           */ {0x00, 0x00, 0x00},
+    /* 211 (livre)           */ {0x00, 0x00, 0x00},
+    /* 212 (livre)           */ {0x00, 0x00, 0x00},
+    /* 213 (livre)           */ {0x00, 0x00, 0x00},
+    /* 214 (livre)           */ {0x00, 0x00, 0x00},
+    /* 215 (livre)           */ {0x00, 0x00, 0x00},
+    /* 216 (livre)           */ {0x00, 0x00, 0x00},
+    /* 217 (livre)           */ {0x00, 0x00, 0x00},
+    /* 218 (livre)           */ {0x00, 0x00, 0x00},
+    /* 219 (livre)           */ {0x00, 0x00, 0x00},
+    /* 220 (livre)           */ {0x00, 0x00, 0x00},
+    /* 221 (livre)           */ {0x00, 0x00, 0x00},
+    /* 222 (livre)           */ {0x00, 0x00, 0x00},
+    /* 223 (livre)           */ {0x00, 0x00, 0x00},
+    /* 224 (livre)           */ {0x00, 0x00, 0x00},
+    /* 225 (livre)           */ {0x00, 0x00, 0x00},
+    /* 226 (livre)           */ {0x00, 0x00, 0x00},
+    /* 227 (livre)           */ {0x00, 0x00, 0x00},
+    /* 228 (livre)           */ {0x00, 0x00, 0x00},
+    /* 229 (livre)           */ {0x00, 0x00, 0x00},
+    /* 230 (livre)           */ {0x00, 0x00, 0x00},
+    /* 231 (livre)           */ {0x00, 0x00, 0x00},
+    /* 232 (livre)           */ {0x00, 0x00, 0x00},
+    /* 233 (livre)           */ {0x00, 0x00, 0x00},
+    /* 234 (livre)           */ {0x00, 0x00, 0x00},
+    /* 235 (livre)           */ {0x00, 0x00, 0x00},
+    /* 236 (livre)           */ {0x00, 0x00, 0x00},
+    /* 237 (livre)           */ {0x00, 0x00, 0x00},
+    /* 238 (livre)           */ {0x00, 0x00, 0x00},
+    /* 239 (livre)           */ {0x00, 0x00, 0x00},
+    /* 240 (livre)           */ {0x00, 0x00, 0x00},
+    /* 241 (livre)           */ {0x00, 0x00, 0x00},
+    /* 242 (livre)           */ {0x00, 0x00, 0x00},
+    /* 243 (livre)           */ {0x00, 0x00, 0x00},
+    /* 244 (livre)           */ {0x00, 0x00, 0x00},
+    /* 245 (livre)           */ {0x00, 0x00, 0x00},
+    /* 246 (livre)           */ {0x00, 0x00, 0x00},
+    /* 247 (livre)           */ {0x00, 0x00, 0x00},
+    /* 248 (livre)           */ {0x00, 0x00, 0x00},
+    /* 249 (livre)           */ {0x00, 0x00, 0x00},
+    /* 250 (livre)           */ {0x00, 0x00, 0x00},
+    /* 251 (livre)           */ {0x00, 0x00, 0x00},
+    /* 252 (livre)           */ {0x00, 0x00, 0x00},
+    /* 253 (livre)           */ {0x00, 0x00, 0x00},
+    /* 254 (livre)           */ {0x00, 0x00, 0x00},
 
     /* 255 PAL_TRANSPARENT   */ {0xFF, 0x00, 0xFF},
 };
