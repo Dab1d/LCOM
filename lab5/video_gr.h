@@ -15,3 +15,7 @@ uint16_t vg_get_x_res(void);
 uint16_t vg_get_y_res(void);
 uint8_t  vg_get_bytes_per_pixel(void);
 
+int vg_draw_xpm_to_buffer(uint8_t *dest, uint16_t dest_width, uint16_t dest_height,
+                          const uint8_t *pixmap, xpm_image_t img,
+                          int x, int y, uint8_t transparent_index);
+
