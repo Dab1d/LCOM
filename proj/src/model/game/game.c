@@ -44,18 +44,18 @@ static void spawn_cluster(int base_row, int lane_min, int lane_max) {
 
 /* ── ciclo de vida da sessão ──────────────────────────────────────── */
 
-void game_create(Game *g) {
-    g->track = create_track(TRACK_THEME_CITY);
-    g->car1 = create_car(2, PLAYER1_LANE_START, PLAYER1_LANE_END, CAR_WIDTH, CAR_HEIGHT);
-    g->car1->player = 1;
-    g->car2 = create_car(7, PLAYER2_LANE_START, PLAYER2_LANE_END, CAR_WIDTH, CAR_HEIGHT);
-    g->car2->player = 2;
-    g->scenery = scenery_view_create();
-    g->winner = 0;
-    g->pause_selected = 0;
-    g->obstacle_count = 0;
+void game_create(Game *game) {
+    game->track = create_track(TRACK_THEME_CITY);
+    game->car1 = create_car(2, PLAYER1_LANE_START, PLAYER1_LANE_END, CAR_WIDTH, CAR_HEIGHT);
+    game->car1->player = 1;
+    game->car2 = create_car(7, PLAYER2_LANE_START, PLAYER2_LANE_END, CAR_WIDTH, CAR_HEIGHT);
+    game->car2->player = 2;
+    game->scenery = scenery_view_create();
+    game->winner = 0;
+    game->pause_selected = 0;
+    game->obstacle_count = 0;
 
-    for (int row = 10; row < TRACK_TOTAL_ROWS - 10 && g->obstacle_count < MAX_OBSTACLES - 6; row += 8) {
+    for (int row = 10; row < TRACK_TOTAL_ROWS - 10 && game->obstacle_count < MAX_OBSTACLES - 6; row += 8) {
         if (rand() % 100 < CLUSTER_CHANCE)
             spawn_cluster(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
         else
@@ -67,34 +67,34 @@ void game_create(Game *g) {
             spawn_single(row + 4, PLAYER2_LANE_START, PLAYER2_LANE_END);
     }
 
-    g->state = GAMEPLAY;
+    game->state = GAMEPLAY;
 }
 
-void game_reset(Game *g) {
-    if (g->track) {
-        destroy_track(g->track);
-        g->track = NULL;
+void game_reset(Game *game) {
+    if (game->track) {
+        destroy_track(game->track);
+        game->track = NULL;
     }
-    if (g->car1) {
-        destroy_car(g->car1);
-        g->car1 = NULL;
+    if (game->car1) {
+        destroy_car(game->car1);
+        game->car1 = NULL;
     }
-    if (g->car2) {
-        destroy_car(g->car2);
-        g->car2 = NULL;
+    if (game->car2) {
+        destroy_car(game->car2);
+        game->car2 = NULL;
     }
-    if (g->scenery) {
-        scenery_view_destroy(g->scenery);
-        g->scenery = NULL;
+    if (game->scenery) {
+        scenery_view_destroy(game->scenery);
+        game->scenery = NULL;
     }
-    for (int i = 0; i < g->obstacle_count; i++) {
-        if (g->obstacles[i]) {
-            destroy_obstacle(g->obstacles[i]);
-            g->obstacles[i] = NULL;
+    for (int i = 0; i < game->obstacle_count; i++) {
+        if (game->obstacles[i]) {
+            destroy_obstacle(game->obstacles[i]);
+            game->obstacles[i] = NULL;
         }
     }
-    g->obstacle_count = 0;
-    game_create(g);
+    game->obstacle_count = 0;
+    game_create(game);
 }
 
 /* ── input / update / render ──────────────────────────────────────── */

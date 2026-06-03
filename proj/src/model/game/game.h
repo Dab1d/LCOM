@@ -28,8 +28,8 @@ typedef struct {
     int          obstacle_count;
 } Game;
 
-void game_create(Game *g);
-void game_reset(Game *g);
+void game_create(Game *game);
+void game_reset(Game *game);
 
 void game_init(void);
 void game_tick(void);
