@@ -1,6 +1,6 @@
 #include "scenery_view.h"
-#include "../view.h"
-#include "../../model/resources/resources.h"
+#include "../../view.h"
+#include "../../../model/resources/resources.h"
 
 #define STRIP_TILES 3
 

@@ -55,4 +55,14 @@ int input_mouse_exit_pressed(void);
 int input_mouse_restart_pressed(void);
 int input_mouse_menu_pressed(void);
 
+// Pause menu: hover and click detection
+int input_mouse_over_pause_resume(void);
+int input_mouse_over_pause_quit(void);
+int input_mouse_pause_resume_pressed(void);
+int input_mouse_pause_quit_pressed(void);
+
+// Cursor position
+int input_cursor_x(void);
+int input_cursor_y(void);
+
 #endif /* __PROJ_INPUT_H */
