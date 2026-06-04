@@ -13,8 +13,8 @@
 #include "../../view/elements/scenery/scenery_view.h"
 #include "../../view/screens/pause/pause_view.h"
 #include "../../view/screens/win/win_view.h"
-#include "../../view/heart/heart_view.h"
-#include "../../view/timer/timer_view.h"
+#include "../../view/elements/heart/hud_view.h"
+#include "../../view/elements/timer/timer_view.h"
 #include "../../view/screens/menu/menu_view.h"
 
 #define CLUSTER_CHANCE    70
@@ -65,6 +65,13 @@ static void spawn_banana(int row, int lane_min, int lane_max) {
     game.obstacle_count++;
 }
 
+static void spawn_oil(int row, int lane_min, int lane_max) {
+    if (game.obstacle_count >= MAX_OBSTACLES) return;
+    int lane = lane_min + rand() % (lane_max - lane_min + 1);
+    game.obstacles[game.obstacle_count] = create_obstacle(row, lane, OBSTACLE_OIL);
+    game.obstacle_count++;
+}
+
 /* ── ciclo de vida da sessão ──────────────────────────────────────── */
 
 void game_var_init(Game *game) {
@@ -107,6 +114,16 @@ void game_create(Game *game) {
             spawn_banana(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
         if (rand() % 100 < 35)
             spawn_banana(row + 6, PLAYER2_LANE_START, PLAYER2_LANE_END);
+    }
+
+    /* Poças de óleo — apenas no deserto */
+    if (game->track->theme == TRACK_THEME_DESERT) {
+        for (int row = 18; row < TRACK_TOTAL_ROWS - 10 && game->obstacle_count < MAX_OBSTACLES; row += 15) {
+            if (rand() % 100 < 40)
+                spawn_oil(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
+            if (rand() % 100 < 40)
+                spawn_oil(row + 7, PLAYER2_LANE_START, PLAYER2_LANE_END);
+        }
     }
 
     game->state = GAMEPLAY;
@@ -241,7 +258,7 @@ static void game_process_collisions(void) {
         if (obs == NULL || !obs->base.is_active) continue;
 
         if (game.car1->base.is_active && obstacle_collides_with_car(obs, game.car1)) {
-            if (obs->type == OBSTACLE_BANANA) {
+            if (obs->type == OBSTACLE_BANANA || obs->type == OBSTACLE_OIL) {
                 car_banana_slip(game.car1);
                 input_set_car1_inverted(180);
             } else {
@@ -250,7 +267,7 @@ static void game_process_collisions(void) {
             obs->base.is_active = false;
         }
         if (game.car2->base.is_active && obstacle_collides_with_car(obs, game.car2)) {
-            if (obs->type == OBSTACLE_BANANA) {
+            if (obs->type == OBSTACLE_BANANA || obs->type == OBSTACLE_OIL) {
                 car_banana_slip(game.car2);
                 input_set_car2_inverted(180);
             } else {
