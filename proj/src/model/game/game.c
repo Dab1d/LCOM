@@ -12,6 +12,7 @@
 #include "../../view/view.h"
 #include "../../view/pause/pause_view.h"
 #include "../../view/win/win_view.h"
+#include "../../view/hud/hud_view.h"
 #include "../../controller/palette/palette.h"
 
 /* forward declarations — defined in input.c, only used in this file */
@@ -346,6 +347,7 @@ static void game_render(void) {
                 if (boost_is_visible(game.boosts[i]))
                     boost_view_draw(game.boosts[i]);
             }
+            hud_view_draw(game.car1, game.car2);
             break;
         case GAME_OVER:
             break;
@@ -362,6 +364,7 @@ static void game_render(void) {
                 if (boost_is_visible(game.boosts[i]))
                     boost_view_draw(game.boosts[i]);
             }
+            hud_view_draw(game.car1, game.car2);
             pause_view_draw(game.pause_selected);
             draw_sprite(resources_get_cursor_sprite(), input_cursor_x(), input_cursor_y());
             break;

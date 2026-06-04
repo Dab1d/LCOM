@@ -35,6 +35,7 @@
 #include "../../assets/xpm/main/start_button.xpm"
 #include "../../assets/xpm/main/exit_button.xpm"
 #include "../../assets/xpm/cursor.xpm"
+#include "../../assets/xpm/heart.xpm"
 
 static Resources res;
 
@@ -95,6 +96,9 @@ int resources_load(void) {
     res.banana_sprite = create_sprite((xpm_map_t)banana_xpm);
     if (!res.banana_sprite) return 1;
 
+    res.heart_sprite = create_sprite((xpm_map_t)heart_xpm);
+    if (!res.heart_sprite) return 1;
+
     return 0;
 }
 
@@ -118,6 +122,7 @@ void resources_destroy(void) {
     if (res.menu_start_btn)  { sprite_destroy(res.menu_start_btn);  res.menu_start_btn  = NULL; }
     if (res.menu_exit_btn)   { sprite_destroy(res.menu_exit_btn);   res.menu_exit_btn   = NULL; }
     if (res.cursor_sprite)   { sprite_destroy(res.cursor_sprite);   res.cursor_sprite   = NULL; }
+    if (res.heart_sprite)    { sprite_destroy(res.heart_sprite);    res.heart_sprite    = NULL; }
 }
 
 Sprite* resources_get_car_sprite(int player, int state) {
@@ -163,3 +168,4 @@ Sprite* resources_get_menu_start_btn(void) { return res.menu_start_btn; }
 Sprite* resources_get_menu_exit_btn(void)  { return res.menu_exit_btn; }
 Sprite* resources_get_cursor_sprite(void)  { return res.cursor_sprite; }
 Sprite* resources_get_banana_sprite(void)  { return res.banana_sprite; }
+Sprite* resources_get_heart_sprite(void)   { return res.heart_sprite; }
