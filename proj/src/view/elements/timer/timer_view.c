@@ -1,7 +1,7 @@
 #include "timer_view.h"
-#include "../view.h"
-#include "../../model/resources/resources.h"
-#include "../../controller/palette/palette.h"
+#include "../../view.h"
+#include "../../../model/resources/resources.h"
+#include "../../../controller/palette/palette.h"
 
 #define SCREEN_W   1024
 #define TIMER_FREQ   60

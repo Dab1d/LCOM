@@ -42,6 +42,7 @@ Scenery* scenery_create(void);
  * @param s     Scenery collection to update.
  * @param track Current track (provides scroll_row and scroll_offset).
  */
+Scenery* scenery_create(TrackTheme theme);
 void     scenery_update(Scenery *s, const Track *track);
 
 /**

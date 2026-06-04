@@ -6,8 +6,10 @@
 
 void scenery_view_draw(const Scenery *s, TrackTheme theme) {
     if (!s) return;
-    Sprite *grass = resources_get_ground_sprite(theme);
-    Sprite *tree  = resources_get_scenery_sprite(theme);
+    Sprite *ground  = resources_get_ground_sprite(theme);
+    Sprite *ground2 = (theme == TRACK_THEME_DESERT) ? resources_get_sand_pebbles_sprite() : NULL;
+    Sprite *tree    = resources_get_scenery_sprite(theme);
+    Sprite *fence   = (theme == TRACK_THEME_DESERT) ? resources_get_fence_sprite() : NULL;
 
     int tile     = TRACK_TILE_HEIGHT;
     int off      = (int)s->scroll_offset;
@@ -16,10 +18,15 @@ void scenery_view_draw(const Scenery *s, TrackTheme theme) {
     for (int screen_row = 0; screen_row <= TRACK_VISIBLE_ROWS; screen_row++) {
         int y = (screen_row - 1) * tile + off;
         for (int col = 0; col < STRIP_TILES; col++) {
-            if (grass) {
-                draw_sprite(grass, col * tile, y);
-                draw_sprite(grass, road_end + col * tile, y);
+            Sprite *g = (ground2 && col == 1) ? ground2 : ground;
+            if (g) {
+                draw_sprite(g, col * tile, y);
+                draw_sprite(g, road_end + col * tile, y);
             }
+        }
+        if (fence) {
+            draw_sprite(fence, ROAD_OFFSET_X - tile, y);
+            draw_sprite(fence, road_end, y);
         }
     }
 

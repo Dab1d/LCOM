@@ -15,6 +15,7 @@
  * non-owning pointers obtained through the getter functions below.
  */
 typedef struct {
+<<<<<<< HEAD
     Sprite *car_sprites[2][4];        /**< [player-1][CarState] */
     Sprite *obstacle_sprite;          /**< Rock obstacle — city theme. */
     Sprite *boost_sprite;             /**< Boost pickup. */
@@ -43,6 +44,39 @@ typedef struct {
     Sprite *mode_endurance_card;      /**< ENDURANCE mode card graphic. */
     Sprite *mode_race_label;          /**< RACE mode label. */
     Sprite *mode_endurance_label;     /**< ENDURANCE mode label. */
+=======
+    Sprite *car_sprites[2][4]; // [player-1][CarState]
+    Sprite *obstacle_sprite;
+    Sprite *boost_sprite;
+    Sprite *tile_sprites[4];         // city tiles, indexed by TileType
+    Sprite *tile_sprites_desert[4];  // desert tiles, indexed by TileType
+    Sprite *grass_sprite;
+    Sprite *sand_sprite;
+    Sprite *tree_sprite;
+    Sprite *cactus_sprite;
+    Sprite *divider_sprite;
+    Sprite *obstacle_desert_sprite;   /* barril — mesmo efeito que rock */
+    Sprite *haybale_sprite;           /* fardo — mesmo efeito que rock */
+    Sprite *menu_title;
+    Sprite *menu_start_btn;
+    Sprite *menu_exit_btn;
+    Sprite *pause_panel;
+    Sprite *pause_resume_btn[2]; // [0]=normal [1]=selected
+    Sprite *pause_quit_btn[2];   // [0]=normal [1]=selected
+    Sprite *cursor_sprite;
+    Sprite *banana_sprite;
+    Sprite *heart_sprite;
+    Sprite *digit_sprites[10];
+    Sprite *colon_sprite;
+    Sprite *fence_sprite;
+    Sprite *oil_puddle_sprite;
+    Sprite *sand_pebbles_sprite;
+    Sprite *mode_select_title;
+    Sprite *mode_race_card;
+    Sprite *mode_endurance_card;
+    Sprite *mode_race_label;
+    Sprite *mode_endurance_label;
+>>>>>>> 1717b3579e84a2a03d9b5dba27cbd9775ec581b8
 } Resources;
 
 /**
@@ -203,6 +237,9 @@ Sprite* resources_get_obstacle_sprite_themed(int theme);
  * @brief Returns the mode-selection screen title sprite.
  * @return Non-owning pointer to the sprite.
  */
+Sprite* resources_get_fence_sprite(void);
+Sprite* resources_get_oil_puddle_sprite(void);
+Sprite* resources_get_sand_pebbles_sprite(void);
 Sprite* resources_get_mode_select_title(void);
 
 /**

@@ -17,5 +17,11 @@
  * @param car2 Player 2 car (read-only).
  */
 void hud_view_draw(const Car *car1, const Car *car2);
+#ifndef __PROJ_HEART_VIEW_H
+#define __PROJ_HEART_VIEW_H
 
-#endif /* __PROJ_HUD_VIEW_H */
+#include "../../../model/elements/car/car.h"
+
+void heart_view_draw(const Car *car1, const Car *car2);
+
+#endif /* __PROJ_HEART_VIEW_H */

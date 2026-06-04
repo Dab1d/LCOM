@@ -1,7 +1,7 @@
 #include <lcom/lcf.h>
 #include "resources.h"
-#include "../car/car.h"
-#include "../track/track.h"
+#include "../elements/car/car.h"
+#include "../elements/track/track.h"
 #include <stdlib.h>
 
 /* ── city ── */
@@ -22,6 +22,9 @@
 #include "../../assets/xpm/biomes/desert/scenery/cactus_tall.xpm"
 #include "../../assets/xpm/biomes/desert/objects/obstacle_barrel.xpm"
 #include "../../assets/xpm/biomes/desert/objects/obstacle_haybale.xpm"
+#include "../../assets/xpm/biomes/desert/objects/oil_puddle.xpm"
+#include "../../assets/xpm/biomes/desert/scenery/fence.xpm"
+#include "../../assets/xpm/biomes/desert/tiles/tile_sand_pebbles.xpm"
 
 #include "../../assets/xpm/cars/car_blue.xpm"
 #include "../../assets/xpm/cars/car_blue_dmg1.xpm"
@@ -103,6 +106,11 @@ int resources_load(void) {
     res.obstacle_desert_sprite = create_sprite((xpm_map_t)obstacle_barrel_xpm);
     res.haybale_sprite         = create_sprite((xpm_map_t)obstacle_haybale_xpm);
     if (!res.obstacle_desert_sprite || !res.haybale_sprite) return 1;
+
+    res.oil_puddle_sprite   = create_sprite((xpm_map_t)oil_puddle_xpm);
+    res.fence_sprite        = create_sprite((xpm_map_t)fence_xpm);
+    res.sand_pebbles_sprite = create_sprite((xpm_map_t)tile_sand_pebbles_xpm);
+    if (!res.oil_puddle_sprite || !res.fence_sprite || !res.sand_pebbles_sprite) return 1;
 
     res.obstacle_sprite = create_sprite((xpm_map_t)obstacle_xpm);
     if (!res.obstacle_sprite) return 1;
@@ -187,7 +195,10 @@ void resources_destroy(void) {
     if (res.grass_sprite)    { sprite_destroy(res.grass_sprite);    res.grass_sprite    = NULL; }
     if (res.tree_sprite)     { sprite_destroy(res.tree_sprite);     res.tree_sprite     = NULL; }
     if (res.pause_panel)     { sprite_destroy(res.pause_panel);     res.pause_panel     = NULL; }
-    if (res.banana_sprite)   { sprite_destroy(res.banana_sprite);   res.banana_sprite   = NULL; }
+    if (res.banana_sprite)      { sprite_destroy(res.banana_sprite);      res.banana_sprite      = NULL; }
+    if (res.oil_puddle_sprite)  { sprite_destroy(res.oil_puddle_sprite);  res.oil_puddle_sprite  = NULL; }
+    if (res.fence_sprite)       { sprite_destroy(res.fence_sprite);       res.fence_sprite       = NULL; }
+    if (res.sand_pebbles_sprite){ sprite_destroy(res.sand_pebbles_sprite);res.sand_pebbles_sprite= NULL; }
     for (int i = 0; i < 2; i++) {
         if (res.pause_resume_btn[i]) { sprite_destroy(res.pause_resume_btn[i]); res.pause_resume_btn[i] = NULL; }
         if (res.pause_quit_btn[i])   { sprite_destroy(res.pause_quit_btn[i]);   res.pause_quit_btn[i]   = NULL; }
@@ -281,6 +292,9 @@ Sprite* resources_get_obstacle_sprite_themed(int theme) {
     return res.obstacle_sprite;
 }
 
+Sprite* resources_get_fence_sprite(void)        { return res.fence_sprite; }
+Sprite* resources_get_oil_puddle_sprite(void)   { return res.oil_puddle_sprite; }
+Sprite* resources_get_sand_pebbles_sprite(void) { return res.sand_pebbles_sprite; }
 Sprite* resources_get_mode_select_title(void)   { return res.mode_select_title; }
 Sprite* resources_get_mode_race_card(void)       { return res.mode_race_card; }
 Sprite* resources_get_mode_endurance_card(void)  { return res.mode_endurance_card; }
