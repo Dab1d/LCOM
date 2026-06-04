@@ -49,6 +49,9 @@ void car_take_damage(Car* car);
 // Aplica o boost instantaneamente: incrementa track_progress em 'tiles'
 void car_apply_boost(Car* car, int tiles);
 
+// Faz deslizar o carro para uma faixa adjacente (efeito casca de banana)
+void car_banana_slip(Car* car);
+
 // Repõe o carro para o estado inicial
 void reset_car(Car* car, int initial_lane);
 

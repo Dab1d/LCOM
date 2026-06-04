@@ -95,14 +95,14 @@
 #define PAL_BOOST_STAR2  109
 #define PAL_BOOST_LIGHT  110
 
-/* ── Bloco 8: Poça de óleo (120-135) ───────────────────────────── */
-#define PAL_OIL_BASE     120
-#define PAL_OIL_SHEEN1   121
-#define PAL_OIL_SHEEN2   122
-#define PAL_OIL_SHEEN3   123
-#define PAL_OIL_EDGE     124
-#define PAL_OIL_REFLECT  125
-#define PAL_OIL_DARK     126
+/* ── Bloco 8: Casca de banana (120-126) ─────────────────────────── */
+#define PAL_BANANA_YELLOW 120   /* corpo principal */
+#define PAL_BANANA_DARK   121   /* sombra / borda  */
+#define PAL_BANANA_LIGHT  122   /* realce claro    */
+#define PAL_BANANA_BROWN  123   /* manchas / dobra */
+#define PAL_BANANA_STEM   124   /* ponta do caule  */
+#define PAL_BANANA_TIP    125   /* ponta da banana */
+#define PAL_BANANA_INNER  126   /* interior creme  */
 
 /* ── Bloco 9: UI / HUD (136-191) ───────────────────────────────── */
 #define PAL_HUD_BG       136

@@ -67,6 +67,20 @@ void car_take_damage(Car* car) {
     }
 }
 
+void car_banana_slip(Car* car) {
+    if (car == NULL || !car->base.is_active) return;
+    if (car->state == CAR_STATE_EXPLODED)    return;
+
+    int dir = (rand() % 2) ? -1 : 1;
+    int new_lane = car->lane + dir;
+    if (new_lane < car->lane_min || new_lane > car->lane_max)
+        new_lane = car->lane - dir;   /* tenta a direção oposta */
+    if (new_lane >= car->lane_min && new_lane <= car->lane_max) {
+        car->lane   = new_lane;
+        car->base.x = lane_to_x(new_lane);
+    }
+}
+
 void car_apply_boost(Car* car, int tiles) {
     if (car == NULL || !car->base.is_active) return;
     if (car->state == CAR_STATE_EXPLODED)    return;
