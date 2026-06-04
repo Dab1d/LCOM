@@ -58,6 +58,12 @@
 #include "../../assets/xpm/cursor.xpm"
 #include "../../assets/xpm/heart.xpm"
 
+#include "../../assets/xpm/modes/mode_select_title.xpm"
+#include "../../assets/xpm/modes/mode_race_card.xpm"
+#include "../../assets/xpm/modes/mode_endurance_card.xpm"
+#include "../../assets/xpm/modes/title_race.xpm"
+#include "../../assets/xpm/modes/title_endurance.xpm"
+
 static Resources res;
 
 int resources_load(void) {
@@ -149,6 +155,17 @@ int resources_load(void) {
     res.colon_sprite = create_sprite((xpm_map_t)digit_colon);
     if (!res.colon_sprite) return 1;
 
+    res.mode_select_title   = create_sprite((xpm_map_t)mode_select_title);
+    if (!res.mode_select_title) return 1;
+    res.mode_race_card      = create_sprite((xpm_map_t)mode_race_card);
+    if (!res.mode_race_card) return 1;
+    res.mode_endurance_card = create_sprite((xpm_map_t)mode_endurance_card);
+    if (!res.mode_endurance_card) return 1;
+    res.mode_race_label      = create_sprite((xpm_map_t)title_race);
+    if (!res.mode_race_label) return 1;
+    res.mode_endurance_label = create_sprite((xpm_map_t)title_endurance);
+    if (!res.mode_endurance_label) return 1;
+
     return 0;
 }
 
@@ -183,6 +200,11 @@ void resources_destroy(void) {
     for (int i = 0; i < 10; i++)
         if (res.digit_sprites[i]) { sprite_destroy(res.digit_sprites[i]); res.digit_sprites[i] = NULL; }
     if (res.colon_sprite) { sprite_destroy(res.colon_sprite); res.colon_sprite = NULL; }
+    if (res.mode_select_title)   { sprite_destroy(res.mode_select_title);   res.mode_select_title   = NULL; }
+    if (res.mode_race_card)      { sprite_destroy(res.mode_race_card);      res.mode_race_card      = NULL; }
+    if (res.mode_endurance_card) { sprite_destroy(res.mode_endurance_card); res.mode_endurance_card = NULL; }
+    if (res.mode_race_label)      { sprite_destroy(res.mode_race_label);      res.mode_race_label      = NULL; }
+    if (res.mode_endurance_label) { sprite_destroy(res.mode_endurance_label); res.mode_endurance_label = NULL; }
 }
 
 Sprite* resources_get_car_sprite(int player, int state) {
@@ -247,16 +269,20 @@ Sprite* resources_get_cursor_sprite(void)  { return res.cursor_sprite; }
 Sprite* resources_get_banana_sprite(void)  { return res.banana_sprite; }
 Sprite* resources_get_heart_sprite(void)   { return res.heart_sprite; }
 
-<<<<<<< HEAD
 Sprite* resources_get_digit_sprite(int digit) {
     if (digit < 0 || digit > 9) return NULL;
     return res.digit_sprites[digit];
 }
 
 Sprite* resources_get_colon_sprite(void) { return res.colon_sprite; }
-=======
+
 Sprite* resources_get_obstacle_sprite_themed(int theme) {
     if (theme == 1) return res.obstacle_desert_sprite;
     return res.obstacle_sprite;
 }
->>>>>>> ee022a9 (add desert biome: themed tiles, scenery, obstacles, menu preview)
+
+Sprite* resources_get_mode_select_title(void)   { return res.mode_select_title; }
+Sprite* resources_get_mode_race_card(void)       { return res.mode_race_card; }
+Sprite* resources_get_mode_endurance_card(void)  { return res.mode_endurance_card; }
+Sprite* resources_get_mode_race_label(void)      { return res.mode_race_label; }
+Sprite* resources_get_mode_endurance_label(void) { return res.mode_endurance_label; }

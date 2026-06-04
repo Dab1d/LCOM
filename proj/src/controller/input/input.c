@@ -23,6 +23,14 @@
 #define MENU_EXIT_X   ((MENU_SCREEN_W - MENU_BTN_W) / 2)
 #define MENU_EXIT_Y   510
 
+/* Mode select card layout — must match mode_select_view.c */
+#define MODE_CARD_W   200
+#define MODE_CARD_H   200
+#define MODE_CARD_GAP  80
+#define MODE_RACE_X  ((MENU_SCREEN_W - MODE_CARD_W * 2 - MODE_CARD_GAP) / 2)
+#define MODE_ENDUR_X (MODE_RACE_X + MODE_CARD_W + MODE_CARD_GAP)
+#define MODE_CARDS_Y  280
+
 /* Pause button layout — must match pause_view.h */
 #define PAUSE_BTN_X_C   412
 #define PAUSE_BTN_W_C   200
@@ -117,6 +125,9 @@ int input_menu_nav_down(void)  { return scancode_ready && prev_extended && get_c
 int input_menu_nav_left(void)  { return scancode_ready && prev_extended && get_current_scancode() == ARROW_LEFT_CODE; }
 int input_menu_nav_right(void) { return scancode_ready && prev_extended && get_current_scancode() == ARROW_RIGHT_CODE; }
 
+int input_mode_nav_left(void)  { return scancode_ready && prev_extended && get_current_scancode() == ARROW_LEFT_CODE; }
+int input_mode_nav_right(void) { return scancode_ready && prev_extended && get_current_scancode() == ARROW_RIGHT_CODE; }
+
 static int over_rect(int rx, int ry, int rw, int rh) {
     if (!menu_cursor) return 0;
     int cx = cursor_get_x(menu_cursor), cy = cursor_get_y(menu_cursor);
@@ -146,6 +157,11 @@ int input_gameover_restart_pressed(void) {
 int input_gameover_menu_pressed(void) {
     return input_keyboard_menu_pressed() || input_mouse_menu_pressed();
 }
+
+int input_mouse_over_race_card(void)        { return over_rect(MODE_RACE_X,  MODE_CARDS_Y, MODE_CARD_W, MODE_CARD_H); }
+int input_mouse_over_endurance_card(void)   { return over_rect(MODE_ENDUR_X, MODE_CARDS_Y, MODE_CARD_W, MODE_CARD_H); }
+int input_mouse_race_card_pressed(void)     { return menu_cursor && cursor_left_clicked(menu_cursor) && input_mouse_over_race_card(); }
+int input_mouse_endurance_card_pressed(void){ return menu_cursor && cursor_left_clicked(menu_cursor) && input_mouse_over_endurance_card(); }
 
 int input_mouse_over_pause_resume(void) {
     return over_rect(PAUSE_BTN_X_C, PAUSE_RESUME_Y_C, PAUSE_BTN_W_C, PAUSE_BTN_H_C);

@@ -27,6 +27,11 @@ typedef struct {
     Sprite *heart_sprite;
     Sprite *digit_sprites[10];
     Sprite *colon_sprite;
+    Sprite *mode_select_title;
+    Sprite *mode_race_card;
+    Sprite *mode_endurance_card;
+    Sprite *mode_race_label;
+    Sprite *mode_endurance_label;
 } Resources;
 
 int  resources_load(void);
@@ -54,5 +59,10 @@ Sprite* resources_get_heart_sprite(void);
 Sprite* resources_get_digit_sprite(int digit);
 Sprite* resources_get_colon_sprite(void);
 Sprite* resources_get_obstacle_sprite_themed(int theme);
+Sprite* resources_get_mode_select_title(void);
+Sprite* resources_get_mode_race_card(void);
+Sprite* resources_get_mode_endurance_card(void);
+Sprite* resources_get_mode_race_label(void);
+Sprite* resources_get_mode_endurance_label(void);
 
 #endif /* __PROJ_RESOURCES_H */

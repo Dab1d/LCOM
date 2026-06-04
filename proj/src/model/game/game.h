@@ -13,6 +13,7 @@
 
 typedef enum {
     MAIN_MENU,
+    MODE_SELECT,
     GAMEPLAY,
     PAUSE,
     GAME_OVER,
@@ -23,6 +24,7 @@ typedef struct {
     GameState    state;
     int          pause_selected;  /* 0=RESUME 1=QUIT */
     int          menu_selection;  /* 0=START  1=EXIT  */
+    int          mode_selection;  /* 0=RACE   1=ENDURANCE */
     int          winner;          /* 0=nenhum 1=P1 2=P2 */
     uint32_t     elapsed_ticks;   /* ticks durante GAMEPLAY (60/s) */
     TrackTheme   selected_theme;  /* bioma escolhido no menu */
