@@ -43,6 +43,7 @@ SRCS = proj.c \
        src/view/scenery/scenery_view.c \
        src/view/pause/pause_view.c \
        src/view/win/win_view.c \
+       src/view/hud/hud_view.c \
        src/model/cursor/cursor.c \
        src/model/leaderboard/leaderboard.c
 
@@ -67,6 +68,7 @@ HDRS = src/model/game/game.h \
        src/view/scenery/scenery_view.h \
        src/view/pause/pause_view.h \
        src/view/win/win_view.h \
+       src/view/hud/hud_view.h \
        src/model/cursor/cursor.h \
        src/model/leaderboard/leaderboard.h
 
@@ -151,6 +153,9 @@ src/view/pause/pause_view.o: src/view/pause/pause_view.c src/view/pause/pause_vi
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/view/win/win_view.o: src/view/win/win_view.c src/view/win/win_view.h
+	${CC} ${CFLAGS} -c $< -o $@
+
+src/view/hud/hud_view.o: src/view/hud/hud_view.c src/view/hud/hud_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/controller/graphics/graphics.o: src/controller/graphics/graphics.c src/controller/graphics/graphics.h
