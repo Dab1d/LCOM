@@ -31,6 +31,12 @@
 #define MODE_ENDUR_X (MODE_RACE_X + MODE_CARD_W + MODE_CARD_GAP)
 #define MODE_CARDS_Y  280
 
+/* Car select RACE button — must match car_select_view.c */
+#define CAR_SELECT_RACE_BTN_X  384
+#define CAR_SELECT_RACE_BTN_Y  640
+#define CAR_SELECT_RACE_BTN_W  256
+#define CAR_SELECT_RACE_BTN_H   64
+
 /* Pause button layout — must match pause_view.h */
 #define PAUSE_BTN_X_C   412
 #define PAUSE_BTN_W_C   200
@@ -177,3 +183,17 @@ int input_mouse_pause_quit_pressed(void) {
 }
 int input_cursor_x(void) { return menu_cursor ? cursor_get_x(menu_cursor) : 0; }
 int input_cursor_y(void) { return menu_cursor ? cursor_get_y(menu_cursor) : 0; }
+
+int input_p1_nav_left(void)  { return scancode_ready && !prev_extended && get_current_scancode() == KEY_A_CODE; }
+int input_p1_nav_right(void) { return scancode_ready && !prev_extended && get_current_scancode() == KEY_D_CODE; }
+int input_p2_nav_left(void)  { return scancode_ready && prev_extended  && get_current_scancode() == ARROW_LEFT_CODE; }
+int input_p2_nav_right(void) { return scancode_ready && prev_extended  && get_current_scancode() == ARROW_RIGHT_CODE; }
+int input_car_select_race_pressed(void) { return scancode_ready && get_current_scancode() == ENTER_MAKECODE; }
+int input_mouse_over_car_select_race_btn(void) {
+    return over_rect(CAR_SELECT_RACE_BTN_X, CAR_SELECT_RACE_BTN_Y,
+                     CAR_SELECT_RACE_BTN_W, CAR_SELECT_RACE_BTN_H);
+}
+int input_mouse_car_select_race_pressed(void) {
+    return menu_cursor && cursor_left_clicked(menu_cursor)
+           && input_mouse_over_car_select_race_btn();
+}

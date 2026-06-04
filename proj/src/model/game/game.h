@@ -21,6 +21,7 @@
  */
 typedef enum {
     MAIN_MENU,   /**< Main menu screen. */
+    CAR_SELECT,  /**< Car-skin selection screen. */
     MODE_SELECT, /**< Game-mode selection screen. */
     GAMEPLAY,    /**< Active race. */
     PAUSE,       /**< Pause overlay. */
@@ -39,6 +40,9 @@ typedef struct {
     int        winner;          /**< 0=none, 1=Player 1, 2=Player 2. */
     uint32_t   elapsed_ticks;   /**< Ticks elapsed during GAMEPLAY (60 Hz). */
     TrackTheme selected_theme;  /**< Biome chosen on the menu. */
+    int        car1_format;     /**< Car skin chosen by player 1. */
+    int        car2_format;     /**< Car skin chosen by player 2. */
+
     Track     *track;           /**< Active track (owns scroll speed). */
     Car       *car1;            /**< Player 1 car (owns lives and score). */
     Car       *car2;            /**< Player 2 car. */
