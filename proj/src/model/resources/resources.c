@@ -11,7 +11,7 @@
 
 #include "../../assets/xpm/objects/obstacle.xpm"
 #include "../../assets/xpm/objects/boost.xpm"
-#include "../../assets/xpm/scenery/grass.xpm"
+#include "../../assets/xpm/scenery/grass1.xpm"
 #include "../../assets/xpm/scenery/tree.xpm"
 
 #include "../../assets/xpm/cars/car_blue.xpm"
@@ -30,6 +30,18 @@
 #include "../../assets/xpm/pause/pause_resume_btn_sel.xpm"
 #include "../../assets/xpm/pause/pause_quit_btn.xpm"
 #include "../../assets/xpm/pause/pause_quit_btn_sel.xpm"
+
+#include "../../assets/xpm/digits/digit_0.xpm"
+#include "../../assets/xpm/digits/digit_1.xpm"
+#include "../../assets/xpm/digits/digit_2.xpm"
+#include "../../assets/xpm/digits/digit_3.xpm"
+#include "../../assets/xpm/digits/digit_4.xpm"
+#include "../../assets/xpm/digits/digit_5.xpm"
+#include "../../assets/xpm/digits/digit_6.xpm"
+#include "../../assets/xpm/digits/digit_7.xpm"
+#include "../../assets/xpm/digits/digit_8.xpm"
+#include "../../assets/xpm/digits/digit_9.xpm"
+#include "../../assets/xpm/digits/digit_colon.xpm"
 
 #include "../../assets/xpm/main/getaway_car_title.xpm"
 #include "../../assets/xpm/main/start_button.xpm"
@@ -64,10 +76,10 @@ int resources_load(void) {
     res.obstacle_sprite = create_sprite((xpm_map_t)obstacle_xpm);
     if (!res.obstacle_sprite) return 1;
 
-    res.grass_sprite = create_sprite((xpm_map_t)grass_xpm);
+    res.grass_sprite = create_sprite((xpm_map_t)grass1);
     if (!res.grass_sprite) return 1;
 
-    res.tree_sprite = create_sprite((xpm_map_t)tree_xpm);
+    res.tree_sprite = create_sprite((xpm_map_t)tree);
     if (!res.tree_sprite) return 1;
 
     res.menu_title     = create_sprite((xpm_map_t)getaway_car_title);
@@ -99,6 +111,19 @@ int resources_load(void) {
     res.heart_sprite = create_sprite((xpm_map_t)heart_xpm);
     if (!res.heart_sprite) return 1;
 
+    static xpm_map_t digit_xpms[10] = {
+        (xpm_map_t)digit_0, (xpm_map_t)digit_1, (xpm_map_t)digit_2,
+        (xpm_map_t)digit_3, (xpm_map_t)digit_4, (xpm_map_t)digit_5,
+        (xpm_map_t)digit_6, (xpm_map_t)digit_7, (xpm_map_t)digit_8,
+        (xpm_map_t)digit_9
+    };
+    for (int i = 0; i < 10; i++) {
+        res.digit_sprites[i] = create_sprite(digit_xpms[i]);
+        if (!res.digit_sprites[i]) return 1;
+    }
+    res.colon_sprite = create_sprite((xpm_map_t)digit_colon);
+    if (!res.colon_sprite) return 1;
+
     return 0;
 }
 
@@ -123,6 +148,9 @@ void resources_destroy(void) {
     if (res.menu_exit_btn)   { sprite_destroy(res.menu_exit_btn);   res.menu_exit_btn   = NULL; }
     if (res.cursor_sprite)   { sprite_destroy(res.cursor_sprite);   res.cursor_sprite   = NULL; }
     if (res.heart_sprite)    { sprite_destroy(res.heart_sprite);    res.heart_sprite    = NULL; }
+    for (int i = 0; i < 10; i++)
+        if (res.digit_sprites[i]) { sprite_destroy(res.digit_sprites[i]); res.digit_sprites[i] = NULL; }
+    if (res.colon_sprite) { sprite_destroy(res.colon_sprite); res.colon_sprite = NULL; }
 }
 
 Sprite* resources_get_car_sprite(int player, int state) {
@@ -169,3 +197,10 @@ Sprite* resources_get_menu_exit_btn(void)  { return res.menu_exit_btn; }
 Sprite* resources_get_cursor_sprite(void)  { return res.cursor_sprite; }
 Sprite* resources_get_banana_sprite(void)  { return res.banana_sprite; }
 Sprite* resources_get_heart_sprite(void)   { return res.heart_sprite; }
+
+Sprite* resources_get_digit_sprite(int digit) {
+    if (digit < 0 || digit > 9) return NULL;
+    return res.digit_sprites[digit];
+}
+
+Sprite* resources_get_colon_sprite(void) { return res.colon_sprite; }

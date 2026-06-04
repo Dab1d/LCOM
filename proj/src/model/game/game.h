@@ -1,6 +1,7 @@
 #ifndef __PROJ_GAME_H
 #define __PROJ_GAME_H
 
+#include <stdint.h>
 #include "../car/car.h"
 #include "../track/track.h"
 #include "../obstacle/obstacle.h"
@@ -23,6 +24,7 @@ typedef struct {
     int          pause_selected;  /* 0=RESUME 1=QUIT */
     int          menu_selection;  /* 0=START  1=EXIT  */
     int          winner;          /* 0=nenhum 1=P1 2=P2 */
+    uint32_t     elapsed_ticks;   /* ticks durante GAMEPLAY (60/s) */
     Track       *track;          /* velocidade: track->scroll_speed */
     Car         *car1;           /* vidas: car1->lives  score: car1->score */
     Car         *car2;

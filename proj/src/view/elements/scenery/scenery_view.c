@@ -14,7 +14,7 @@ void scenery_view_draw(const Scenery *s) {
     int road_end = ROAD_OFFSET_X + 10 * CAR_LANE_WIDTH;
 
     for (int screen_row = 0; screen_row <= TRACK_VISIBLE_ROWS; screen_row++) {
-        int y = screen_row * tile - off;
+        int y = (screen_row - 1) * tile + off;
         for (int col = 0; col < STRIP_TILES; col++) {
             if (grass) {
                 draw_sprite(grass, col * tile, y);
