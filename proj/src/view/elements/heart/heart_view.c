@@ -1,4 +1,4 @@
-#include "hud_view.h"
+#include "heart_view.h"
 #include "../../view.h"
 #include "../../../model/resources/resources.h"
 

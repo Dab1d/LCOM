@@ -10,14 +10,15 @@
 #define RIGHT_X_MIN (RIGHT_BASE + GRASS_MARGIN)
 #define RIGHT_X_MAX (RIGHT_BASE + 192 - GRASS_MARGIN - TREE_SIZE)
 
-Scenery* scenery_create(void) {
+Scenery* scenery_create(TrackTheme theme) {
+    (void)theme; /* reserved for future biome differentiation */
     Scenery *s = malloc(sizeof(Scenery));
     if (!s) return NULL;
 
     s->scroll_offset = 0.0f;
     s->count = 0;
 
-    int left_range  = LEFT_X_MAX  - LEFT_X_MIN  + 1;
+    int left_range  = LEFT_X_MAX - LEFT_X_MIN + 1;
     int right_range = RIGHT_X_MAX - RIGHT_X_MIN + 1;
 
     for (int row = 0; row < TRACK_TOTAL_ROWS && s->count < MAX_TREES - 2; row += 4) {
