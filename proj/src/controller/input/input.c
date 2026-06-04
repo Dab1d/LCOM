@@ -44,6 +44,13 @@
 #define PAUSE_RESUME_Y_C 356
 #define PAUSE_QUIT_Y_C   414
 
+/* Win screen button layout — must match win_view.h */
+#define WIN_BTN_W_C      256
+#define WIN_BTN_H_C       64
+#define WIN_BTN_Y_C       580
+#define WIN_PLAY_X_C      224
+#define WIN_MENU_X_C      544
+
 static bool     prev_extended  = false;
 static bool     scancode_ready = false;
 static Cursor  *menu_cursor    = NULL;
@@ -180,6 +187,18 @@ int input_mouse_pause_resume_pressed(void) {
 }
 int input_mouse_pause_quit_pressed(void) {
     return menu_cursor && cursor_left_clicked(menu_cursor) && input_mouse_over_pause_quit();
+}
+int input_mouse_over_win_play_again(void) {
+    return over_rect(WIN_PLAY_X_C, WIN_BTN_Y_C, WIN_BTN_W_C, WIN_BTN_H_C);
+}
+int input_mouse_over_win_menu(void) {
+    return over_rect(WIN_MENU_X_C, WIN_BTN_Y_C, WIN_BTN_W_C, WIN_BTN_H_C);
+}
+int input_mouse_win_play_again_pressed(void) {
+    return menu_cursor && cursor_left_clicked(menu_cursor) && input_mouse_over_win_play_again();
+}
+int input_mouse_win_menu_pressed(void) {
+    return menu_cursor && cursor_left_clicked(menu_cursor) && input_mouse_over_win_menu();
 }
 int input_cursor_x(void) { return menu_cursor ? cursor_get_x(menu_cursor) : 0; }
 int input_cursor_y(void) { return menu_cursor ? cursor_get_y(menu_cursor) : 0; }

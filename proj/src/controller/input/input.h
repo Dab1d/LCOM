@@ -235,6 +235,23 @@ int input_mouse_pause_quit_pressed(void);
 
 /** @} */
 
+/** @defgroup input_mouse_win Win-screen mouse checks
+ * @{ */
+
+/** @brief Returns non-zero if the cursor is over the PLAY AGAIN button. */
+int input_mouse_over_win_play_again(void);
+
+/** @brief Returns non-zero if the cursor is over the MENU button. */
+int input_mouse_over_win_menu(void);
+
+/** @brief Returns non-zero if the PLAY AGAIN button was clicked this frame. */
+int input_mouse_win_play_again_pressed(void);
+
+/** @brief Returns non-zero if the MENU button was clicked this frame. */
+int input_mouse_win_menu_pressed(void);
+
+/** @} */
+
 /** @defgroup input_cursor Cursor position
  * @{ */
 

@@ -6,16 +6,27 @@
 #ifndef __PROJ_WIN_VIEW_H
 #define __PROJ_WIN_VIEW_H
 
-/** @defgroup win_layout Win screen car position (screen 1024×768, car 64×64)
- * @{ */
-#define WIN_CAR_X 480 /**< Car sprite left edge: (1024 - 64) / 2. */
-#define WIN_CAR_Y 352 /**< Car sprite top edge: (768 - 64) / 2. */
-/** @} */
+#define WIN_SCREEN_W     1024
+
+#define WIN_IMG_W         400
+#define WIN_IMG_H         400
+#define WIN_IMG_X        ((WIN_SCREEN_W - WIN_IMG_W) / 2)   /**< 312 */
+#define WIN_IMG_Y          80
+
+#define WIN_BTN_W         256
+#define WIN_BTN_H          64
+#define WIN_BTN_GAP        64
+#define WIN_BTNS_TOTAL_W  (WIN_BTN_W + WIN_BTN_GAP + WIN_BTN_W)
+#define WIN_PLAY_X       ((WIN_SCREEN_W - WIN_BTNS_TOTAL_W) / 2)   /**< 224 */
+#define WIN_MENU_X       (WIN_PLAY_X + WIN_BTN_W + WIN_BTN_GAP)    /**< 544 */
+#define WIN_BTN_Y         580
+#define WIN_BORDER_T        4
 
 /**
- * @brief Draws the race result screen showing the winning player.
- * @param winner 1 = player 1 won (blue car), 2 = player 2 won (red car).
+ * @brief Draws the win screen with winner image and interactive buttons.
+ * @param winner   1=P1(blue) 2=P2(red).
+ * @param selected 0=PLAY AGAIN highlighted, 1=MENU highlighted.
  */
-void win_view_draw(int winner);
+void win_view_draw(int winner, int selected);
 
 #endif /* __PROJ_WIN_VIEW_H */
