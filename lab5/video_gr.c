@@ -27,8 +27,8 @@ void *(vg_init)(uint16_t mode) {
     }
 
     bytes_per_pixel = (vmi.BitsPerPixel + 7) / 8;
-    unsigned int vram_size = (unsigned int)vmi.YResolution * vmi.BytesPerScanLine;
-    phys_bytes vram_base = (phys_bytes)vmi.PhysBasePtr;
+    unsigned int vram_size = (unsigned int) vmi.YResolution * vmi.BytesPerScanLine;
+    phys_bytes vram_base = (phys_bytes) vmi.PhysBasePtr;
 
     // Allow this process to access the physical VRAM range.
     struct minix_mem_range mr;
@@ -40,7 +40,7 @@ void *(vg_init)(uint16_t mode) {
     }
 
     // Map the physical video memory so the program can write pixels directly.
-    video_mem = vm_map_phys(SELF, (void *)vram_base, vram_size);
+    video_mem = vm_map_phys(SELF, (void *) vram_base, vram_size);
     if (video_mem == MAP_FAILED || video_mem == NULL) {
         printf("vg_init: failed to map VRAM.\n");
         return NULL;
@@ -59,7 +59,7 @@ int vg_draw_pixel(uint16_t x, uint16_t y, uint32_t color) {
     if (x >= vmi.XResolution || y >= vmi.YResolution) return 1;
 
     // Calculate the pixel position in VRAM.
-    uint32_t offset = ((uint32_t)y * vmi.XResolution + x) * bytes_per_pixel;
+    uint32_t offset = ((uint32_t) y * vmi.XResolution + x) * bytes_per_pixel;
 
     // Copy only the bytes used by the current video mode.
     uint8_t *pixel = video_mem + offset;
@@ -74,12 +74,12 @@ int (vg_draw_hline)(uint16_t x, uint16_t y, uint16_t len, uint32_t color) {
     // Draw only the part of the line that is inside the screen.
     for (uint16_t i = 0; i < len; i++) {
         // Use uint32_t to avoid overflow when x + i is bigger than uint16_t.
-        uint32_t screen_x = (uint32_t)x + i;
+        uint32_t screen_x = (uint32_t) x + i;
 
         // Skip pixels that would be outside the right side of the screen.
         if (screen_x >= vmi.XResolution) continue;
 
-        if (vg_draw_pixel((uint16_t)screen_x, y, color) != 0) return 1;
+        if (vg_draw_pixel((uint16_t) screen_x, y, color) != 0) return 1;
     }
     return 0;
 }
@@ -88,13 +88,13 @@ int (vg_draw_rectangle)(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
     // A rectangle is drawn as several horizontal lines.
     for (uint16_t row = 0; row < height; row++) {
         // Use uint32_t to avoid overflow when y + row is too large.
-        uint32_t screen_y = (uint32_t)y + row;
+        uint32_t screen_y = (uint32_t) y + row;
 
         // Skip rows that would be outside the bottom of the screen.
         if (screen_y >= vmi.YResolution) continue;
 
         // Draw the visible part of this row.
-        if (vg_draw_hline(x, (uint16_t)screen_y, width, color) != 0) return 1;
+        if (vg_draw_hline(x, (uint16_t) screen_y, width, color) != 0) return 1;
     }
     return 0;
 }
@@ -112,7 +112,7 @@ int vg_draw_pixmap(uint8_t *pixmap, xpm_image_t img, uint16_t x, uint16_t y) {
             if (screen_x >= vmi.XResolution || screen_y >= vmi.YResolution)
                 continue;
 
-            uint32_t color = pixmap[(uint32_t)row * img.width + col];
+            uint32_t color = pixmap[(uint32_t) row * img.width + col];
             if (vg_draw_pixel(screen_x, screen_y, color) != 0) return 1;
         }
     }
@@ -120,10 +120,10 @@ int vg_draw_pixmap(uint8_t *pixmap, xpm_image_t img, uint16_t x, uint16_t y) {
 }
 
 
-uint8_t* vg_get_video_mem(void)      { return video_mem; }
-uint16_t vg_get_x_res(void)          { return vmi.XResolution; }
-uint16_t vg_get_y_res(void)          { return vmi.YResolution; }
-uint8_t  vg_get_bytes_per_pixel(void){ return bytes_per_pixel; }
+uint8_t *vg_get_video_mem(void) { return video_mem; }
+uint16_t vg_get_x_res(void) { return vmi.XResolution; }
+uint16_t vg_get_y_res(void) { return vmi.YResolution; }
+uint8_t vg_get_bytes_per_pixel(void) { return bytes_per_pixel; }
 
 int vg_draw_xpm_to_buffer(uint8_t *dest, uint16_t dest_width, uint16_t dest_height,
                           const uint8_t *pixmap, int pixmap_width, int pixmap_height,
@@ -135,11 +135,10 @@ int vg_draw_xpm_to_buffer(uint8_t *dest, uint16_t dest_width, uint16_t dest_heig
         for (int col = 0; col < pixmap_width; col++) {
             int screen_x = x + col;
             if (screen_x < 0 || screen_x >= dest_width) continue;
-            uint8_t color = pixmap[(uint32_t)row * pixmap_width + col];
+            uint8_t color = pixmap[(uint32_t) row * pixmap_width + col];
             if (color == transparent_index) continue;
-            dest[(uint32_t)screen_y * dest_width + screen_x] = color;
+            dest[(uint32_t) screen_y * dest_width + screen_x] = color;
         }
     }
     return 0;
 }
-

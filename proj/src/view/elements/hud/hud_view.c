@@ -1,6 +1,6 @@
 #include "hud_view.h"
-#include "../view.h"
-#include "../../model/resources/resources.h"
+#include "../../view.h"
+#include "../../../model/resources/resources.h"
 
 #define HEART_SIZE 48
 #define HEART_GAP   6

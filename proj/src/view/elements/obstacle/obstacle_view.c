@@ -1,6 +1,6 @@
 #include "obstacle_view.h"
-#include "../../model/resources/resources.h"
-#include "../view.h"
+#include "../../../model/resources/resources.h"
+#include "../../view.h"
 
 void obstacle_view_draw(Obstacle *obs) {
     if (!obs || !obs->base.is_active) return;

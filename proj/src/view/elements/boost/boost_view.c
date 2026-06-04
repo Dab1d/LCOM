@@ -1,6 +1,6 @@
 #include "boost_view.h"
-#include "../../model/resources/resources.h"
-#include "../view.h"
+#include "../../../model/resources/resources.h"
+#include "../../view.h"
 
 void boost_view_draw(Boost *boost) {
     if (!boost || !boost->base.is_active) return;
