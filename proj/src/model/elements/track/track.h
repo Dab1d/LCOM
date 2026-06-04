@@ -53,6 +53,7 @@ typedef struct {
     float    scroll_offset; /**< Sub-tile pixel offset within the current row (0..TRACK_TILE_HEIGHT-1). */
     float    scroll_speed;  /**< Pixels scrolled per tick (track speed). */
     TrackTheme theme;       /**< Visual theme for this race. */
+    bool     infinite;      /**< When true, track scrolls past the finish row indefinitely. */
 } Track;
 
 /**

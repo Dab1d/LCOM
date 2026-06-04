@@ -51,6 +51,9 @@ typedef struct {
     int        obstacle_count;  /**< Number of active obstacles. */
     Boost     *boosts[MAX_BOOSTS];       /**< Active boost pool. */
     int        boost_count;     /**< Number of active boosts. */
+    int        last_spawn_row;  /**< Last row seeded (endurance dynamic spawning). */
+    uint32_t   car1_death_tick; /**< Tick when P1 died; 0 if still alive. */
+    uint32_t   car2_death_tick; /**< Tick when P2 died; 0 if still alive. */
 } Game;
 
 /**

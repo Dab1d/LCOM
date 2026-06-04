@@ -27,16 +27,44 @@
 
 static Game game;
 
+static bool position_has_obstacle(int row, int lane) {
+    for (int i = 0; i < game.obstacle_count; i++) {
+        Obstacle *o = game.obstacles[i];
+        if (o && o->base.is_active && o->row == row && o->lane == lane) return true;
+    }
+    return false;
+}
+
+static bool position_has_boost(int row, int lane) {
+    for (int i = 0; i < game.boost_count; i++) {
+        Boost *b = game.boosts[i];
+        if (b && b->base.is_active && b->row == row && b->lane == lane) return true;
+    }
+    return false;
+}
+
 static void spawn_boost(int row, int lane_min, int lane_max) {
     if (game.boost_count >= MAX_BOOSTS) return;
-    int lane = lane_min + rand() % (lane_max - lane_min + 1);
+    int start = lane_min + rand() % (lane_max - lane_min + 1);
+    int lane = -1;
+    for (int i = 0; i <= lane_max - lane_min; i++) {
+        int candidate = lane_min + (start - lane_min + i) % (lane_max - lane_min + 1);
+        if (!position_has_obstacle(row, candidate)) { lane = candidate; break; }
+    }
+    if (lane == -1) return;
     game.boosts[game.boost_count] = create_boost(row, lane);
     game.boost_count++;
 }
 
 static void spawn_single(int row, int lane_min, int lane_max) {
     if (game.obstacle_count >= MAX_OBSTACLES) return;
-    int lane = lane_min + rand() % (lane_max - lane_min + 1);
+    int start = lane_min + rand() % (lane_max - lane_min + 1);
+    int lane = -1;
+    for (int i = 0; i <= lane_max - lane_min; i++) {
+        int candidate = lane_min + (start - lane_min + i) % (lane_max - lane_min + 1);
+        if (!position_has_boost(row, candidate)) { lane = candidate; break; }
+    }
+    if (lane == -1) return;
     game.obstacles[game.obstacle_count] = create_obstacle(row, lane, OBSTACLE_ROCK);
     game.obstacle_count++;
 }
@@ -48,12 +76,14 @@ static void spawn_cluster(int base_row, int lane_min, int lane_max) {
     if (rand() % 2) {
         int start = lane_min + rand() % (available - size + 1);
         for (int i = 0; i < size && game.obstacle_count < MAX_OBSTACLES; i++) {
+            if (position_has_boost(base_row, start + i)) continue;
             game.obstacles[game.obstacle_count] = create_obstacle(base_row, start + i, OBSTACLE_ROCK);
             game.obstacle_count++;
         }
     } else {
         int lane = lane_min + rand() % available;
         for (int i = 0; i < size && game.obstacle_count < MAX_OBSTACLES; i++) {
+            if (position_has_boost(base_row + i, lane)) continue;
             game.obstacles[game.obstacle_count] = create_obstacle(base_row + i, lane, OBSTACLE_ROCK);
             game.obstacle_count++;
         }
@@ -62,22 +92,83 @@ static void spawn_cluster(int base_row, int lane_min, int lane_max) {
 
 static void spawn_banana(int row, int lane_min, int lane_max) {
     if (game.obstacle_count >= MAX_OBSTACLES) return;
-    int lane = lane_min + rand() % (lane_max - lane_min + 1);
+    int start = lane_min + rand() % (lane_max - lane_min + 1);
+    int lane = -1;
+    for (int i = 0; i <= lane_max - lane_min; i++) {
+        int candidate = lane_min + (start - lane_min + i) % (lane_max - lane_min + 1);
+        if (!position_has_boost(row, candidate) && !position_has_obstacle(row, candidate)) { lane = candidate; break; }
+    }
+    if (lane == -1) return;
     game.obstacles[game.obstacle_count] = create_obstacle(row, lane, OBSTACLE_BANANA);
     game.obstacle_count++;
 }
 
 static void spawn_oil(int row, int lane_min, int lane_max) {
     if (game.obstacle_count >= MAX_OBSTACLES) return;
-    int lane = lane_min + rand() % (lane_max - lane_min + 1);
+    int start = lane_min + rand() % (lane_max - lane_min + 1);
+    int lane = -1;
+    for (int i = 0; i <= lane_max - lane_min; i++) {
+        int candidate = lane_min + (start - lane_min + i) % (lane_max - lane_min + 1);
+        if (!position_has_boost(row, candidate) && !position_has_obstacle(row, candidate)) { lane = candidate; break; }
+    }
+    if (lane == -1) return;
     game.obstacles[game.obstacle_count] = create_obstacle(row, lane, OBSTACLE_OIL);
     game.obstacle_count++;
+}
+
+/* ── gestão de memória e spawn dinâmico ──────────────────────────── */
+
+#define ENDURANCE_LOOKAHEAD 30
+
+static void game_cleanup_inactive(void) {
+    int w = 0;
+    for (int i = 0; i < game.obstacle_count; i++) {
+        if (game.obstacles[i] && game.obstacles[i]->base.is_active)
+            game.obstacles[w++] = game.obstacles[i];
+        else { destroy_obstacle(game.obstacles[i]); game.obstacles[i] = NULL; }
+    }
+    game.obstacle_count = w;
+    w = 0;
+    for (int i = 0; i < game.boost_count; i++) {
+        if (game.boosts[i] && game.boosts[i]->base.is_active)
+            game.boosts[w++] = game.boosts[i];
+        else { destroy_boost(game.boosts[i]); game.boosts[i] = NULL; }
+    }
+    game.boost_count = w;
+}
+
+static void game_spawn_endurance(void) {
+    int target = game.track->scroll_row + TRACK_VISIBLE_ROWS + ENDURANCE_LOOKAHEAD;
+    while (game.last_spawn_row < target) {
+        int row = game.last_spawn_row;
+        bool p1 = game.car1->base.is_active;
+        bool p2 = game.car2->base.is_active;
+
+        if (row % 8 == 0) {
+            if (p1) { if (rand() % 100 < CLUSTER_CHANCE) spawn_cluster(row, PLAYER1_LANE_START, PLAYER1_LANE_END); else spawn_single(row, PLAYER1_LANE_START, PLAYER1_LANE_END); }
+            if (p2) { if (rand() % 100 < CLUSTER_CHANCE) spawn_cluster(row, PLAYER2_LANE_START, PLAYER2_LANE_END); else spawn_single(row, PLAYER2_LANE_START, PLAYER2_LANE_END); }
+        }
+        if (row % 12 == 0) {
+            if (p1 && rand() % 100 < 35) spawn_banana(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
+            if (p2 && rand() % 100 < 35) spawn_banana(row, PLAYER2_LANE_START, PLAYER2_LANE_END);
+        }
+        if (row % 10 == 0) {
+            if (p1 && rand() % 100 < BOOST_SPAWN_CHANCE) spawn_boost(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
+            if (p2 && rand() % 100 < BOOST_SPAWN_CHANCE) spawn_boost(row, PLAYER2_LANE_START, PLAYER2_LANE_END);
+        }
+        if (row % 15 == 0 && game.track->theme == TRACK_THEME_DESERT) {
+            if (p1 && rand() % 100 < 40) spawn_oil(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
+            if (p2 && rand() % 100 < 40) spawn_oil(row, PLAYER2_LANE_START, PLAYER2_LANE_END);
+        }
+        game.last_spawn_row++;
+    }
 }
 
 /* ── ciclo de vida da sessão ──────────────────────────────────────── */
 
 void game_var_init(Game *game) {
     game->track = create_track(game->selected_theme);
+    if (game->mode_selection == 1) game->track->infinite = true;
     game->car1 = create_car(2, PLAYER1_LANE_START, PLAYER1_LANE_END, CAR_WIDTH, CAR_HEIGHT);
     game->car1->player = 1;
     game->car2 = create_car(7, PLAYER2_LANE_START, PLAYER2_LANE_END, CAR_WIDTH, CAR_HEIGHT);
@@ -88,44 +179,52 @@ void game_var_init(Game *game) {
     game->obstacle_count = 0;
     game->boost_count = 0;
     game->elapsed_ticks = 0;
+    game->last_spawn_row  = 20;
+    game->car1_death_tick = 0;
+    game->car2_death_tick = 0;
 }
 void game_create(Game *game) {
     game_var_init(game);
-    for (int row = 10; row < TRACK_TOTAL_ROWS - 10 && game->boost_count < MAX_BOOSTS; row += 10) {
-        if (rand() % 100 < BOOST_SPAWN_CHANCE)
-            spawn_boost(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
-        if (rand() % 100 < BOOST_SPAWN_CHANCE)
-            spawn_boost(row, PLAYER2_LANE_START, PLAYER2_LANE_END);
-    }
 
-    for (int row = 10; row < TRACK_TOTAL_ROWS - 10 && game->obstacle_count < MAX_OBSTACLES - 6; row += 8) {
-        if (rand() % 100 < CLUSTER_CHANCE)
-            spawn_cluster(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
-        else
-            spawn_single(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
-
-        if (rand() % 100 < CLUSTER_CHANCE)
-            spawn_cluster(row + 4, PLAYER2_LANE_START, PLAYER2_LANE_END);
-        else
-            spawn_single(row + 4, PLAYER2_LANE_START, PLAYER2_LANE_END);
-    }
-
-    /* Cascas de banana — intercaladas com os obstáculos normais */
-    for (int row = 14; row < TRACK_TOTAL_ROWS - 10 && game->obstacle_count < MAX_OBSTACLES; row += 12) {
-        if (rand() % 100 < 35)
-            spawn_banana(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
-        if (rand() % 100 < 35)
-            spawn_banana(row + 6, PLAYER2_LANE_START, PLAYER2_LANE_END);
-    }
-
-    /* Poças de óleo — apenas no deserto */
-    if (game->track->theme == TRACK_THEME_DESERT) {
-        for (int row = 18; row < TRACK_TOTAL_ROWS - 10 && game->obstacle_count < MAX_OBSTACLES; row += 15) {
-            if (rand() % 100 < 40)
-                spawn_oil(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
-            if (rand() % 100 < 40)
-                spawn_oil(row + 7, PLAYER2_LANE_START, PLAYER2_LANE_END);
+    if (game->mode_selection == 0) {
+        /* Race mode: spawn estático para todo o track */
+        for (int row = 20; row < TRACK_TOTAL_ROWS - 10 && game->boost_count < MAX_BOOSTS; row += 10) {
+            if (rand() % 100 < BOOST_SPAWN_CHANCE)
+                spawn_boost(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
+            if (rand() % 100 < BOOST_SPAWN_CHANCE)
+                spawn_boost(row, PLAYER2_LANE_START, PLAYER2_LANE_END);
         }
+
+        for (int row = 20; row < TRACK_TOTAL_ROWS - 10 && game->obstacle_count < MAX_OBSTACLES - 6; row += 8) {
+            if (rand() % 100 < CLUSTER_CHANCE)
+                spawn_cluster(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
+            else
+                spawn_single(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
+
+            if (rand() % 100 < CLUSTER_CHANCE)
+                spawn_cluster(row + 4, PLAYER2_LANE_START, PLAYER2_LANE_END);
+            else
+                spawn_single(row + 4, PLAYER2_LANE_START, PLAYER2_LANE_END);
+        }
+
+        for (int row = 20; row < TRACK_TOTAL_ROWS - 10 && game->obstacle_count < MAX_OBSTACLES; row += 12) {
+            if (rand() % 100 < 35)
+                spawn_banana(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
+            if (rand() % 100 < 35)
+                spawn_banana(row + 6, PLAYER2_LANE_START, PLAYER2_LANE_END);
+        }
+
+        if (game->track->theme == TRACK_THEME_DESERT) {
+            for (int row = 20; row < TRACK_TOTAL_ROWS - 10 && game->obstacle_count < MAX_OBSTACLES; row += 15) {
+                if (rand() % 100 < 40)
+                    spawn_oil(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
+                if (rand() % 100 < 40)
+                    spawn_oil(row + 7, PLAYER2_LANE_START, PLAYER2_LANE_END);
+            }
+        }
+    } else {
+        /* Endurance mode: semear janela inicial; spawn dinâmico trata do resto */
+        game_spawn_endurance();
     }
 
     game->state = GAMEPLAY;
@@ -264,6 +363,27 @@ static void game_update(void) {
     track_update(game.track);
     scenery_update(game.scenery, game.track);
 
+    game_cleanup_inactive();
+
+    if (game.mode_selection == 1) {
+        float exit_speed = game.track->scroll_speed + 6.0f;
+        if (game.car1->exploding) {
+            game.car1->base.y += exit_speed;
+            if (game.car1->base.y >= (TRACK_VISIBLE_ROWS + 1) * TRACK_TILE_HEIGHT) {
+                game.car1->base.is_active = false;
+                game.car1->exploding      = false;
+            }
+        }
+        if (game.car2->exploding) {
+            game.car2->base.y += exit_speed;
+            if (game.car2->base.y >= (TRACK_VISIBLE_ROWS + 1) * TRACK_TILE_HEIGHT) {
+                game.car2->base.is_active = false;
+                game.car2->exploding      = false;
+            }
+        }
+        game_spawn_endurance();
+    }
+
     float boost_speed = game.track->scroll_speed * 3.0f;
     apply_boost_movement(game.car1, boost_speed);
     apply_boost_movement(game.car2, boost_speed);
@@ -279,11 +399,14 @@ static void game_update(void) {
 }
 
 static void game_process_collisions(void) {
+    bool c1_active_before = game.car1->base.is_active && !game.car1->exploding;
+    bool c2_active_before = game.car2->base.is_active && !game.car2->exploding;
+
     for (int i = 0; i < game.obstacle_count; i++) {
         Obstacle *obs = game.obstacles[i];
         if (obs == NULL || !obs->base.is_active) continue;
 
-        if (game.car1->base.is_active && obstacle_collides_with_car(obs, game.car1)) {
+        if (c1_active_before && obstacle_collides_with_car(obs, game.car1)) {
             if (obs->type == OBSTACLE_BANANA || obs->type == OBSTACLE_OIL) {
                 car_banana_slip(game.car1);
                 input_set_car1_inverted(180);
@@ -292,7 +415,7 @@ static void game_process_collisions(void) {
             }
             obs->base.is_active = false;
         }
-        if (game.car2->base.is_active && obstacle_collides_with_car(obs, game.car2)) {
+        if (c2_active_before && obstacle_collides_with_car(obs, game.car2)) {
             if (obs->type == OBSTACLE_BANANA || obs->type == OBSTACLE_OIL) {
                 car_banana_slip(game.car2);
                 input_set_car2_inverted(180);
@@ -307,28 +430,59 @@ static void game_process_collisions(void) {
         Boost *boost = game.boosts[i];
         if (boost == NULL || !boost->base.is_active) continue;
 
-        if (boost_collides_with_car(boost, game.car1)) {
+        if (c1_active_before && boost_collides_with_car(boost, game.car1)) {
             car_apply_boost(game.car1, BOOST_TILES);
             boost->base.is_active = false;
-        } else if (boost_collides_with_car(boost, game.car2)) {
+        } else if (c2_active_before && boost_collides_with_car(boost, game.car2)) {
             car_apply_boost(game.car2, BOOST_TILES);
             boost->base.is_active = false;
         }
     }
+
+    /* Endurance: se um carro acabou de morrer nesta frame, inicia animação de saída */
+    if (game.mode_selection == 1) {
+        if (c1_active_before && !game.car1->base.is_active) {
+            game.car1->base.is_active = true;
+            game.car1->exploding      = true;
+            game.car1_death_tick      = game.elapsed_ticks;
+        }
+        if (c2_active_before && !game.car2->base.is_active) {
+            game.car2->base.is_active = true;
+            game.car2->exploding      = true;
+            game.car2_death_tick      = game.elapsed_ticks;
+        }
+    }
+}
+
+static bool car_at_finish_line(const Car *car) {
+    float finish_y = (float)((2 * CAR_SCREEN_ROW
+                              - (TRACK_TOTAL_ROWS - 1 - game.track->scroll_row))
+                             * TRACK_TILE_HEIGHT)
+                    + game.track->scroll_offset;
+    return (float)car->base.y              <= finish_y + TRACK_TILE_HEIGHT
+        && (float)(car->base.y + CAR_HEIGHT) > finish_y;
 }
 
 static bool game_is_over(void) {
-    if (!game.car1->base.is_active) {
-        game.winner = 2;
-        return true;
-    }
-    if (!game.car2->base.is_active) {
-        game.winner = 1;
-        return true;
-    }
-    if (track_is_finished(game.track)) {
-        game.winner = (game.car1->track_progress >= game.car2->track_progress) ? 1 : 2;
-        return true;
+    if (game.mode_selection == 0) {
+        /* Race mode */
+        if (!game.car1->base.is_active) { game.winner = 2; return true; }
+        if (!game.car2->base.is_active) { game.winner = 1; return true; }
+        bool c1_fin = car_at_finish_line(game.car1);
+        bool c2_fin = car_at_finish_line(game.car2);
+        if (c1_fin || c2_fin) {
+            if (c1_fin && c2_fin)
+                game.winner = (game.car1->track_progress >= game.car2->track_progress) ? 1 : 2;
+            else
+                game.winner = c1_fin ? 1 : 2;
+            return true;
+        }
+    } else {
+        /* Endurance mode: ambos os carros têm de ser destruídos */
+        if (!game.car1->base.is_active && !game.car2->base.is_active) {
+            game.winner = (game.car1_death_tick >= game.car2_death_tick) ? 1 : 2;
+            return true;
+        }
     }
     return false;
 }

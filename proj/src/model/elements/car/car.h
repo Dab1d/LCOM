@@ -45,6 +45,7 @@ typedef struct {
     CarState state;         /**< Current damage/visual state. */
     int     score;          /**< Accumulated score for this session. */
     int     lives;          /**< Lives remaining; reaches 0 on EXPLODED. */
+    bool    exploding;      /**< Endurance: true while the car is animating off-screen. */
 } Car;
 
 /**

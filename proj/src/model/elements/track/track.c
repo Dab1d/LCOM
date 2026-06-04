@@ -65,6 +65,7 @@ Track* create_track(TrackTheme theme) {
     track->scroll_offset = 0.0f;
     track->scroll_speed  = SCROLL_SPEED_INITIAL;
     track->theme         = theme;
+    track->infinite      = false;
 
     generate_grid(track);
 
@@ -83,7 +84,7 @@ void destroy_track(Track* track) {
 
 void track_update(Track* track) {
     if (track == NULL) return;
-    if (track_is_finished(track)) return;
+    if (!track->infinite && track_is_finished(track)) return;
 
     if (track->scroll_speed < SCROLL_SPEED_MAX)
         track->scroll_speed += SCROLL_ACCELERATION;

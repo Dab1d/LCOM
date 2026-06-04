@@ -19,6 +19,7 @@ Car* create_car(int initial_lane, int lane_min, int lane_max, int car_width, int
     car->state            = CAR_STATE_NORMAL;
     car->lane_min = lane_min;
     car->lane_max = lane_max;
+    car->exploding        = false;
     car_init_session(car, CAR_INITIAL_LIVES);
 
     return car;
@@ -99,6 +100,7 @@ void reset_car(Car* car, int initial_lane) {
     car->track_progress   = 0;
     car->boost_remaining  = 0.0f;
     car->state            = CAR_STATE_NORMAL;
+    car->exploding        = false;
     car_init_session(car, CAR_INITIAL_LIVES);
 }
 
