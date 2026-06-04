@@ -3,25 +3,19 @@
 #include "game.h"
 #include "../../controller/input/input.h"
 #include "../resources/resources.h"
-#include "../../view/car/car_view.h"
-#include "../../view/obstacle/obstacle_view.h"
-#include "../../view/boost/boost_view.h"
-#include "../../view/track/track_view.h"
-#include "../scenery/scenery.h"
-#include "../../view/scenery/scenery_view.h"
-#include "../../view/view.h"
-#include "../../view/pause/pause_view.h"
-#include "../../view/win/win_view.h"
-#include "../../view/hud/hud_view.h"
-#include "../../controller/palette/palette.h"
 
-/* forward declarations — defined in input.c, only used in this file */
-int input_mouse_over_pause_resume(void);
-int input_mouse_over_pause_quit(void);
-int input_mouse_pause_resume_pressed(void);
-int input_mouse_pause_quit_pressed(void);
-int input_cursor_x(void);
-int input_cursor_y(void);
+#include "../../controller/palette/palette.h"
+#include "../../view/view.h"
+#include "../../view/elements/car/car_view.h"
+#include "../../view/elements/obstacle/obstacle_view.h"
+#include "../../view/elements/boost/boost_view.h"
+#include "../../view/elements/track/track_view.h"
+#include "../scenery/scenery.h"
+#include "../../view/elements/scenery/scenery_view.h"
+#include "../../view/screens/pause/pause_view.h"
+#include "../../view/screens/win/win_view.h"
+#include "../../view/elements/hud/hud_view.h"
+#include "../../view/screens/menu/menu_view.h"
 
 #define CLUSTER_CHANCE    70
 #define BOOST_TILES       2
@@ -73,7 +67,7 @@ static void spawn_banana(int row, int lane_min, int lane_max) {
 
 /* ── ciclo de vida da sessão ──────────────────────────────────────── */
 
-void game_create(Game *game) {
+void game_var_init(Game *game) {
     game->track = create_track(TRACK_THEME_CITY);
     game->car1 = create_car(2, PLAYER1_LANE_START, PLAYER1_LANE_END, CAR_WIDTH, CAR_HEIGHT);
     game->car1->player = 1;
@@ -84,7 +78,10 @@ void game_create(Game *game) {
     game->pause_selected = 0;
     game->obstacle_count = 0;
     game->boost_count = 0;
+}
+void game_create(Game *game) {
 
+    game_var_init(game);
     for (int row = 10; row < TRACK_TOTAL_ROWS - 10 && game->boost_count < MAX_BOOSTS; row += 10) {
         if (rand() % 100 < BOOST_SPAWN_CHANCE)
             spawn_boost(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
@@ -154,11 +151,12 @@ void game_reset(Game *game) {
 static void game_process_input(void) {
     switch (game.state) {
         case MAIN_MENU:
-            if (input_esc_pressed()) { game.state = EXIT; break; }
+            if (input_esc_pressed()) {    game.state = EXIT; break; }
             if (input_menu_nav_up())      game.menu_selection = MENU_START;
             if (input_menu_nav_down())    game.menu_selection = MENU_EXIT;
             if (input_mouse_over_start()) game.menu_selection = MENU_START;
             if (input_mouse_over_exit())  game.menu_selection = MENU_EXIT;
+
             if (input_keyboard_start_pressed()) {
                 if (game.menu_selection == MENU_START) game_reset(&game);
                 else game.state = EXIT;
@@ -306,34 +304,9 @@ static void game_render(void) {
     draw_clear(PAL_BLACK);
 
     switch (game.state) {
-        case MAIN_MENU: {
-            Sprite *title     = resources_get_menu_title();
-            Sprite *start_btn = resources_get_menu_start_btn();
-            Sprite *exit_btn  = resources_get_menu_exit_btn();
-            if (title) draw_sprite(title, (SCREEN_W - title->width) / 2, 200);
-            if (start_btn) {
-                if (game.menu_selection == MENU_START) {
-                    int w = start_btn->width  * 9 / 8;
-                    int h = start_btn->height * 9 / 8;
-                    draw_sprite_scaled(start_btn, (SCREEN_W - w) / 2,
-                                       420 - (h - start_btn->height) / 2, w, h);
-                } else {
-                    draw_sprite(start_btn, (SCREEN_W - start_btn->width) / 2, 420);
-                }
-            }
-            if (exit_btn) {
-                if (game.menu_selection == MENU_EXIT) {
-                    int w = exit_btn->width  * 9 / 8;
-                    int h = exit_btn->height * 9 / 8;
-                    draw_sprite_scaled(exit_btn, (SCREEN_W - w) / 2,
-                                       510 - (h - exit_btn->height) / 2, w, h);
-                } else {
-                    draw_sprite(exit_btn, (SCREEN_W - exit_btn->width) / 2, 510);
-                }
-            }
-            draw_sprite(resources_get_cursor_sprite(), input_cursor_x(), input_cursor_y());
+        case MAIN_MENU:
+            menu_view_draw(game.menu_selection);
             break;
-        }
         case GAMEPLAY:
             track_view_draw(game.track);
             scenery_view_draw(game.scenery);

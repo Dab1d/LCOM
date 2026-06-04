@@ -36,14 +36,15 @@ SRCS = proj.c \
        src/controller/graphics/graphics.c \
        src/view/view.c \
        src/model/resources/resources.c \
-       src/view/car/car_view.c \
-       src/view/obstacle/obstacle_view.c \
-       src/view/boost/boost_view.c \
-       src/view/track/track_view.c \
-       src/view/scenery/scenery_view.c \
-       src/view/pause/pause_view.c \
-       src/view/win/win_view.c \
-       src/view/hud/hud_view.c \
+       src/view/elements/car/car_view.c \
+       src/view/elements/obstacle/obstacle_view.c \
+       src/view/elements/boost/boost_view.c \
+       src/view/elements/track/track_view.c \
+       src/view/elements/scenery/scenery_view.c \
+       src/view/screens/pause/pause_view.c \
+       src/view/screens/menu/menu_view.c \
+       src/view/screens/win/win_view.c \
+       src/view/elements/hud/hud_view.c \
        src/model/cursor/cursor.c \
        src/model/leaderboard/leaderboard.c
 
@@ -62,13 +63,14 @@ HDRS = src/model/game/game.h \
        src/controller/graphics/graphics.h \
        src/view/view.h \
        src/model/resources/resources.h \
-       src/view/obstacle/obstacle_view.h \
-       src/view/boost/boost_view.h \
-       src/view/track/track_view.h \
-       src/view/scenery/scenery_view.h \
-       src/view/pause/pause_view.h \
-       src/view/win/win_view.h \
-       src/view/hud/hud_view.h \
+       src/view/elements/obstacle/obstacle_view.h \
+       src/view/elements/boost/boost_view.h \
+       src/view/elements/track/track_view.h \
+       src/view/elements/scenery/scenery_view.h \
+       src/view/screens/pause/pause_view.h \
+       src/view/screens/menu/menu_view.h \
+       src/view/screens/win/win_view.h \
+       src/view/elements/hud/hud_view.h \
        src/model/cursor/cursor.h \
        src/model/leaderboard/leaderboard.h
 
@@ -128,34 +130,37 @@ src/view/view.o: src/view/view.c src/view/view.h
 src/model/resources/resources.o: src/model/resources/resources.c src/model/resources/resources.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/view/car/car_view.o: src/view/car/car_view.c src/view/car/car_view.h
+src/view/elements/car/car_view.o: src/view/elements/car/car_view.c src/view/elements/car/car_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/model/boost/boost.o: src/model/boost/boost.c src/model/boost/boost.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/view/boost/boost_view.o: src/view/boost/boost_view.c src/view/boost/boost_view.h
+src/view/elements/boost/boost_view.o: src/view/elements/boost/boost_view.c src/view/elements/boost/boost_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/view/obstacle/obstacle_view.o: src/view/obstacle/obstacle_view.c src/view/obstacle/obstacle_view.h
+src/view/elements/obstacle/obstacle_view.o: src/view/elements/obstacle/obstacle_view.c src/view/elements/obstacle/obstacle_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/view/track/track_view.o: src/view/track/track_view.c src/view/track/track_view.h
+src/view/elements/track/track_view.o: src/view/elements/track/track_view.c src/view/elements/track/track_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/model/scenery/scenery.o: src/model/scenery/scenery.c src/model/scenery/scenery.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/view/scenery/scenery_view.o: src/view/scenery/scenery_view.c src/view/scenery/scenery_view.h
+src/view/elements/scenery/scenery_view.o: src/view/elements/scenery/scenery_view.c src/view/elements/scenery/scenery_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/view/pause/pause_view.o: src/view/pause/pause_view.c src/view/pause/pause_view.h
+src/view/screens/pause/pause_view.o: src/view/screens/pause/pause_view.c src/view/screens/pause/pause_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/view/win/win_view.o: src/view/win/win_view.c src/view/win/win_view.h
+src/view/screens/menu/menu_view.o: src/view/screens/menu/menu_view.c src/view/screens/menu/menu_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/view/hud/hud_view.o: src/view/hud/hud_view.c src/view/hud/hud_view.h
+src/view/screens/win/win_view.o: src/view/screens/win/win_view.c src/view/screens/win/win_view.h
+	${CC} ${CFLAGS} -c $< -o $@
+
+src/view/elements/hud/hud_view.o: src/view/elements/hud/hud_view.c src/view/elements/hud/hud_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/controller/graphics/graphics.o: src/controller/graphics/graphics.c src/controller/graphics/graphics.h

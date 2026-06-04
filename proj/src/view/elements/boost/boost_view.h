@@ -1,7 +1,7 @@
 #ifndef __PROJ_BOOST_VIEW_H
 #define __PROJ_BOOST_VIEW_H
 
-#include "../../model/boost/boost.h"
+#include "../../../model/boost/boost.h"
 
 void boost_view_draw(Boost *boost);
 

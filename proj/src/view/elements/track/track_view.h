@@ -1,7 +1,7 @@
 #ifndef __PROJ_TRACK_VIEW_H
 #define __PROJ_TRACK_VIEW_H
 
-#include "../../model/track/track.h"
+#include "../../../model/track/track.h"
 
 void track_view_draw(const Track *track);
 
