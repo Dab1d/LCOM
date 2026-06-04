@@ -18,7 +18,7 @@ typedef struct {
     float        scroll_offset;
 } Scenery;
 
-Scenery* scenery_create(void);
+Scenery* scenery_create(TrackTheme theme);
 void     scenery_update(Scenery *s, const Track *track);
 void     scenery_destroy(Scenery *s);
 
