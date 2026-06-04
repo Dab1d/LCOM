@@ -1,7 +1,7 @@
 #ifndef __PROJ_SCENERY_H
 #define __PROJ_SCENERY_H
 
-#include "../track/track.h"
+#include "../elements/track/track.h"
 
 #define MAX_TREES 120
 #define TREE_SIZE  32

@@ -8,6 +8,7 @@
 typedef enum {
     OBSTACLE_ROCK   = 0,  /* bloco de betão — causa dano */
     OBSTACLE_BANANA = 1,  /* casca de banana — faz deslizar */
+    OBSTACLE_OIL    = 2,  /* poça de óleo — faz deslizar */
 } ObstacleType;
 
 /**
