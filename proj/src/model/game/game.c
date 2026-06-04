@@ -5,6 +5,7 @@
 #include "../resources/resources.h"
 #include "../../view/car/car_view.h"
 #include "../../view/obstacle/obstacle_view.h"
+#include "../../view/boost/boost_view.h"
 #include "../../view/track/track_view.h"
 #include "../scenery/scenery.h"
 #include "../../view/scenery/scenery_view.h"
@@ -23,10 +24,18 @@ int input_cursor_y(void);
 
 #define CLUSTER_CHANCE    70
 #define BOOST_TILES       2
+#define BOOST_SPAWN_CHANCE 65
 #define MENU_START        0
 #define MENU_EXIT         1
 
 static Game game;
+
+static void spawn_boost(int row, int lane_min, int lane_max) {
+    if (game.boost_count >= MAX_BOOSTS) return;
+    int lane = lane_min + rand() % (lane_max - lane_min + 1);
+    game.boosts[game.boost_count] = create_boost(row, lane);
+    game.boost_count++;
+}
 
 static void spawn_single(int row, int lane_min, int lane_max) {
     if (game.obstacle_count >= MAX_OBSTACLES) return;
@@ -66,6 +75,14 @@ void game_create(Game *game) {
     game->winner = 0;
     game->pause_selected = 0;
     game->obstacle_count = 0;
+    game->boost_count = 0;
+
+    for (int row = 10; row < TRACK_TOTAL_ROWS - 10 && game->boost_count < MAX_BOOSTS; row += 10) {
+        if (rand() % 100 < BOOST_SPAWN_CHANCE)
+            spawn_boost(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
+        if (rand() % 100 < BOOST_SPAWN_CHANCE)
+            spawn_boost(row, PLAYER2_LANE_START, PLAYER2_LANE_END);
+    }
 
     for (int row = 10; row < TRACK_TOTAL_ROWS - 10 && game->obstacle_count < MAX_OBSTACLES - 6; row += 8) {
         if (rand() % 100 < CLUSTER_CHANCE)
@@ -106,6 +123,13 @@ void game_reset(Game *game) {
         }
     }
     game->obstacle_count = 0;
+    for (int i = 0; i < game->boost_count; i++) {
+        if (game->boosts[i]) {
+            destroy_boost(game->boosts[i]);
+            game->boosts[i] = NULL;
+        }
+    }
+    game->boost_count = 0;
     game_create(game);
 }
 
@@ -167,12 +191,29 @@ static void game_process_input(void) {
     input_flush();
 }
 
+static void apply_boost_movement(Car* car, float boost_speed) {
+    if (car->boost_remaining <= 0.0f) return;
+    float step = car->boost_remaining < boost_speed ? car->boost_remaining : boost_speed;
+    car->base.y -= (double)step;
+    if (car->base.y < 0.0) car->base.y = 0.0;
+    car->boost_remaining -= step;
+}
+
 static void game_update(void) {
     track_update(game.track);
     scenery_update(game.scenery, game.track);
+
+    float boost_speed = game.track->scroll_speed * 3.0f;
+    apply_boost_movement(game.car1, boost_speed);
+    apply_boost_movement(game.car2, boost_speed);
+
     for (int i = 0; i < game.obstacle_count; i++) {
         if (game.obstacles[i] != NULL)
             obstacle_update(game.obstacles[i], game.track->scroll_row, game.track->scroll_offset);
+    }
+    for (int i = 0; i < game.boost_count; i++) {
+        if (game.boosts[i] != NULL)
+            boost_update(game.boosts[i], game.track->scroll_row, game.track->scroll_offset);
     }
 }
 
@@ -191,27 +232,16 @@ static void game_process_collisions(void) {
         }
     }
 
-    if (game.car1->base.is_active) {
-        int c1_row = game.track->scroll_row + (int) (game.car1->base.y / TRACK_TILE_HEIGHT);
-        TileType t1 = track_get_tile(game.track, c1_row, game.car1->lane);
-        if (t1 == TILE_OBSTACLE) {
-            car_take_damage(game.car1);
-            track_clear_tile(game.track, c1_row, game.car1->lane);
-        } else if (t1 == TILE_BOOST) {
-            car_apply_boost(game.car1, BOOST_TILES);
-            track_clear_tile(game.track, c1_row, game.car1->lane);
-        }
-    }
+    for (int i = 0; i < game.boost_count; i++) {
+        Boost *boost = game.boosts[i];
+        if (boost == NULL || !boost->base.is_active) continue;
 
-    if (game.car2->base.is_active) {
-        int c2_row = game.track->scroll_row + (int) (game.car2->base.y / TRACK_TILE_HEIGHT);
-        TileType t2 = track_get_tile(game.track, c2_row, game.car2->lane);
-        if (t2 == TILE_OBSTACLE) {
-            car_take_damage(game.car2);
-            track_clear_tile(game.track, c2_row, game.car2->lane);
-        } else if (t2 == TILE_BOOST) {
+        if (boost_collides_with_car(boost, game.car1)) {
+            car_apply_boost(game.car1, BOOST_TILES);
+            boost->base.is_active = false;
+        } else if (boost_collides_with_car(boost, game.car2)) {
             car_apply_boost(game.car2, BOOST_TILES);
-            track_clear_tile(game.track, c2_row, game.car2->lane);
+            boost->base.is_active = false;
         }
     }
 }
@@ -286,6 +316,10 @@ static void game_render(void) {
                 if (obstacle_is_visible(game.obstacles[i]))
                     obstacle_view_draw(game.obstacles[i]);
             }
+            for (int i = 0; i < game.boost_count; i++) {
+                if (boost_is_visible(game.boosts[i]))
+                    boost_view_draw(game.boosts[i]);
+            }
             break;
         case GAME_OVER:
             break;
@@ -297,6 +331,10 @@ static void game_render(void) {
             for (int i = 0; i < game.obstacle_count; i++) {
                 if (obstacle_is_visible(game.obstacles[i]))
                     obstacle_view_draw(game.obstacles[i]);
+            }
+            for (int i = 0; i < game.boost_count; i++) {
+                if (boost_is_visible(game.boosts[i]))
+                    boost_view_draw(game.boosts[i]);
             }
             pause_view_draw(game.pause_selected);
             draw_sprite(resources_get_cursor_sprite(), input_cursor_x(), input_cursor_y());
@@ -321,6 +359,7 @@ void game_init(void) {
     game.car2 = NULL;
     game.scenery = NULL;
     game.obstacle_count = 0;
+    game.boost_count = 0;
 }
 
 GameState game_get_state(void) {

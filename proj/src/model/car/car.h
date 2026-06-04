@@ -30,6 +30,7 @@ typedef struct {
     int lane_min;
     int lane_max;
     int track_progress;
+    float boost_remaining;
     CarState state;
     int score;
     int lives;

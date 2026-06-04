@@ -3,7 +3,7 @@
 #include <string.h>
 
 // Probabilidades de geração aleatória (em percentagem aproximada)
-#define PROB_BOOST          8     // 8% de chance de boost por tile
+#define PROB_BOOST          0     // boosts geridos como objetos em game.c
 #define SCROLL_SPEED_INITIAL 2.0f
 #define SCROLL_SPEED_MAX    12.0f
 #define SCROLL_ACCELERATION  0.002f

@@ -10,6 +10,7 @@
 #include "../../assets/xpm/tiles/tile_finish.xpm"
 
 #include "../../assets/xpm/objects/obstacle.xpm"
+#include "../../assets/xpm/objects/boost.xpm"
 #include "../../assets/xpm/scenery/grass.xpm"
 #include "../../assets/xpm/scenery/tree.xpm"
 
@@ -76,6 +77,9 @@ int resources_load(void) {
     res.menu_exit_btn  = create_sprite((xpm_map_t)exit_button);
     if (!res.menu_exit_btn) return 1;
 
+    res.boost_sprite = create_sprite((xpm_map_t)boost_xpm);
+    if (!res.boost_sprite) return 1;
+
     res.pause_panel        = create_sprite((xpm_map_t)pause_panel_xpm);
     res.pause_resume_btn[0] = create_sprite((xpm_map_t)pause_resume_btn_xpm);
     res.pause_resume_btn[1] = create_sprite((xpm_map_t)pause_resume_btn_sel_xpm);
@@ -97,6 +101,7 @@ void resources_destroy(void) {
     for (int t = 0; t < 4; t++)
         if (res.tile_sprites[t]) { sprite_destroy(res.tile_sprites[t]); res.tile_sprites[t] = NULL; }
     if (res.obstacle_sprite) { sprite_destroy(res.obstacle_sprite); res.obstacle_sprite = NULL; }
+    if (res.boost_sprite)    { sprite_destroy(res.boost_sprite);    res.boost_sprite    = NULL; }
     if (res.grass_sprite)    { sprite_destroy(res.grass_sprite);    res.grass_sprite    = NULL; }
     if (res.tree_sprite)     { sprite_destroy(res.tree_sprite);     res.tree_sprite     = NULL; }
     if (res.pause_panel)     { sprite_destroy(res.pause_panel);     res.pause_panel     = NULL; }
@@ -118,6 +123,10 @@ Sprite* resources_get_car_sprite(int player, int state) {
 
 Sprite* resources_get_obstacle_sprite(void) {
     return res.obstacle_sprite;
+}
+
+Sprite* resources_get_boost_sprite(void) {
+    return res.boost_sprite;
 }
 
 Sprite* resources_get_tile_sprite(int type) {
