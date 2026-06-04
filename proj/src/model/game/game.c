@@ -362,6 +362,11 @@ void game_init(void) {
     game.boost_count = 0;
 }
 
+void game_cleanup(void) {
+    game_reset(&game);
+    resources_destroy();
+}
+
 GameState game_get_state(void) {
     return game.state;
 }

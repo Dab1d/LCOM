@@ -69,6 +69,7 @@ int proj_main_loop(int argc, char *argv[]) {
         }
     }
 
+    game_cleanup();
     timer_unsubscribe_int();
     kbc_unsubscribe_int();
     mouse_unsubscribe_int();

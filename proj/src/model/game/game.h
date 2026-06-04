@@ -37,6 +37,7 @@ void game_create(Game *game);
 void game_reset(Game *game);
 
 void game_init(void);
+void game_cleanup(void);
 void game_tick(void);
 GameState game_get_state(void);
 void game_set_state(GameState new_state);
