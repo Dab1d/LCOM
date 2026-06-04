@@ -1,7 +1,7 @@
 #include "track_view.h"
 #include "../../../model/resources/resources.h"
 #include "../../view.h"
-#include "../../../model/car/car.h"
+#include "../../../model/elements/car/car.h"
 
 void track_view_draw(const Track *track) {
     if (!track) return;

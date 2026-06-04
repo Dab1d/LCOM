@@ -2,10 +2,10 @@
 #define __PROJ_GAME_H
 
 #include <stdint.h>
-#include "../car/car.h"
-#include "../track/track.h"
-#include "../obstacle/obstacle.h"
-#include "../boost/boost.h"
+#include "../elements/car/car.h"
+#include "../elements/track/track.h"
+#include "../elements/obstacle/obstacle.h"
+#include "../elements/boost/boost.h"
 #include "../scenery/scenery.h"
 
 #define MAX_OBSTACLES 200

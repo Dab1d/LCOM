@@ -1,7 +1,7 @@
 #include "win_view.h"
 #include "../../view.h"
 #include "../../../model/resources/resources.h"
-#include "../../../model/car/car.h"
+#include "../../../model/elements/car/car.h"
 
 void win_view_draw(int winner) {
     if (winner < 1 || winner > 2) return;

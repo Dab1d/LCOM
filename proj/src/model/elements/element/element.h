@@ -2,7 +2,7 @@
 #define ELEMENT_H
 
 #include <stdbool.h>
-#include "../sprite/sprite.h"
+#include "../../sprite/sprite.h"
 
 
 /**

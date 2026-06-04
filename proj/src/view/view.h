@@ -2,8 +2,8 @@
 #define __PROJ_VIEW_H
 
 #include "../model/sprite/sprite.h"
-#include "../model/car/car.h"
-#include "../model/obstacle/obstacle.h"
+#include "../model/elements/car/car.h"
+#include "../model/elements/obstacle/obstacle.h"
 #include "../controller/palette/palette.h"
 
 /* Screen layout: 192px grass | 640px road (10x64) | 192px grass */
