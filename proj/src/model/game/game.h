@@ -4,9 +4,11 @@
 #include "../car/car.h"
 #include "../track/track.h"
 #include "../obstacle/obstacle.h"
+#include "../boost/boost.h"
 #include "../scenery/scenery.h"
 
 #define MAX_OBSTACLES 200
+#define MAX_BOOSTS     50
 
 typedef enum {
     MAIN_MENU,
@@ -27,6 +29,8 @@ typedef struct {
     Scenery     *scenery;
     Obstacle    *obstacles[MAX_OBSTACLES];
     int          obstacle_count;
+    Boost       *boosts[MAX_BOOSTS];
+    int          boost_count;
 } Game;
 
 void game_create(Game *game);
