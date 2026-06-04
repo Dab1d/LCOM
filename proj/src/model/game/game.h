@@ -25,6 +25,7 @@ typedef struct {
     int          menu_selection;  /* 0=START  1=EXIT  */
     int          winner;          /* 0=nenhum 1=P1 2=P2 */
     uint32_t     elapsed_ticks;   /* ticks durante GAMEPLAY (60/s) */
+    TrackTheme   selected_theme;  /* bioma escolhido no menu */
     Track       *track;          /* velocidade: track->scroll_speed */
     Car         *car1;           /* vidas: car1->lives  score: car1->score */
     Car         *car2;

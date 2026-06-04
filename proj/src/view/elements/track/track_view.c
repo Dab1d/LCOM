@@ -13,7 +13,7 @@ void track_view_draw(const Track *track) {
             int logical_row = track->scroll_row + 2 * CAR_SCREEN_ROW - screen_row;
             TileType type   = track_get_tile(track, logical_row, lane);
 
-            Sprite *sp = resources_get_tile_sprite(type);
+            Sprite *sp = resources_get_tile_sprite_themed(type, track->theme);
             if (!sp) continue;
             draw_sprite(sp, ROAD_OFFSET_X + lane * CAR_LANE_WIDTH, y);
         }

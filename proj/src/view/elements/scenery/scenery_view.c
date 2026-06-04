@@ -4,10 +4,10 @@
 
 #define STRIP_TILES 3
 
-void scenery_view_draw(const Scenery *s) {
+void scenery_view_draw(const Scenery *s, TrackTheme theme) {
     if (!s) return;
-    Sprite *grass = resources_get_grass_sprite();
-    Sprite *tree  = resources_get_tree_sprite();
+    Sprite *grass = resources_get_ground_sprite(theme);
+    Sprite *tree  = resources_get_scenery_sprite(theme);
 
     int tile     = TRACK_TILE_HEIGHT;
     int off      = (int)s->scroll_offset;

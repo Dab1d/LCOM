@@ -42,6 +42,8 @@ int input_keyboard_confirm_pressed(void);
 // Menu keyboard navigation
 int input_menu_nav_up(void);
 int input_menu_nav_down(void);
+int input_menu_nav_left(void);
+int input_menu_nav_right(void);
 
 // Gameplay mouse → car2 lane control (consumes accumulated dx)
 int input_mouse_car2_left(void);
