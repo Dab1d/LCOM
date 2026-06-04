@@ -3,7 +3,6 @@
 #include "game.h"
 #include "../../controller/input/input.h"
 #include "../resources/resources.h"
-
 #include "../../controller/palette/palette.h"
 #include "../../view/view.h"
 #include "../../view/elements/car/car_view.h"
@@ -14,7 +13,8 @@
 #include "../../view/elements/scenery/scenery_view.h"
 #include "../../view/screens/pause/pause_view.h"
 #include "../../view/screens/win/win_view.h"
-#include "../../view/elements/hud/hud_view.h"
+#include "../../view/heart/heart_view.h"
+#include "../../view/timer/timer_view.h"
 #include "../../view/screens/menu/menu_view.h"
 
 #define CLUSTER_CHANCE    70
@@ -78,9 +78,9 @@ void game_var_init(Game *game) {
     game->pause_selected = 0;
     game->obstacle_count = 0;
     game->boost_count = 0;
+    game->elapsed_ticks = 0;
 }
 void game_create(Game *game) {
-
     game_var_init(game);
     for (int row = 10; row < TRACK_TOTAL_ROWS - 10 && game->boost_count < MAX_BOOSTS; row += 10) {
         if (rand() % 100 < BOOST_SPAWN_CHANCE)
@@ -320,7 +320,8 @@ static void game_render(void) {
                 if (boost_is_visible(game.boosts[i]))
                     boost_view_draw(game.boosts[i]);
             }
-            hud_view_draw(game.car1, game.car2);
+            timer_view_draw(game.elapsed_ticks);
+            heart_view_draw(game.car1, game.car2);
             break;
         case GAME_OVER:
             break;
@@ -337,7 +338,8 @@ static void game_render(void) {
                 if (boost_is_visible(game.boosts[i]))
                     boost_view_draw(game.boosts[i]);
             }
-            hud_view_draw(game.car1, game.car2);
+            timer_view_draw(game.elapsed_ticks);
+            heart_view_draw(game.car1, game.car2);
             pause_view_draw(game.pause_selected);
             draw_sprite(resources_get_cursor_sprite(), input_cursor_x(), input_cursor_y());
             break;
@@ -386,6 +388,7 @@ void game_tick(void) {
 
     switch (game.state) {
         case GAMEPLAY:
+            game.elapsed_ticks++;
             game_update();
             game_process_collisions();
             if (game_is_over()) game.state = GAME_OVER;

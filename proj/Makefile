@@ -44,7 +44,8 @@ SRCS = proj.c \
        src/view/screens/pause/pause_view.c \
        src/view/screens/menu/menu_view.c \
        src/view/screens/win/win_view.c \
-       src/view/elements/hud/hud_view.c \
+       src/view/heart/heart_view.c \
+       src/view/timer/timer_view.c \
        src/model/cursor/cursor.c \
        src/model/leaderboard/leaderboard.c
 
@@ -70,7 +71,8 @@ HDRS = src/model/game/game.h \
        src/view/screens/pause/pause_view.h \
        src/view/screens/menu/menu_view.h \
        src/view/screens/win/win_view.h \
-       src/view/elements/hud/hud_view.h \
+       src/view/heart/heart_view.h \
+       src/view/timer/timer_view.h \
        src/model/cursor/cursor.h \
        src/model/leaderboard/leaderboard.h
 
@@ -160,7 +162,10 @@ src/view/screens/menu/menu_view.o: src/view/screens/menu/menu_view.c src/view/sc
 src/view/screens/win/win_view.o: src/view/screens/win/win_view.c src/view/screens/win/win_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/view/elements/hud/hud_view.o: src/view/elements/hud/hud_view.c src/view/elements/hud/hud_view.h
+src/view/heart/heart_view.o: src/view/heart/heart_view.c src/view/heart/heart_view.h
+	${CC} ${CFLAGS} -c $< -o $@
+
+src/view/timer/timer_view.o: src/view/timer/timer_view.c src/view/timer/timer_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/controller/graphics/graphics.o: src/controller/graphics/graphics.c src/controller/graphics/graphics.h
