@@ -11,12 +11,13 @@ static double row_to_y(int logical_row, int scroll_row, float scroll_offset) {
     return (double)((2 * CAR_SCREEN_ROW - screen_row) * TRACK_TILE_HEIGHT) + (double)scroll_offset;
 }
 
-Obstacle* create_obstacle(int row, int lane) {
+Obstacle* create_obstacle(int row, int lane, ObstacleType type) {
     Obstacle* obs = (Obstacle*) malloc(sizeof(Obstacle));
     if (obs == NULL) return NULL;
 
     obs->lane = lane;
     obs->row  = row;
+    obs->type = type;
 
     init_element(&obs->base, lane_to_x(lane), (double)(row * TRACK_TILE_HEIGHT),
                  CAR_LANE_WIDTH, TRACK_TILE_HEIGHT);

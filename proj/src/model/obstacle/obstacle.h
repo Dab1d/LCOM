@@ -5,17 +5,23 @@
 #include "../track/track.h"
 #include "../car/car.h"
 
+typedef enum {
+    OBSTACLE_ROCK   = 0,  /* bloco de betão — causa dano */
+    OBSTACLE_BANANA = 1,  /* casca de banana — faz deslizar */
+} ObstacleType;
+
 /**
  * @brief Representa um obstáculo de um tile (CAR_LANE_WIDTH x TRACK_TILE_HEIGHT).
  * Obstáculos são sempre 1 faixa × 1 linha; clusters são criados em game.c.
  */
 typedef struct {
-    Element base;  // posição em píxeis, hitbox, is_active, sprite
-    int lane;      // faixa lógica do obstáculo
-    int row;       // linha lógica do obstáculo
+    Element      base;  // posição em píxeis, hitbox, is_active, sprite
+    int          lane;  // faixa lógica do obstáculo
+    int          row;   // linha lógica do obstáculo
+    ObstacleType type;  // comportamento ao colidir
 } Obstacle;
 
-Obstacle* create_obstacle(int row, int lane);
+Obstacle* create_obstacle(int row, int lane, ObstacleType type);
 void      destroy_obstacle(Obstacle* obs);
 
 /**

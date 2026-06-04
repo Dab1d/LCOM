@@ -17,6 +17,7 @@ typedef struct {
     Sprite *pause_resume_btn[2]; // [0]=normal [1]=selected
     Sprite *pause_quit_btn[2];   // [0]=normal [1]=selected
     Sprite *cursor_sprite;
+    Sprite *banana_sprite;
 } Resources;
 
 int  resources_load(void);
@@ -35,5 +36,6 @@ Sprite* resources_get_pause_panel(void);
 Sprite* resources_get_pause_resume_btn(int selected);
 Sprite* resources_get_pause_quit_btn(int selected);
 Sprite* resources_get_cursor_sprite(void);
+Sprite* resources_get_banana_sprite(void);
 
 #endif /* __PROJ_RESOURCES_H */
