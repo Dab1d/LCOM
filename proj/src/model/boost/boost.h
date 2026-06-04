@@ -3,6 +3,7 @@
 
 #include "../element/element.h"
 #include "../track/track.h"
+#include "../car/car.h"
 
 /**
  * @brief Representa um boost na pista.
@@ -30,8 +31,8 @@ void boost_update(Boost* boost, int scroll_row, float scroll_offset);
 bool boost_is_visible(const Boost* boost);
 
 /**
- * @brief Verifica se um carro numa dada faixa e linha de ecrã colide com este boost.
+ * @brief Verifica se um carro colide com este boost (AABB + faixa).
  */
-bool boost_collides_with_car(const Boost* boost, int car_lane, int car_screen_row);
+bool boost_collides_with_car(const Boost* boost, const Car* car);
 
 #endif // BOOST_H
