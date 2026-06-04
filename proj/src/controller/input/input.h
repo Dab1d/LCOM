@@ -250,13 +250,32 @@ int input_cursor_x(void);
  */
 int input_cursor_y(void);
 
-// Car select navigation
+/** @} */
+
+/** @defgroup input_car_select Car-selection screen navigation
+ * @{ */
+
+/** @brief Returns non-zero if player 1 pressed left on the car-select screen. */
 int input_p1_nav_left(void);
+
+/** @brief Returns non-zero if player 1 pressed right on the car-select screen. */
 int input_p1_nav_right(void);
+
+/** @brief Returns non-zero if player 2 pressed left on the car-select screen. */
 int input_p2_nav_left(void);
+
+/** @brief Returns non-zero if player 2 pressed right on the car-select screen. */
 int input_p2_nav_right(void);
+
+/** @brief Returns non-zero if the race start was confirmed on the car-select screen. */
 int input_car_select_race_pressed(void);
+
+/** @brief Returns non-zero if the cursor is over the race start button on the car-select screen. */
 int input_mouse_over_car_select_race_btn(void);
+
+/** @brief Returns non-zero if the race start button was clicked on the car-select screen. */
 int input_mouse_car_select_race_pressed(void);
+
+/** @} */
 
 #endif /* __PROJ_INPUT_H */

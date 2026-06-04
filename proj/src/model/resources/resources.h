@@ -10,6 +10,12 @@
 
 #define CAR_FORMAT_MAX 8
 
+/**
+ * @brief Container for every sprite used by the game.
+ *
+ * Owned exclusively by the resources module; all other modules hold
+ * non-owning pointers obtained through the getter functions below.
+ */
 typedef struct {
     Sprite *car_sprites[2][4];        /**< [player-1][CarState] */
     Sprite *obstacle_sprite;          /**< Rock obstacle — city theme. */
@@ -200,13 +206,14 @@ Sprite* resources_get_colon_sprite(void);
  */
 Sprite* resources_get_obstacle_sprite_themed(int theme);
 
+Sprite* resources_get_fence_sprite(void);
+Sprite* resources_get_oil_puddle_sprite(void);
+Sprite* resources_get_sand_pebbles_sprite(void);
+
 /**
  * @brief Returns the mode-selection screen title sprite.
  * @return Non-owning pointer to the sprite.
  */
-Sprite* resources_get_fence_sprite(void);
-Sprite* resources_get_oil_puddle_sprite(void);
-Sprite* resources_get_sand_pebbles_sprite(void);
 Sprite* resources_get_mode_select_title(void);
 
 /**
