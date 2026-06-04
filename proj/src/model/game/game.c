@@ -176,6 +176,7 @@ void game_var_init(Game *game) {
     game->scenery = scenery_create(game->selected_theme);
     game->winner = 0;
     game->pause_selected = 0;
+    game->win_selected = 0;
     game->obstacle_count = 0;
     game->boost_count = 0;
     game->elapsed_ticks = 0;
@@ -339,10 +340,17 @@ static void game_process_input(void) {
             }
             break;
         case GAME_OVER:
-            if (input_gameover_restart_pressed())
-                game_reset(&game);
-            if (input_gameover_menu_pressed())
-                game.state = MAIN_MENU;
+            if (input_mouse_over_win_play_again()) game.win_selected = 0;
+            if (input_mouse_over_win_menu())       game.win_selected = 1;
+            if (input_menu_nav_left())  game.win_selected = 0;
+            if (input_menu_nav_right()) game.win_selected = 1;
+            if (input_keyboard_confirm_pressed()) {
+                if (game.win_selected == 0) game_reset(&game);
+                else { game.menu_selection = 0; game.state = MAIN_MENU; }
+            }
+            if (input_mouse_win_play_again_pressed()) game_reset(&game);
+            if (input_mouse_win_menu_pressed()) { game.menu_selection = 0; game.state = MAIN_MENU; }
+            if (input_gameover_menu_pressed())  { game.menu_selection = 0; game.state = MAIN_MENU; }
             break;
         case EXIT:
             break;
@@ -493,8 +501,8 @@ static bool game_is_over(void) {
 static void game_render(void) {
     switch (game.state) {
         case GAME_OVER:
-            draw_clear(PAL_HUD_BG);
-            win_view_draw(game.winner);
+            draw_clear(PAL_BLACK);
+            win_view_draw(game.winner, game.win_selected);
             copy_buffer_to_video();
             return;
         default:
@@ -566,6 +574,7 @@ void game_init(void) {
     game.state = MAIN_MENU;
     game.winner = 0;
     game.pause_selected = 0;
+    game.win_selected = 0;
     game.menu_selection = 0;
     game.selected_theme = TRACK_THEME_CITY;
     game.mode_selection = 0;

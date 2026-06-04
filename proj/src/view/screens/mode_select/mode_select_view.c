@@ -19,11 +19,11 @@
 #define MODE_RACE       0
 #define MODE_ENDURANCE  1
 
-static void draw_card_highlight(int x, int y) {
-    draw_rect(x - BORDER_T, y - BORDER_T, CARD_W + 2 * BORDER_T, BORDER_T, PAL_BTN_YLW);
-    draw_rect(x - BORDER_T, y + CARD_H,   CARD_W + 2 * BORDER_T, BORDER_T, PAL_BTN_YLW);
-    draw_rect(x - BORDER_T, y,            BORDER_T,               CARD_H,   PAL_BTN_YLW);
-    draw_rect(x + CARD_W,   y,            BORDER_T,               CARD_H,   PAL_BTN_YLW);
+static void draw_card_highlight(int x, int y, int w, int h) {
+    draw_rect(x - BORDER_T, y - BORDER_T, w + 2 * BORDER_T, BORDER_T, PAL_BTN_YLW);
+    draw_rect(x - BORDER_T, y + h,        w + 2 * BORDER_T, BORDER_T, PAL_BTN_YLW);
+    draw_rect(x - BORDER_T, y,            BORDER_T,          h,        PAL_BTN_YLW);
+    draw_rect(x + w,        y,            BORDER_T,          h,        PAL_BTN_YLW);
 }
 
 void mode_select_view_draw(int selection) {
@@ -39,8 +39,27 @@ void mode_select_view_draw(int selection) {
         draw_sprite_scaled(title, (SCREEN_W - tw) / 2, TITLE_Y, tw, th);
     }
 
-    if (race)  draw_sprite(race,  RACE_CARD_X,  CARDS_Y);
-    if (endur) draw_sprite(endur, ENDUR_CARD_X, CARDS_Y);
+    int sel_w = CARD_W * 9 / 8;
+    int sel_h = CARD_H * 9 / 8;
+
+    /* draw unselected card first, then selected on top (scaled + border) */
+    if (selection == MODE_RACE) {
+        if (endur) draw_sprite(endur, ENDUR_CARD_X, CARDS_Y);
+        if (race) {
+            int sx = RACE_CARD_X  - (sel_w - CARD_W) / 2;
+            int sy = CARDS_Y      - (sel_h - CARD_H) / 2;
+            draw_sprite_scaled(race, sx, sy, sel_w, sel_h);
+            draw_card_highlight(sx, sy, sel_w, sel_h);
+        }
+    } else {
+        if (race) draw_sprite(race, RACE_CARD_X, CARDS_Y);
+        if (endur) {
+            int sx = ENDUR_CARD_X - (sel_w - CARD_W) / 2;
+            int sy = CARDS_Y      - (sel_h - CARD_H) / 2;
+            draw_sprite_scaled(endur, sx, sy, sel_w, sel_h);
+            draw_card_highlight(sx, sy, sel_w, sel_h);
+        }
+    }
 
     if (race_lbl)
         draw_sprite(race_lbl,
@@ -48,11 +67,6 @@ void mode_select_view_draw(int selection) {
     if (endur_lbl)
         draw_sprite(endur_lbl,
                     ENDUR_CARD_X + (CARD_W - endur_lbl->width) / 2, LABEL_Y);
-
-    if (selection == MODE_RACE)
-        draw_card_highlight(RACE_CARD_X, CARDS_Y);
-    else
-        draw_card_highlight(ENDUR_CARD_X, CARDS_Y);
 
     draw_sprite(resources_get_cursor_sprite(), input_cursor_x(), input_cursor_y());
 }

@@ -35,6 +35,7 @@ typedef enum {
 typedef struct {
     GameState  state;           /**< Current screen/phase. */
     int        pause_selected;  /**< Pause cursor: 0=RESUME, 1=QUIT. */
+    int        win_selected;    /**< Win-screen cursor: 0=PLAY AGAIN, 1=MENU. */
     int        menu_selection;  /**< Main-menu cursor: 0=START, 1=EXIT. */
     int        mode_selection;  /**< Mode-select cursor: 0=RACE, 1=ENDURANCE. */
     int        winner;          /**< 0=none, 1=Player 1, 2=Player 2. */

@@ -50,6 +50,9 @@ typedef struct {
     Sprite *mode_endurance_label;     /**< ENDURANCE mode label. */
     Sprite *car_format_sprites[CAR_FORMAT_MAX][2][4]; /**< [fmt][player][CarState] */
     int     car_format_count;         /**< Number of loaded car format sprites. */
+    Sprite *win_img[2];               /**< [0]=blue_wins  [1]=red_wins. */
+    Sprite *win_play_again_btn;       /**< PLAY AGAIN button. */
+    Sprite *win_menu_btn;             /**< MENU button. */
 } Resources;
 
 /**
@@ -242,5 +245,8 @@ Sprite* resources_get_mode_endurance_label(void);
 int     resources_get_car_format_count(void);
 Sprite* resources_get_car_format_preview(int fmt, int player);
 void    resources_apply_car_format(int fmt1, int fmt2);
+Sprite* resources_get_win_img(int winner);
+Sprite* resources_get_win_play_again_btn(void);
+Sprite* resources_get_win_menu_btn(void);
 
 #endif /* __PROJ_RESOURCES_H */
