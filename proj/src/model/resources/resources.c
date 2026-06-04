@@ -25,6 +25,7 @@
 #include "../../assets/xpm/cars/car_red_destroyed.xpm"
 
 #include "../../assets/xpm/pause/pause_panel.xpm"
+#include "../../assets/xpm/banana.xpm"
 #include "../../assets/xpm/pause/pause_resume_btn.xpm"
 #include "../../assets/xpm/pause/pause_resume_btn_sel.xpm"
 #include "../../assets/xpm/pause/pause_quit_btn.xpm"
@@ -91,6 +92,9 @@ int resources_load(void) {
     res.cursor_sprite = create_sprite((xpm_map_t)cursor_xpm);
     if (!res.cursor_sprite) return 1;
 
+    res.banana_sprite = create_sprite((xpm_map_t)banana_xpm);
+    if (!res.banana_sprite) return 1;
+
     return 0;
 }
 
@@ -105,6 +109,7 @@ void resources_destroy(void) {
     if (res.grass_sprite)    { sprite_destroy(res.grass_sprite);    res.grass_sprite    = NULL; }
     if (res.tree_sprite)     { sprite_destroy(res.tree_sprite);     res.tree_sprite     = NULL; }
     if (res.pause_panel)     { sprite_destroy(res.pause_panel);     res.pause_panel     = NULL; }
+    if (res.banana_sprite)   { sprite_destroy(res.banana_sprite);   res.banana_sprite   = NULL; }
     for (int i = 0; i < 2; i++) {
         if (res.pause_resume_btn[i]) { sprite_destroy(res.pause_resume_btn[i]); res.pause_resume_btn[i] = NULL; }
         if (res.pause_quit_btn[i])   { sprite_destroy(res.pause_quit_btn[i]);   res.pause_quit_btn[i]   = NULL; }
@@ -157,3 +162,4 @@ Sprite* resources_get_menu_title(void)     { return res.menu_title; }
 Sprite* resources_get_menu_start_btn(void) { return res.menu_start_btn; }
 Sprite* resources_get_menu_exit_btn(void)  { return res.menu_exit_btn; }
 Sprite* resources_get_cursor_sprite(void)  { return res.cursor_sprite; }
+Sprite* resources_get_banana_sprite(void)  { return res.banana_sprite; }

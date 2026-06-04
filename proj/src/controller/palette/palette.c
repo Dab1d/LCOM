@@ -151,14 +151,14 @@ const uint8_t GAME_PALETTE[256][3] = {
     /* 118 (cubo)            */ {0x33, 0xCC, 0x66},
     /* 119 (cubo)            */ {0x33, 0xCC, 0x99},
 
-    /* ── Bloco 8: Óleo (120-135) ── */
-    /* 120 PAL_OIL_BASE      */ {0x1A, 0x1A, 0x2E},
-    /* 121 PAL_OIL_SHEEN1    */ {0x22, 0x33, 0xAA},
-    /* 122 PAL_OIL_SHEEN2    */ {0x33, 0x44, 0xBB},
-    /* 123 PAL_OIL_SHEEN3    */ {0x44, 0x55, 0xCC},
-    /* 124 PAL_OIL_EDGE      */ {0x11, 0x11, 0x22},
-    /* 125 PAL_OIL_REFLECT   */ {0x66, 0x77, 0xDD},
-    /* 126 PAL_OIL_DARK      */ {0x0A, 0x0A, 0x1E},
+    /* ── Bloco 8: Casca de banana (120-126) ── */
+    /* 120 PAL_BANANA_YELLOW */ {0xFF, 0xEE, 0x44},
+    /* 121 PAL_BANANA_DARK   */ {0xCC, 0x77, 0x00},
+    /* 122 PAL_BANANA_LIGHT  */ {0xFF, 0xFF, 0x99},
+    /* 123 PAL_BANANA_BROWN  */ {0x88, 0x55, 0x22},
+    /* 124 PAL_BANANA_STEM   */ {0x44, 0x22, 0x00},
+    /* 125 PAL_BANANA_TIP    */ {0xDD, 0xCC, 0x44},
+    /* 126 PAL_BANANA_INNER  */ {0xFF, 0xFF, 0xCC},
     /* 127 (cubo)            */ {0x33, 0xCC, 0xCC},
     /* 128 (cubo)            */ {0x33, 0xCC, 0xFF},
     /* 129 (cubo)            */ {0x33, 0xFF, 0x00},

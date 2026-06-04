@@ -6,6 +6,11 @@
 
 // Call at the end of every keyboard interrupt to update extended-key state
 void input_update(void);
+
+// Banana power-up: invert controls per player for a given number of ticks
+void input_set_car1_inverted(int ticks);
+void input_set_car2_inverted(int ticks);
+void input_tick_inverted(void);   // call once per game tick to count down
 void input_flush(void);
 
 // Call once at startup to create the menu cursor

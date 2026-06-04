@@ -35,6 +35,8 @@ static bool     scancode_ready = false;
 static Cursor  *menu_cursor    = NULL;
 static bool     mouse_lb_event = false;
 static bool     mouse_rb_event = false;
+static int      inverted_car1  = 0;  /* >0 => A<->D invertidos */
+static int      inverted_car2  = 0;  /* >0 => LMB<->RMB invertidos */
 
 void input_init_cursor(int screen_w, int screen_h) {
     if (menu_cursor) destroy_cursor(menu_cursor);
@@ -48,8 +50,16 @@ void input_mouse_update(int dx, int dy, bool lb, bool rb) {
     if (cursor_right_clicked(menu_cursor)) mouse_rb_event = true;
 }
 
-int input_mouse_car2_left(void)  { return mouse_lb_event; }
-int input_mouse_car2_right(void) { return mouse_rb_event; }
+/* When inverted, swap LMB and RMB for car2 (controlled by mouse). */
+int input_mouse_car2_left(void)  { return inverted_car2 > 0 ? mouse_rb_event : mouse_lb_event; }
+int input_mouse_car2_right(void) { return inverted_car2 > 0 ? mouse_lb_event : mouse_rb_event; }
+
+void input_set_car1_inverted(int ticks) { inverted_car1 = ticks; }
+void input_set_car2_inverted(int ticks) { inverted_car2 = ticks; }
+void input_tick_inverted(void) {
+    if (inverted_car1 > 0) inverted_car1--;
+    if (inverted_car2 > 0) inverted_car2--;
+}
 
 void input_update(void) {
     uint8_t sc = get_current_scancode();
@@ -85,8 +95,17 @@ int input_keyboard_car_right_pressed(void) {
     return scancode_ready && prev_extended && get_current_scancode() == ARROW_RIGHT_CODE;
 }
 
-int input_keyboard_car1_left_pressed(void)  { return scancode_ready && get_current_scancode() == KEY_A_CODE; }
-int input_keyboard_car1_right_pressed(void) { return scancode_ready && get_current_scancode() == KEY_D_CODE; }
+/* When inverted, A moves right and D moves left for car1. */
+int input_keyboard_car1_left_pressed(void)  {
+    if (!scancode_ready) return 0;
+    uint8_t sc = get_current_scancode();
+    return inverted_car1 > 0 ? (sc == KEY_D_CODE) : (sc == KEY_A_CODE);
+}
+int input_keyboard_car1_right_pressed(void) {
+    if (!scancode_ready) return 0;
+    uint8_t sc = get_current_scancode();
+    return inverted_car1 > 0 ? (sc == KEY_A_CODE) : (sc == KEY_D_CODE);
+}
 
 int input_keyboard_pause_pressed(void)   { return scancode_ready && get_current_scancode() == ESC_MAKECODE; }
 int input_keyboard_up_pressed(void)      { return scancode_ready && prev_extended && get_current_scancode() == ARROW_UP_CODE; }

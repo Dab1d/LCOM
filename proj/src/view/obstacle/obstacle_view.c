@@ -4,7 +4,9 @@
 
 void obstacle_view_draw(Obstacle *obs) {
     if (!obs || !obs->base.is_active) return;
-    Sprite *sp = resources_get_obstacle_sprite();
+    Sprite *sp = (obs->type == OBSTACLE_BANANA)
+                 ? resources_get_banana_sprite()
+                 : resources_get_obstacle_sprite();
     if (!sp) return;
     draw_sprite(sp, (int)obs->base.x + ROAD_OFFSET_X, (int)obs->base.y);
 }
