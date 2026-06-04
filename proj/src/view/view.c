@@ -35,6 +35,19 @@ void draw_sprite_scaled(Sprite *sp, int x, int y, int w, int h) {
     }
 }
 
+void draw_rect(int x, int y, int w, int h, uint8_t color) {
+    int scr_w = vg_get_x_res(), scr_h = vg_get_y_res();
+    for (int row = 0; row < h; row++) {
+        int py = y + row;
+        if (py < 0 || py >= scr_h) continue;
+        for (int col = 0; col < w; col++) {
+            int px = x + col;
+            if (px >= 0 && px < scr_w)
+                back_buffer[py * scr_w + px] = color;
+        }
+    }
+}
+
 void draw_clear(uint8_t color_index) {
     uint32_t size = (uint32_t)vg_get_x_res() * vg_get_y_res();
     memset(back_buffer, color_index, size);

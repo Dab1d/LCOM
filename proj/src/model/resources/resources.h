@@ -19,6 +19,8 @@ typedef struct {
     Sprite *cursor_sprite;
     Sprite *banana_sprite;
     Sprite *heart_sprite;
+    Sprite *digit_sprites[10];
+    Sprite *colon_sprite;
 } Resources;
 
 int  resources_load(void);
@@ -39,5 +41,7 @@ Sprite* resources_get_pause_quit_btn(int selected);
 Sprite* resources_get_cursor_sprite(void);
 Sprite* resources_get_banana_sprite(void);
 Sprite* resources_get_heart_sprite(void);
+Sprite* resources_get_digit_sprite(int digit);
+Sprite* resources_get_colon_sprite(void);
 
 #endif /* __PROJ_RESOURCES_H */
