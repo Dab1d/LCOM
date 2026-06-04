@@ -7,9 +7,15 @@ typedef struct {
     Sprite *car_sprites[2][4]; // [player-1][CarState]
     Sprite *obstacle_sprite;
     Sprite *boost_sprite;
-    Sprite *tile_sprites[4];   // indexed by TileType
+    Sprite *tile_sprites[4];         // city tiles, indexed by TileType
+    Sprite *tile_sprites_desert[4];  // desert tiles, indexed by TileType
     Sprite *grass_sprite;
+    Sprite *sand_sprite;
     Sprite *tree_sprite;
+    Sprite *cactus_sprite;
+    Sprite *divider_sprite;
+    Sprite *obstacle_desert_sprite;   /* barril — mesmo efeito que rock */
+    Sprite *haybale_sprite;           /* fardo — mesmo efeito que rock */
     Sprite *menu_title;
     Sprite *menu_start_btn;
     Sprite *menu_exit_btn;
@@ -32,6 +38,10 @@ Sprite* resources_get_boost_sprite(void);
 Sprite* resources_get_tile_sprite(int type);
 Sprite* resources_get_grass_sprite(void);
 Sprite* resources_get_tree_sprite(void);
+Sprite* resources_get_ground_sprite(int theme);
+Sprite* resources_get_scenery_sprite(int theme);
+Sprite* resources_get_tile_sprite_themed(int type, int theme);
+Sprite* resources_get_divider_sprite(void);
 Sprite* resources_get_menu_title(void);
 Sprite* resources_get_menu_start_btn(void);
 Sprite* resources_get_menu_exit_btn(void);
@@ -43,5 +53,6 @@ Sprite* resources_get_banana_sprite(void);
 Sprite* resources_get_heart_sprite(void);
 Sprite* resources_get_digit_sprite(int digit);
 Sprite* resources_get_colon_sprite(void);
+Sprite* resources_get_obstacle_sprite_themed(int theme);
 
 #endif /* __PROJ_RESOURCES_H */
