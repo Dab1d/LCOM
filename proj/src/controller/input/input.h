@@ -252,6 +252,25 @@ int input_mouse_win_menu_pressed(void);
 
 /** @} */
 
+/** @defgroup input_leaderboard Leaderboard screen
+ * @{ */
+
+/**
+ * @brief Returns non-zero if the leaderboard back action was triggered.
+ *
+ * Mapped to the ESC key; used to return to the main menu from the leaderboard.
+ * @return Non-zero on press.
+ */
+int input_leaderboard_back_pressed(void);
+
+/** @brief Returns non-zero if the LEADERBOARD button was clicked on the main menu. */
+int input_mouse_leaderboard_pressed(void);
+
+/** @brief Returns non-zero if the cursor is over the LEADERBOARD button on the main menu. */
+int input_mouse_over_leaderboard(void);
+
+/** @} */
+
 /** @defgroup input_cursor Cursor position
  * @{ */
 

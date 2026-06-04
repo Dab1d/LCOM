@@ -31,6 +31,7 @@ typedef struct {
     Sprite *haybale_sprite;           /**< Hay bale — same damage effect as rock. */
     Sprite *menu_title;               /**< Main menu title graphic. */
     Sprite *menu_start_btn;           /**< START button. */
+    Sprite *menu_leaderboard_btn;     /**< LEADERBOARD button. */
     Sprite *menu_exit_btn;            /**< EXIT button. */
     Sprite *pause_panel;              /**< Pause overlay background panel. */
     Sprite *pause_resume_btn[2];      /**< [0]=normal  [1]=highlighted. */
@@ -144,6 +145,12 @@ Sprite* resources_get_menu_title(void);
  * @return Non-owning pointer to the sprite.
  */
 Sprite* resources_get_menu_start_btn(void);
+
+/**
+ * @brief Returns the LEADERBOARD button sprite.
+ * @return Non-owning pointer to the sprite.
+ */
+Sprite* resources_get_menu_leaderboard_btn(void);
 
 /**
  * @brief Returns the EXIT button sprite.
