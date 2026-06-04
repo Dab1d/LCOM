@@ -23,6 +23,13 @@
 #define MENU_EXIT_X   ((MENU_SCREEN_W - MENU_BTN_W) / 2)
 #define MENU_EXIT_Y   510
 
+/* Pause button layout — must match pause_view.h */
+#define PAUSE_BTN_X_C   412
+#define PAUSE_BTN_W_C   200
+#define PAUSE_BTN_H_C    44
+#define PAUSE_RESUME_Y_C 356
+#define PAUSE_QUIT_Y_C   414
+
 static bool     prev_extended  = false;
 static bool     scancode_ready = false;
 static Cursor  *menu_cursor    = NULL;
@@ -59,6 +66,7 @@ void input_flush(void) {
     prev_extended  = false;
     mouse_lb_event = false;
     mouse_rb_event = false;
+    if (menu_cursor) menu_cursor->clicked = false;
 }
 
 int input_esc_pressed(void) {
@@ -117,3 +125,18 @@ int input_gameover_restart_pressed(void) {
 int input_gameover_menu_pressed(void) {
     return input_keyboard_menu_pressed() || input_mouse_menu_pressed();
 }
+
+int input_mouse_over_pause_resume(void) {
+    return over_rect(PAUSE_BTN_X_C, PAUSE_RESUME_Y_C, PAUSE_BTN_W_C, PAUSE_BTN_H_C);
+}
+int input_mouse_over_pause_quit(void) {
+    return over_rect(PAUSE_BTN_X_C, PAUSE_QUIT_Y_C, PAUSE_BTN_W_C, PAUSE_BTN_H_C);
+}
+int input_mouse_pause_resume_pressed(void) {
+    return menu_cursor && cursor_left_clicked(menu_cursor) && input_mouse_over_pause_resume();
+}
+int input_mouse_pause_quit_pressed(void) {
+    return menu_cursor && cursor_left_clicked(menu_cursor) && input_mouse_over_pause_quit();
+}
+int input_cursor_x(void) { return menu_cursor ? cursor_get_x(menu_cursor) : 0; }
+int input_cursor_y(void) { return menu_cursor ? cursor_get_y(menu_cursor) : 0; }

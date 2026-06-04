@@ -21,7 +21,8 @@ Sprite* create_sprite(xpm_map_t map) {
         uint8_t r = (px >> 16) & 0xFF;
         uint8_t g = (px >> 8)  & 0xFF;
         uint8_t b =  px        & 0xFF;
-        sp->pixmap[i] = palette_find_index(r, g, b);
+        sp->pixmap[i] = (r == 0xFF && g == 0x00 && b == 0xFF)
+                      ? PAL_TRANSPARENT : palette_find_index(r, g, b);
     }
 
     free(raw);

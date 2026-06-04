@@ -27,6 +27,7 @@
 #include "../../assets/getaway_car_title.xpm"
 #include "../../assets/start_button.xpm"
 #include "../../assets/exit_button.xpm"
+#include "../../assets/xpm/cursor.xpm"
 
 static Resources res;
 
@@ -78,6 +79,9 @@ int resources_load(void) {
     if (!res.pause_panel || !res.pause_resume_btn[0] || !res.pause_resume_btn[1]
      || !res.pause_quit_btn[0] || !res.pause_quit_btn[1]) return 1;
 
+    res.cursor_sprite = create_sprite((xpm_map_t)cursor_xpm);
+    if (!res.cursor_sprite) return 1;
+
     return 0;
 }
 
@@ -98,6 +102,7 @@ void resources_destroy(void) {
     if (res.menu_title)      { sprite_destroy(res.menu_title);      res.menu_title      = NULL; }
     if (res.menu_start_btn)  { sprite_destroy(res.menu_start_btn);  res.menu_start_btn  = NULL; }
     if (res.menu_exit_btn)   { sprite_destroy(res.menu_exit_btn);   res.menu_exit_btn   = NULL; }
+    if (res.cursor_sprite)   { sprite_destroy(res.cursor_sprite);   res.cursor_sprite   = NULL; }
 }
 
 Sprite* resources_get_car_sprite(int player, int state) {
@@ -137,3 +142,4 @@ Sprite* resources_get_pause_quit_btn(int selected) {
 Sprite* resources_get_menu_title(void)     { return res.menu_title; }
 Sprite* resources_get_menu_start_btn(void) { return res.menu_start_btn; }
 Sprite* resources_get_menu_exit_btn(void)  { return res.menu_exit_btn; }
+Sprite* resources_get_cursor_sprite(void)  { return res.cursor_sprite; }

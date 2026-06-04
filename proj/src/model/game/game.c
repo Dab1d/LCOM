@@ -13,6 +13,14 @@
 #include "../../view/win/win_view.h"
 #include "../../controller/palette/palette.h"
 
+/* forward declarations — defined in input.c, only used in this file */
+int input_mouse_over_pause_resume(void);
+int input_mouse_over_pause_quit(void);
+int input_mouse_pause_resume_pressed(void);
+int input_mouse_pause_quit_pressed(void);
+int input_cursor_x(void);
+int input_cursor_y(void);
+
 #define CLUSTER_CHANCE    70
 #define BOOST_TILES       2
 #define MENU_START        0
@@ -129,8 +137,13 @@ static void game_process_input(void) {
             if (input_mouse_car2_right()) car_move_lane(game.car2, +1);
             break;
         case PAUSE:
-            if (input_keyboard_pause_pressed()) {
+            if (input_mouse_over_pause_resume()) game.pause_selected = 0;
+            if (input_mouse_over_pause_quit())   game.pause_selected = 1;
+            if (input_keyboard_pause_pressed() || input_mouse_pause_resume_pressed()) {
                 game.state = GAMEPLAY;
+            } else if (input_mouse_pause_quit_pressed()) {
+                game.menu_selection = 0;
+                game.state = MAIN_MENU;
             } else if (input_keyboard_up_pressed() || input_keyboard_down_pressed()) {
                 game.pause_selected = 1 - game.pause_selected;
             } else if (input_keyboard_confirm_pressed()) {
@@ -261,6 +274,7 @@ static void game_render(void) {
                     draw_sprite(exit_btn, (SCREEN_W - exit_btn->width) / 2, 510);
                 }
             }
+            draw_sprite(resources_get_cursor_sprite(), input_cursor_x(), input_cursor_y());
             break;
         }
         case GAMEPLAY:
@@ -285,6 +299,7 @@ static void game_render(void) {
                     obstacle_view_draw(game.obstacles[i]);
             }
             pause_view_draw(game.pause_selected);
+            draw_sprite(resources_get_cursor_sprite(), input_cursor_x(), input_cursor_y());
             break;
         case EXIT:
             break;
