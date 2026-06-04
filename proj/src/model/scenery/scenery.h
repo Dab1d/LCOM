@@ -31,7 +31,7 @@ typedef struct {
 
 /**
  * @brief Allocates and initialises a Scenery collection.
- * @param theme Track theme (determines which scenery sprites to use).
+ * @param theme Track theme that determines which sprites are used.
  * @return Pointer to the new Scenery, or NULL on allocation failure.
  */
 Scenery* scenery_create(TrackTheme theme);
