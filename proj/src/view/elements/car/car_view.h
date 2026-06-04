@@ -11,7 +11,8 @@
 
 /**
  * @brief Draws the car sprite corresponding to its current CarState.
- * @param car Car to render.
+ * @param car   Car to render.
+ * @param theme Track theme (determines which colour variant to use).
  */
 void car_view_draw(Car *car, TrackTheme theme);
 
