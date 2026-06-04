@@ -18,12 +18,16 @@
 #include "../../view/screens/menu/menu_view.h"
 #include "../../view/screens/mode_select/mode_select_view.h"
 #include "../../view/screens/car_select/car_select_view.h"
+#include "../../view/leaderboard_view.h"
+#include "../leaderboard/leaderboard.h"
 
 #define CLUSTER_CHANCE    70
 #define BOOST_TILES       2
 #define BOOST_SPAWN_CHANCE 65
 #define MENU_START        0
-#define MENU_EXIT         1
+#define MENU_LEADERBOARD  1
+#define MENU_EXIT         2
+#define MENU_ITEMS        3
 
 static Game game;
 
@@ -271,20 +275,25 @@ static void game_process_input(void) {
     switch (game.state) {
         case MAIN_MENU:
             if (input_esc_pressed()) {    game.state = EXIT; break; }
-            if (input_menu_nav_up())      game.menu_selection = MENU_START;
-            if (input_menu_nav_down())    game.menu_selection = MENU_EXIT;
+            if (input_menu_nav_up())
+                game.menu_selection = (game.menu_selection + MENU_ITEMS - 1) % MENU_ITEMS;
+            if (input_menu_nav_down())
+                game.menu_selection = (game.menu_selection + 1) % MENU_ITEMS;
             if (input_menu_nav_left() || input_menu_nav_right())
                 game.selected_theme = (game.selected_theme == TRACK_THEME_CITY)
                                       ? TRACK_THEME_DESERT : TRACK_THEME_CITY;
-            if (input_mouse_over_start()) game.menu_selection = MENU_START;
-            if (input_mouse_over_exit())  game.menu_selection = MENU_EXIT;
+            if (input_mouse_over_start())       game.menu_selection = MENU_START;
+            if (input_mouse_over_leaderboard()) game.menu_selection = MENU_LEADERBOARD;
+            if (input_mouse_over_exit())        game.menu_selection = MENU_EXIT;
 
             if (input_keyboard_start_pressed()) {
-                if (game.menu_selection == MENU_START) game.state = CAR_SELECT;
-                else game.state = EXIT;
+                if (game.menu_selection == MENU_START)            game.state = CAR_SELECT;
+                else if (game.menu_selection == MENU_LEADERBOARD) game.state = LEADERBOARD;
+                else if (game.menu_selection == MENU_EXIT)        game.state = EXIT;
             }
-            if (input_mouse_start_pressed()) game.state = CAR_SELECT;
-            if (input_mouse_exit_pressed())  game.state = EXIT;
+            if (input_mouse_start_pressed())       game.state = CAR_SELECT;
+            if (input_mouse_leaderboard_pressed()) game.state = LEADERBOARD;
+            if (input_mouse_exit_pressed())        game.state = EXIT;
             break;
         case CAR_SELECT: {
             int n = resources_get_car_format_count();
@@ -351,6 +360,9 @@ static void game_process_input(void) {
             if (input_mouse_win_play_again_pressed()) game_reset(&game);
             if (input_mouse_win_menu_pressed()) { game.menu_selection = 0; game.state = MAIN_MENU; }
             if (input_gameover_menu_pressed())  { game.menu_selection = 0; game.state = MAIN_MENU; }
+            break;
+        case LEADERBOARD:
+            if (input_leaderboard_back_pressed()) game.state = MAIN_MENU;
             break;
         case EXIT:
             break;
@@ -512,6 +524,10 @@ static void game_render(void) {
     draw_clear(PAL_BLACK);
 
     switch (game.state) {
+        case LEADERBOARD:
+            leaderboard_view_draw();
+            copy_buffer_to_video();
+            return;
         case MAIN_MENU:
             menu_view_draw(game.menu_selection, game.selected_theme);
             break;
@@ -570,6 +586,8 @@ static void game_render(void) {
 void game_init(void) {
     resources_destroy();
     resources_load();
+    leaderboard_init();
+    leaderboard_view_init();
     input_init_cursor(SCREEN_W, SCREEN_H);
     game.state = MAIN_MENU;
     game.winner = 0;
@@ -613,7 +631,17 @@ void game_tick(void) {
             game.elapsed_ticks++;
             game_update();
             game_process_collisions();
-            if (game_is_over()) game.state = GAME_OVER;
+            if (game_is_over()) {
+                if (game.mode_selection == 1) {
+                    int h, m, s;
+                    leaderboard_read_rtc(&h, &m, &s);
+                    const char *winner_name = (game.winner == 1) ? "BLUE" : "RED";
+                    leaderboard_add(winner_name,
+                                    (int)(game.elapsed_ticks / 60),
+                                    h, m, s);
+                }
+                game.state = GAME_OVER;
+            }
             break;
         case CAR_SELECT:
             break;
@@ -621,6 +649,7 @@ void game_tick(void) {
         case MODE_SELECT:
         case PAUSE:
         case GAME_OVER:
+        case LEADERBOARD:
         case EXIT:
             break;
     }

@@ -15,13 +15,16 @@
 #define KEY_D_CODE          0x20
 
 /* Menu button layout — must match the positions used in game_render */
-#define MENU_BTN_W    256
-#define MENU_BTN_H     64
-#define MENU_SCREEN_W 1024
-#define MENU_START_X  ((MENU_SCREEN_W - MENU_BTN_W) / 2)
-#define MENU_START_Y  420
-#define MENU_EXIT_X   ((MENU_SCREEN_W - MENU_BTN_W) / 2)
-#define MENU_EXIT_Y   510
+/* Buttons are 256x64 XPMs drawn at 5/4 scale = 320x80 on screen */
+#define MENU_BTN_W         320
+#define MENU_BTN_H          80
+#define MENU_SCREEN_W      1024
+#define MENU_START_X       ((MENU_SCREEN_W - MENU_BTN_W) / 2)
+#define MENU_START_Y        400
+#define MENU_LEADERBOARD_X ((MENU_SCREEN_W - MENU_BTN_W) / 2)
+#define MENU_LEADERBOARD_Y  490
+#define MENU_EXIT_X        ((MENU_SCREEN_W - MENU_BTN_W) / 2)
+#define MENU_EXIT_Y         580
 
 /* Mode select card layout — must match mode_select_view.c */
 #define MODE_CARD_W   200
@@ -147,14 +150,21 @@ static int over_rect(int rx, int ry, int rw, int rh) {
     return cx >= rx && cx < rx + rw && cy >= ry && cy < ry + rh;
 }
 
-int input_mouse_over_start(void) { return over_rect(MENU_START_X, MENU_START_Y, MENU_BTN_W, MENU_BTN_H); }
-int input_mouse_over_exit(void)  { return over_rect(MENU_EXIT_X,  MENU_EXIT_Y,  MENU_BTN_W, MENU_BTN_H); }
+int input_mouse_over_start(void)       { return over_rect(MENU_START_X,       MENU_START_Y,       MENU_BTN_W, MENU_BTN_H); }
+int input_mouse_over_leaderboard(void) { return over_rect(MENU_LEADERBOARD_X, MENU_LEADERBOARD_Y, MENU_BTN_W, MENU_BTN_H); }
+int input_mouse_over_exit(void)        { return over_rect(MENU_EXIT_X,        MENU_EXIT_Y,        MENU_BTN_W, MENU_BTN_H); }
 
 int input_mouse_start_pressed(void) {
     return menu_cursor && cursor_left_clicked(menu_cursor) && input_mouse_over_start();
 }
+int input_mouse_leaderboard_pressed(void) {
+    return menu_cursor && cursor_left_clicked(menu_cursor) && input_mouse_over_leaderboard();
+}
 int input_mouse_exit_pressed(void) {
     return menu_cursor && cursor_left_clicked(menu_cursor) && input_mouse_over_exit();
+}
+int input_leaderboard_back_pressed(void) {
+    return scancode_ready && get_current_scancode() == ESC_MAKECODE;
 }
 int input_mouse_restart_pressed(void) { return 0; }
 int input_mouse_menu_pressed(void)    { return 0; }
