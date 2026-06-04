@@ -1,47 +1,62 @@
 #include "leaderboard.h"
+#include "rtc.h"
 #include <string.h>
 
-void leaderboard_init(Leaderboard *lb) {
-    lb->count = 0;
-    memset(lb->records, 0, sizeof(lb->records));
+static Leaderboard lb;
+
+void leaderboard_read_rtc(int *hour, int *min, int *sec) {
+    rtc_time t;
+    if (rtc_read_time(&t) != 0) {
+        *hour = 0; *min = 0; *sec = 0;
+        return;
+    }
+    *hour = t.hour;
+    *min  = t.minute;
+    *sec  = t.second;
 }
 
-void leaderboard_add(Leaderboard *lb, int score) {
-    HighScoreRecord entry;
-    entry.score = score;
+void leaderboard_init(void) {
+    lb.count = 0;
+    memset(lb.entries, 0, sizeof(lb.entries));
+}
 
-    if (rtc_read_date(&entry.date) != 0) {
-        entry.date.day   = 0;
-        entry.date.month = 0;
-        entry.date.year  = 0;
+void leaderboard_add(const char *player, int race_time_sec,
+                     int rtc_hour, int rtc_min, int rtc_sec) {
+    LeaderboardEntry entry;
+    strncpy(entry.player, player, 7);
+    entry.player[7]     = '\0';
+    entry.race_time_sec = race_time_sec;
+    entry.rtc_hour      = rtc_hour;
+    entry.rtc_min       = rtc_min;
+    entry.rtc_sec       = rtc_sec;
+
+    rtc_date d;
+    if (rtc_read_date(&d) == 0) {
+        entry.rtc_day   = d.day;
+        entry.rtc_month = d.month;
+    } else {
+        entry.rtc_day   = 0;
+        entry.rtc_month = 0;
     }
-    if (rtc_read_time(&entry.time) != 0) {
-        entry.time.hour   = 0;
-        entry.time.minute = 0;
-        entry.time.second = 0;
-    }
 
-    // Se ainda há espaço, aumenta o count
-    if (lb->count < LEADERBOARD_MAX)
-        lb->count++;
+    if (lb.count < MAX_LEADERBOARD)
+        lb.count++;
 
-    // Insere no fim e vai trocando para a posição certa (inserção ordenada)
-    int i = lb->count - 1;
-    lb->records[i] = entry;
-
-    while (i > 0 && lb->records[i].score > lb->records[i - 1].score) {
-        HighScoreRecord tmp   = lb->records[i];
-        lb->records[i]        = lb->records[i - 1];
-        lb->records[i - 1]    = tmp;
+    /* Place at the end, then bubble up into sorted position (descending). */
+    int i = lb.count - 1;
+    lb.entries[i] = entry;
+    while (i > 0 && lb.entries[i].race_time_sec > lb.entries[i - 1].race_time_sec) {
+        LeaderboardEntry tmp  = lb.entries[i];
+        lb.entries[i]         = lb.entries[i - 1];
+        lb.entries[i - 1]     = tmp;
         i--;
     }
 }
 
-const HighScoreRecord* leaderboard_get(const Leaderboard *lb, int index) {
-    if (index < 0 || index >= lb->count) return NULL;
-    return &lb->records[index];
+Leaderboard *leaderboard_get(void) {
+    return &lb;
 }
 
-int leaderboard_count(const Leaderboard *lb) {
-    return lb->count;
+int leaderboard_get_count(void) {
+    return lb.count;
 }

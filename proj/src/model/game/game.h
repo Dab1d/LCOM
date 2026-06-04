@@ -20,13 +20,14 @@
  * @brief Top-level game screen / phase enumeration.
  */
 typedef enum {
-    MAIN_MENU,   /**< Main menu screen. */
-    CAR_SELECT,  /**< Car-skin selection screen. */
-    MODE_SELECT, /**< Game-mode selection screen. */
-    GAMEPLAY,    /**< Active race. */
-    PAUSE,       /**< Pause overlay. */
-    GAME_OVER,   /**< Win/loss result screen. */
-    EXIT         /**< Application shutdown requested. */
+    MAIN_MENU,    /**< Main menu screen. */
+    CAR_SELECT,   /**< Car-skin selection screen. */
+    MODE_SELECT,  /**< Game-mode selection screen. */
+    GAMEPLAY,     /**< Active race. */
+    PAUSE,        /**< Pause overlay. */
+    GAME_OVER,    /**< Win/loss result screen. */
+    LEADERBOARD,  /**< Leaderboard screen. */
+    EXIT          /**< Application shutdown requested. */
 } GameState;
 
 /**

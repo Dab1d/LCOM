@@ -1,62 +1,78 @@
 /**
  * @file leaderboard.h
- * @brief High-score leaderboard: stores and ranks the top session scores.
+ * @brief Session leaderboard: stores and ranks the top race results.
  */
 
 #ifndef LEADERBOARD_H
 #define LEADERBOARD_H
 
-#include <stdint.h>
-#include "rtc.h"  /* lab1proj — rtc_date and rtc_time */
-
-#define LEADERBOARD_MAX 5 /**< Maximum number of entries kept in the leaderboard. */
+/** @brief Maximum number of entries kept in the leaderboard. */
+#define MAX_LEADERBOARD 6
 
 /**
- * @brief A single high-score entry with the timestamp it was achieved.
+ * @brief A single leaderboard entry recording the winner and session timestamp.
  */
 typedef struct {
-    int      score; /**< Score value. */
-    rtc_date date;  /**< Calendar date read from the RTC. */
-    rtc_time time;  /**< Wall-clock time read from the RTC. */
-} HighScoreRecord;
+    char player[8];     /**< Winning player label: "RED" or "BLUE". */
+    int  race_time_sec; /**< Race/survival duration in seconds. */
+    int  rtc_day;       /**< RTC day when the race ended (1-31). */
+    int  rtc_month;     /**< RTC month when the race ended (1-12). */
+    int  rtc_hour;      /**< RTC hour when the race ended (0-23). */
+    int  rtc_min;       /**< RTC minute when the race ended (0-59). */
+    int  rtc_sec;       /**< RTC second when the race ended (0-59). */
+} LeaderboardEntry;
 
 /**
- * @brief Ranked collection of the top high-score records.
+ * @brief Ranked collection of the top race results.
  */
 typedef struct {
-    HighScoreRecord records[LEADERBOARD_MAX]; /**< Records sorted descending by score. */
-    int             count;                    /**< Number of valid entries (0–LEADERBOARD_MAX). */
+    LeaderboardEntry entries[MAX_LEADERBOARD]; /**< Entries sorted descending by race_time_sec. */
+    int              count;                    /**< Number of valid entries (0-MAX_LEADERBOARD). */
 } Leaderboard;
 
 /**
- * @brief Initialises an empty Leaderboard.
- * @param lb Leaderboard to initialise.
+ * @brief Initialises the global leaderboard to an empty state.
  */
-void leaderboard_init(Leaderboard *lb);
+void leaderboard_init(void);
 
 /**
- * @brief Inserts a new score into the leaderboard, reading the current date/time from the RTC.
+ * @brief Inserts a new result into the leaderboard.
  *
- * Scores are kept in descending order. If the leaderboard is full, the lowest
- * existing score is dropped when the new score is higher.
- * @param lb    Leaderboard to update.
- * @param score Score to insert.
+ * Entries are kept sorted in descending order of race_time_sec.
+ * When the leaderboard is full the lowest-ranked entry is dropped if the
+ * new result scores higher.
+ *
+ * @param player        Winning player label ("RED" or "BLUE").
+ * @param race_time_sec Race duration in seconds.
+ * @param rtc_hour      RTC hour at race end.
+ * @param rtc_min       RTC minute at race end.
+ * @param rtc_sec       RTC second at race end.
  */
-void leaderboard_add(Leaderboard *lb, int score);
+void leaderboard_add(const char *player, int race_time_sec,
+                     int rtc_hour, int rtc_min, int rtc_sec);
 
 /**
- * @brief Returns the record at the given rank.
- * @param lb    Leaderboard to query.
- * @param index Rank index (0 = highest score).
- * @return Pointer to the record, or NULL if index is out of range.
+ * @brief Returns a pointer to the global Leaderboard.
+ * @return Non-NULL pointer; valid for the lifetime of the process.
  */
-const HighScoreRecord* leaderboard_get(const Leaderboard *lb, int index);
+Leaderboard *leaderboard_get(void);
 
 /**
- * @brief Returns the number of valid records currently in the leaderboard.
- * @param lb Leaderboard to query.
- * @return Entry count in [0, LEADERBOARD_MAX].
+ * @brief Returns the number of valid entries currently in the leaderboard.
+ * @return Entry count in [0, MAX_LEADERBOARD].
  */
-int leaderboard_count(const Leaderboard *lb);
+int leaderboard_get_count(void);
+
+/**
+ * @brief Reads the current time from the RTC hardware.
+ *
+ * Uses sys_outb/sys_inb on ports 0x70/0x71 and converts the result from
+ * BCD to binary.
+ *
+ * @param hour  Output: current hour (0-23).
+ * @param min   Output: current minute (0-59).
+ * @param sec   Output: current second (0-59).
+ */
+void leaderboard_read_rtc(int *hour, int *min, int *sec);
 
 #endif /* LEADERBOARD_H */
