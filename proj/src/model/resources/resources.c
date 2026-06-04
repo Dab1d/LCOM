@@ -4,15 +4,24 @@
 #include "../track/track.h"
 #include <stdlib.h>
 
-#include "../../assets/xpm/tiles/tile_road.xpm"
-#include "../../assets/xpm/tiles/tile_obstacle.xpm"
-#include "../../assets/xpm/tiles/tile_boost.xpm"
-#include "../../assets/xpm/tiles/tile_finish.xpm"
+/* ── city ── */
+#include "../../assets/xpm/biomes/city/tiles/tile_road.xpm"
+#include "../../assets/xpm/biomes/city/tiles/tile_obstacle.xpm"
+#include "../../assets/xpm/biomes/city/tiles/tile_boost.xpm"
+#include "../../assets/xpm/biomes/city/tiles/tile_finish.xpm"
+#include "../../assets/xpm/biomes/city/scenery/grass1.xpm"
+#include "../../assets/xpm/biomes/city/scenery/tree.xpm"
+#include "../../assets/xpm/biomes/city/objects/obstacle.xpm"
+#include "../../assets/xpm/biomes/city/objects/boost.xpm"
 
-#include "../../assets/xpm/objects/obstacle.xpm"
-#include "../../assets/xpm/objects/boost.xpm"
-#include "../../assets/xpm/scenery/grass1.xpm"
-#include "../../assets/xpm/scenery/tree.xpm"
+/* ── desert ── */
+#include "../../assets/xpm/biomes/desert/tiles/tile_road_desert.xpm"
+#include "../../assets/xpm/biomes/desert/tiles/tile_sand.xpm"
+#include "../../assets/xpm/biomes/desert/tiles/tile_divider.xpm"
+#include "../../assets/xpm/biomes/desert/tiles/tile_finish_desert.xpm"
+#include "../../assets/xpm/biomes/desert/scenery/cactus_tall.xpm"
+#include "../../assets/xpm/biomes/desert/objects/obstacle_barrel.xpm"
+#include "../../assets/xpm/biomes/desert/objects/obstacle_haybale.xpm"
 
 #include "../../assets/xpm/cars/car_blue.xpm"
 #include "../../assets/xpm/cars/car_blue_dmg1.xpm"
@@ -73,6 +82,22 @@ int resources_load(void) {
     for (int t = 0; t < 4; t++)
         if (!res.tile_sprites[t]) return 1;
 
+    res.tile_sprites_desert[TILE_EMPTY]    = create_sprite((xpm_map_t)tile_road_desert_xpm);
+    res.tile_sprites_desert[TILE_OBSTACLE] = create_sprite((xpm_map_t)tile_obstacle_xpm);
+    res.tile_sprites_desert[TILE_BOOST]    = create_sprite((xpm_map_t)tile_boost_xpm);
+    res.tile_sprites_desert[TILE_FINISH]   = create_sprite((xpm_map_t)tile_finish_desert_xpm);
+    for (int t = 0; t < 4; t++)
+        if (!res.tile_sprites_desert[t]) return 1;
+
+    res.sand_sprite   = create_sprite((xpm_map_t)tile_sand_xpm);
+    res.cactus_sprite = create_sprite((xpm_map_t)cactus_tall_xpm);
+    res.divider_sprite= create_sprite((xpm_map_t)tile_divider_xpm);
+    if (!res.sand_sprite || !res.cactus_sprite || !res.divider_sprite) return 1;
+
+    res.obstacle_desert_sprite = create_sprite((xpm_map_t)obstacle_barrel_xpm);
+    res.haybale_sprite         = create_sprite((xpm_map_t)obstacle_haybale_xpm);
+    if (!res.obstacle_desert_sprite || !res.haybale_sprite) return 1;
+
     res.obstacle_sprite = create_sprite((xpm_map_t)obstacle_xpm);
     if (!res.obstacle_sprite) return 1;
 
@@ -131,8 +156,15 @@ void resources_destroy(void) {
     for (int p = 0; p < 2; p++)
         for (int s = 0; s < 4; s++)
             if (res.car_sprites[p][s]) { sprite_destroy(res.car_sprites[p][s]); res.car_sprites[p][s] = NULL; }
-    for (int t = 0; t < 4; t++)
-        if (res.tile_sprites[t]) { sprite_destroy(res.tile_sprites[t]); res.tile_sprites[t] = NULL; }
+    for (int t = 0; t < 4; t++) {
+        if (res.tile_sprites[t])        { sprite_destroy(res.tile_sprites[t]);        res.tile_sprites[t]        = NULL; }
+        if (res.tile_sprites_desert[t]) { sprite_destroy(res.tile_sprites_desert[t]); res.tile_sprites_desert[t] = NULL; }
+    }
+    if (res.sand_sprite)            { sprite_destroy(res.sand_sprite);            res.sand_sprite            = NULL; }
+    if (res.cactus_sprite)          { sprite_destroy(res.cactus_sprite);          res.cactus_sprite          = NULL; }
+    if (res.divider_sprite)         { sprite_destroy(res.divider_sprite);         res.divider_sprite         = NULL; }
+    if (res.obstacle_desert_sprite) { sprite_destroy(res.obstacle_desert_sprite); res.obstacle_desert_sprite = NULL; }
+    if (res.haybale_sprite)         { sprite_destroy(res.haybale_sprite);         res.haybale_sprite         = NULL; }
     if (res.obstacle_sprite) { sprite_destroy(res.obstacle_sprite); res.obstacle_sprite = NULL; }
     if (res.boost_sprite)    { sprite_destroy(res.boost_sprite);    res.boost_sprite    = NULL; }
     if (res.grass_sprite)    { sprite_destroy(res.grass_sprite);    res.grass_sprite    = NULL; }
@@ -171,6 +203,23 @@ Sprite* resources_get_tile_sprite(int type) {
     return res.tile_sprites[type];
 }
 
+Sprite* resources_get_tile_sprite_themed(int type, int theme) {
+    if (theme == 1) return res.tile_sprites_desert[type];
+    return res.tile_sprites[type];
+}
+
+Sprite* resources_get_ground_sprite(int theme) {
+    if (theme == 1) return res.sand_sprite;
+    return res.grass_sprite;
+}
+
+Sprite* resources_get_scenery_sprite(int theme) {
+    if (theme == 1) return res.cactus_sprite;
+    return res.tree_sprite;
+}
+
+Sprite* resources_get_divider_sprite(void) { return res.divider_sprite; }
+
 Sprite* resources_get_grass_sprite(void) {
     return res.grass_sprite;
 }
@@ -198,9 +247,16 @@ Sprite* resources_get_cursor_sprite(void)  { return res.cursor_sprite; }
 Sprite* resources_get_banana_sprite(void)  { return res.banana_sprite; }
 Sprite* resources_get_heart_sprite(void)   { return res.heart_sprite; }
 
+<<<<<<< HEAD
 Sprite* resources_get_digit_sprite(int digit) {
     if (digit < 0 || digit > 9) return NULL;
     return res.digit_sprites[digit];
 }
 
 Sprite* resources_get_colon_sprite(void) { return res.colon_sprite; }
+=======
+Sprite* resources_get_obstacle_sprite_themed(int theme) {
+    if (theme == 1) return res.obstacle_desert_sprite;
+    return res.obstacle_sprite;
+}
+>>>>>>> ee022a9 (add desert biome: themed tiles, scenery, obstacles, menu preview)

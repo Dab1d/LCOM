@@ -68,7 +68,7 @@ static void spawn_banana(int row, int lane_min, int lane_max) {
 /* ── ciclo de vida da sessão ──────────────────────────────────────── */
 
 void game_var_init(Game *game) {
-    game->track = create_track(TRACK_THEME_CITY);
+    game->track = create_track(game->selected_theme);
     game->car1 = create_car(2, PLAYER1_LANE_START, PLAYER1_LANE_END, CAR_WIDTH, CAR_HEIGHT);
     game->car1->player = 1;
     game->car2 = create_car(7, PLAYER2_LANE_START, PLAYER2_LANE_END, CAR_WIDTH, CAR_HEIGHT);
@@ -154,6 +154,9 @@ static void game_process_input(void) {
             if (input_esc_pressed()) {    game.state = EXIT; break; }
             if (input_menu_nav_up())      game.menu_selection = MENU_START;
             if (input_menu_nav_down())    game.menu_selection = MENU_EXIT;
+            if (input_menu_nav_left() || input_menu_nav_right())
+                game.selected_theme = (game.selected_theme == TRACK_THEME_CITY)
+                                      ? TRACK_THEME_DESERT : TRACK_THEME_CITY;
             if (input_mouse_over_start()) game.menu_selection = MENU_START;
             if (input_mouse_over_exit())  game.menu_selection = MENU_EXIT;
 
@@ -305,16 +308,16 @@ static void game_render(void) {
 
     switch (game.state) {
         case MAIN_MENU:
-            menu_view_draw(game.menu_selection);
+            menu_view_draw(game.menu_selection, game.selected_theme);
             break;
         case GAMEPLAY:
             track_view_draw(game.track);
-            scenery_view_draw(game.scenery);
+            scenery_view_draw(game.scenery, game.track->theme);
             car_view_draw(game.car1);
             car_view_draw(game.car2);
             for (int i = 0; i < game.obstacle_count; i++) {
                 if (obstacle_is_visible(game.obstacles[i]))
-                    obstacle_view_draw(game.obstacles[i]);
+                    obstacle_view_draw(game.obstacles[i], game.track->theme);
             }
             for (int i = 0; i < game.boost_count; i++) {
                 if (boost_is_visible(game.boosts[i]))
@@ -327,12 +330,12 @@ static void game_render(void) {
             break;
         case PAUSE:
             track_view_draw(game.track);
-            scenery_view_draw(game.scenery);
+            scenery_view_draw(game.scenery, game.track->theme);
             car_view_draw(game.car1);
             car_view_draw(game.car2);
             for (int i = 0; i < game.obstacle_count; i++) {
                 if (obstacle_is_visible(game.obstacles[i]))
-                    obstacle_view_draw(game.obstacles[i]);
+                    obstacle_view_draw(game.obstacles[i], game.track->theme);
             }
             for (int i = 0; i < game.boost_count; i++) {
                 if (boost_is_visible(game.boosts[i]))
@@ -358,6 +361,7 @@ void game_init(void) {
     game.winner = 0;
     game.pause_selected = 0;
     game.menu_selection = 0;
+    game.selected_theme = TRACK_THEME_CITY;
     game.track = NULL;
     game.car1 = NULL;
     game.car2 = NULL;

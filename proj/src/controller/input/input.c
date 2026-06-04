@@ -112,8 +112,10 @@ int input_keyboard_up_pressed(void)      { return scancode_ready && prev_extende
 int input_keyboard_down_pressed(void)    { return scancode_ready && prev_extended && get_current_scancode() == ARROW_DOWN_CODE; }
 int input_keyboard_confirm_pressed(void) { return scancode_ready && get_current_scancode() == ENTER_MAKECODE; }
 
-int input_menu_nav_up(void)   { return scancode_ready && prev_extended && get_current_scancode() == ARROW_UP_CODE; }
-int input_menu_nav_down(void) { return scancode_ready && prev_extended && get_current_scancode() == ARROW_DOWN_CODE; }
+int input_menu_nav_up(void)    { return scancode_ready && prev_extended && get_current_scancode() == ARROW_UP_CODE; }
+int input_menu_nav_down(void)  { return scancode_ready && prev_extended && get_current_scancode() == ARROW_DOWN_CODE; }
+int input_menu_nav_left(void)  { return scancode_ready && prev_extended && get_current_scancode() == ARROW_LEFT_CODE; }
+int input_menu_nav_right(void) { return scancode_ready && prev_extended && get_current_scancode() == ARROW_RIGHT_CODE; }
 
 static int over_rect(int rx, int ry, int rw, int rh) {
     if (!menu_cursor) return 0;
