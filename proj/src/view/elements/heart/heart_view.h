@@ -1,8 +1,8 @@
-#ifndef __PROJ_HUD_VIEW_H
-#define __PROJ_HUD_VIEW_H
+#ifndef __PROJ_HEART_VIEW_H
+#define __PROJ_HEART_VIEW_H
 
 #include "../../../model/elements/car/car.h"
 
-void hud_view_draw(const Car *car1, const Car *car2);
+void heart_view_draw(const Car *car1, const Car *car2);
 
-#endif /* __PROJ_HUD_VIEW_H */
+#endif /* __PROJ_HEART_VIEW_H */

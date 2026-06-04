@@ -13,7 +13,7 @@
 #include "../../view/elements/scenery/scenery_view.h"
 #include "../../view/screens/pause/pause_view.h"
 #include "../../view/screens/win/win_view.h"
-#include "../../view/elements/heart/hud_view.h"
+#include "../../view/elements/heart/heart_view.h"
 #include "../../view/elements/timer/timer_view.h"
 #include "../../view/screens/menu/menu_view.h"
 #include "../../view/screens/mode_select/mode_select_view.h"
@@ -81,7 +81,7 @@ void game_var_init(Game *game) {
     game->car1->player = 1;
     game->car2 = create_car(7, PLAYER2_LANE_START, PLAYER2_LANE_END, CAR_WIDTH, CAR_HEIGHT);
     game->car2->player = 2;
-    game->scenery = scenery_create();
+    game->scenery = scenery_create(game->selected_theme);
     game->winner = 0;
     game->pause_selected = 0;
     game->obstacle_count = 0;
@@ -344,8 +344,8 @@ static void game_render(void) {
         case GAMEPLAY:
             track_view_draw(game.track);
             scenery_view_draw(game.scenery, game.track->theme);
-            car_view_draw(game.car1);
-            car_view_draw(game.car2);
+            car_view_draw(game.car1, game.track->theme);
+            car_view_draw(game.car2, game.track->theme);
             for (int i = 0; i < game.obstacle_count; i++) {
                 if (obstacle_is_visible(game.obstacles[i]))
                     obstacle_view_draw(game.obstacles[i], game.track->theme);
@@ -362,8 +362,8 @@ static void game_render(void) {
         case PAUSE:
             track_view_draw(game.track);
             scenery_view_draw(game.scenery, game.track->theme);
-            car_view_draw(game.car1);
-            car_view_draw(game.car2);
+            car_view_draw(game.car1, game.track->theme);
+            car_view_draw(game.car2, game.track->theme);
             for (int i = 0; i < game.obstacle_count; i++) {
                 if (obstacle_is_visible(game.obstacles[i]))
                     obstacle_view_draw(game.obstacles[i], game.track->theme);
