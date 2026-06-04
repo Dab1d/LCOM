@@ -42,6 +42,7 @@ typedef struct {
     TrackTheme selected_theme;  /**< Biome chosen on the menu. */
     int        car1_format;     /**< Car skin chosen by player 1. */
     int        car2_format;     /**< Car skin chosen by player 2. */
+
     Track     *track;           /**< Active track (owns scroll speed). */
     Car       *car1;            /**< Player 1 car (owns lives and score). */
     Car       *car2;            /**< Player 2 car. */
