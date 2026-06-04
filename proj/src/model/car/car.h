@@ -1,3 +1,8 @@
+/**
+ * @file car.h
+ * @brief Player car model: state, movement, damage and boost logic.
+ */
+
 #ifndef CAR_H
 #define CAR_H
 
@@ -5,57 +10,100 @@
 #include "../track/track.h"
 #include <stdbool.h>
 
-#define CAR_LANE_WIDTH  64   // Largura de cada faixa em píxeis
-#define CAR_WIDTH  CAR_LANE_WIDTH       // largura = largura de uma faixa
-#define CAR_HEIGHT TRACK_TILE_HEIGHT    // altura = altura de um tile
-#define CAR_INITIAL_LIVES 3
+/** @defgroup car_dimensions Car size constants
+ * @{ */
+#define CAR_LANE_WIDTH  64                    /**< Width of one lane in pixels. */
+#define CAR_WIDTH       CAR_LANE_WIDTH        /**< Car width equals one lane. */
+#define CAR_HEIGHT      TRACK_TILE_HEIGHT     /**< Car height equals one tile height. */
+/** @} */
+
+#define CAR_INITIAL_LIVES 3 /**< Default number of lives at session start. */
+
 /**
- * @brief Os 4 estados visuais/de saúde do carro.
- * O índice corresponde diretamente ao sprite a carregar na View.
+ * @brief Four visual/health states of a car.
+ *
+ * The index maps directly to the sprite loaded by the View layer.
  */
 typedef enum {
-    CAR_STATE_NORMAL   = 0,  // Carro em perfeito estado
-    CAR_STATE_DAMAGED  = 1,  // Primeiro impacto
-    CAR_STATE_BURNING  = 2,  // Segundo impacto — em chamas
-    CAR_STATE_EXPLODED = 3   // Terceiro impacto — fora da corrida
+    CAR_STATE_NORMAL   = 0, /**< Car in perfect condition. */
+    CAR_STATE_DAMAGED  = 1, /**< First impact — visible damage. */
+    CAR_STATE_BURNING  = 2, /**< Second impact — on fire. */
+    CAR_STATE_EXPLODED = 3  /**< Third impact — out of the race. */
 } CarState;
 
 /**
- * @brief Estrutura que representa um carro jogador.
+ * @brief Represents a player-controlled car.
  */
 typedef struct {
-    Element base;
-    int player;       // 1 ou 2
-    int lane;
-    int lane_min;
-    int lane_max;
-    int track_progress;
-    float boost_remaining;
-    CarState state;
-    int score;
-    int lives;
+    Element base;           /**< Position, hitbox, active flag, and sprite. */
+    int     player;         /**< Player number: 1 or 2. */
+    int     lane;           /**< Current logical lane index. */
+    int     lane_min;       /**< Leftmost lane this car may occupy. */
+    int     lane_max;       /**< Rightmost lane this car may occupy. */
+    int     track_progress; /**< Logical rows completed (higher = further ahead). */
+    float   boost_remaining;/**< Boost ticks remaining (unused — reserved). */
+    CarState state;         /**< Current damage/visual state. */
+    int     score;          /**< Accumulated score for this session. */
+    int     lives;          /**< Lives remaining; reaches 0 on EXPLODED. */
 } Car;
 
-// Construtor / Destrutor
+/**
+ * @brief Allocates and initialises a Car.
+ * @param initial_lane Starting lane index.
+ * @param lane_min     Leftmost lane the car may use.
+ * @param lane_max     Rightmost lane the car may use.
+ * @param car_width    Width of the car hitbox in pixels.
+ * @param car_height   Height of the car hitbox in pixels.
+ * @return Pointer to the new Car, or NULL on allocation failure.
+ */
 Car* create_car(int initial_lane, int lane_min, int lane_max, int car_width, int car_height);
-void destroy_car(Car* car);
 
-// Move o carro uma faixa: direction = -1 (esquerda) ou +1 (direita)
-void car_move_lane(Car* car, int direction);
+/**
+ * @brief Frees a Car.
+ * @param car Car to destroy.
+ */
+void destroy_car(Car *car);
 
-// Aplica um impacto — avança o estado de dano do carro
-void car_take_damage(Car* car);
+/**
+ * @brief Moves the car one lane sideways.
+ * @param car       Car to move.
+ * @param direction -1 to move left, +1 to move right.
+ */
+void car_move_lane(Car *car, int direction);
 
-// Aplica o boost instantaneamente: incrementa track_progress em 'tiles'
-void car_apply_boost(Car* car, int tiles);
+/**
+ * @brief Advances the car's damage state by one step.
+ *
+ * Progresses NORMAL → DAMAGED → BURNING → EXPLODED and decrements lives.
+ * @param car Car to damage.
+ */
+void car_take_damage(Car *car);
 
-// Faz deslizar o carro para uma faixa adjacente (efeito casca de banana)
-void car_banana_slip(Car* car);
+/**
+ * @brief Instantly advances track progress by the given number of tiles (boost effect).
+ * @param car   Car to boost.
+ * @param tiles Number of logical rows to skip forward.
+ */
+void car_apply_boost(Car *car, int tiles);
 
-// Repõe o carro para o estado inicial
-void reset_car(Car* car, int initial_lane);
+/**
+ * @brief Slides the car one lane in a random direction (banana-peel effect).
+ * @param car Car to slip.
+ */
+void car_banana_slip(Car *car);
 
-// Inicializa score e lives com o número de vidas escolhido pelo jogador
-void car_init_session(Car* car, int initial_lives);
+/**
+ * @brief Resets the car to its initial position and CAR_STATE_NORMAL.
+ * @param car          Car to reset.
+ * @param initial_lane Lane to place the car on.
+ */
+void reset_car(Car *car, int initial_lane);
 
-#endif // CAR_H
+/**
+ * @brief Initialises the score and life counter for a new game session.
+ * @param car           Car to initialise.
+ * @param initial_lives Number of lives to grant.
+ */
+void car_init_session(Car *car, int initial_lives);
+
+#endif /* CAR_H */

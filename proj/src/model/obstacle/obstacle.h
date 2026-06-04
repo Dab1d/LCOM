@@ -1,3 +1,8 @@
+/**
+ * @file obstacle.h
+ * @brief Obstacle model: single-tile hazards that damage or deflect a car.
+ */
+
 #ifndef OBSTACLE_H
 #define OBSTACLE_H
 
@@ -5,31 +10,64 @@
 #include "../track/track.h"
 #include "../car/car.h"
 
+/**
+ * @brief Behaviour type of an obstacle on collision.
+ */
 typedef enum {
-    OBSTACLE_ROCK   = 0,  /* bloco de betão — causa dano */
-    OBSTACLE_BANANA = 1,  /* casca de banana — faz deslizar */
+    OBSTACLE_ROCK   = 0, /**< Concrete block — deals damage to the car. */
+    OBSTACLE_BANANA = 1, /**< Banana peel — causes the car to slip sideways. */
 } ObstacleType;
 
 /**
- * @brief Representa um obstáculo de um tile (CAR_LANE_WIDTH x TRACK_TILE_HEIGHT).
- * Obstáculos são sempre 1 faixa × 1 linha; clusters são criados em game.c.
+ * @brief Represents a single-tile obstacle on the track.
+ *
+ * Always occupies one lane × one row. Multi-tile clusters are composed in game.c.
  */
 typedef struct {
-    Element      base;  // posição em píxeis, hitbox, is_active, sprite
-    int          lane;  // faixa lógica do obstáculo
-    int          row;   // linha lógica do obstáculo
-    ObstacleType type;  // comportamento ao colidir
+    Element      base; /**< Pixel position, hitbox, active flag, and sprite. */
+    int          lane; /**< Logical lane index. */
+    int          row;  /**< Logical row index in the track grid. */
+    ObstacleType type; /**< Effect applied when a car collides with this obstacle. */
 } Obstacle;
 
+/**
+ * @brief Allocates and initialises an Obstacle at the given grid position.
+ * @param row  Logical row in the track grid.
+ * @param lane Logical lane index.
+ * @param type Collision behaviour.
+ * @return Pointer to the new Obstacle, or NULL on allocation failure.
+ */
 Obstacle* create_obstacle(int row, int lane, ObstacleType type);
-void      destroy_obstacle(Obstacle* obs);
 
 /**
- * @brief Atualiza a posição em píxeis do obstáculo com base no scroll atual da pista.
- * Deve ser chamado a cada tick antes de desenhar.
+ * @brief Frees an Obstacle.
+ * @param obs Obstacle to destroy.
  */
-void obstacle_update(Obstacle* obs, int scroll_row, float scroll_offset);
-bool obstacle_is_visible(const Obstacle* obs);
-bool obstacle_collides_with_car(const Obstacle* obs, const Car* car);
+void      destroy_obstacle(Obstacle *obs);
 
-#endif // OBSTACLE_H
+/**
+ * @brief Updates the pixel position of the obstacle based on the current track scroll.
+ *
+ * Must be called once per tick before drawing.
+ * @param obs           Obstacle to update.
+ * @param scroll_row    Current logical row at the top of the screen.
+ * @param scroll_offset Sub-tile pixel offset (0..TRACK_TILE_HEIGHT-1).
+ */
+void obstacle_update(Obstacle *obs, int scroll_row, float scroll_offset);
+
+/**
+ * @brief Checks whether the obstacle is within the visible screen area.
+ * @param obs Obstacle to test.
+ * @return true if the obstacle is on screen.
+ */
+bool obstacle_is_visible(const Obstacle *obs);
+
+/**
+ * @brief AABB collision check between an obstacle and a car.
+ * @param obs Obstacle to test.
+ * @param car Car to test against.
+ * @return true if the car overlaps the obstacle.
+ */
+bool obstacle_collides_with_car(const Obstacle *obs, const Car *car);
+
+#endif /* OBSTACLE_H */

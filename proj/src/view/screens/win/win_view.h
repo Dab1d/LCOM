@@ -1,11 +1,21 @@
+/**
+ * @file win_view.h
+ * @brief Win/result screen rendering.
+ */
+
 #ifndef __PROJ_WIN_VIEW_H
 #define __PROJ_WIN_VIEW_H
 
-/* Screen: 1024x768, car sprite: 64x64 */
-#define WIN_CAR_X  480   /* (1024 - 64) / 2 */
-#define WIN_CAR_Y  352   /* (768  - 64) / 2 */
+/** @defgroup win_layout Win screen car position (screen 1024×768, car 64×64)
+ * @{ */
+#define WIN_CAR_X 480 /**< Car sprite left edge: (1024 - 64) / 2. */
+#define WIN_CAR_Y 352 /**< Car sprite top edge: (768 - 64) / 2. */
+/** @} */
 
-/* winner: 1 = P1 (azul), 2 = P2 (vermelho) */
+/**
+ * @brief Draws the race result screen showing the winning player.
+ * @param winner 1 = player 1 won (blue car), 2 = player 2 won (red car).
+ */
 void win_view_draw(int winner);
 
 #endif /* __PROJ_WIN_VIEW_H */
