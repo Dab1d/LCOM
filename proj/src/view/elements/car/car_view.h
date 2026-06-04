@@ -13,7 +13,6 @@
  * @brief Draws the car sprite corresponding to its current CarState.
  * @param car Car to render.
  */
-void car_view_draw(Car *car);
 void car_view_draw(Car *car, TrackTheme theme);
 
 #endif /* __PROJ_CAR_VIEW_H */

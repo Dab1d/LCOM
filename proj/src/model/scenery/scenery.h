@@ -31,9 +31,10 @@ typedef struct {
 
 /**
  * @brief Allocates and initialises a Scenery collection.
+ * @param theme Track theme that determines which sprites are used.
  * @return Pointer to the new Scenery, or NULL on allocation failure.
  */
-Scenery* scenery_create(void);
+Scenery* scenery_create(TrackTheme theme);
 
 /**
  * @brief Synchronises the scenery positions with the current track scroll.
@@ -42,7 +43,6 @@ Scenery* scenery_create(void);
  * @param s     Scenery collection to update.
  * @param track Current track (provides scroll_row and scroll_offset).
  */
-Scenery* scenery_create(TrackTheme theme);
 void     scenery_update(Scenery *s, const Track *track);
 
 /**

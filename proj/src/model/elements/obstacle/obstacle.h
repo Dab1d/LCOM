@@ -16,6 +16,7 @@
 typedef enum {
     OBSTACLE_ROCK   = 0, /**< Concrete block — deals damage to the car. */
     OBSTACLE_BANANA = 1, /**< Banana peel — causes the car to slip sideways. */
+    OBSTACLE_OIL    = 2, /**< Oil puddle — causes the car to slip sideways. */
 } ObstacleType;
 
 /**
