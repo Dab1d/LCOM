@@ -8,25 +8,30 @@
 #include "../../assets/xpm/tiles/tile_obstacle.xpm"
 #include "../../assets/xpm/tiles/tile_boost.xpm"
 #include "../../assets/xpm/tiles/tile_finish.xpm"
-#include "../../assets/xpm/obstacle.xpm"
+
+#include "../../assets/xpm/objects/obstacle.xpm"
 #include "../../assets/xpm/scenery/grass.xpm"
 #include "../../assets/xpm/scenery/tree.xpm"
-#include "../../assets/car_blue.xpm"
-#include "../../../assets/car_blue_dmg1.xpm"
-#include "../../../assets/car_blue_dmg2.xpm"
-#include "../../../assets/car_blue_destroyed.xpm"
-#include "../../assets/car_red.xpm"
-#include "../../../assets/car_red_dmg1.xpm"
-#include "../../../assets/car_red_dmg2.xpm"
-#include "../../../assets/car_red_destroyed.xpm"
+
+#include "../../assets/xpm/cars/car_blue.xpm"
+#include "../../assets/xpm/cars/car_blue_dmg1.xpm"
+#include "../../assets/xpm/cars/car_blue_dmg2.xpm"
+#include "../../assets/xpm/cars/car_blue_destroyed.xpm"
+
+#include "../../assets/xpm/cars/car_red.xpm"
+#include "../../assets/xpm/cars/car_red_dmg1.xpm"
+#include "../../assets/xpm/cars/car_red_dmg2.xpm"
+#include "../../assets/xpm/cars/car_red_destroyed.xpm"
+
 #include "../../assets/xpm/pause/pause_panel.xpm"
 #include "../../assets/xpm/pause/pause_resume_btn.xpm"
 #include "../../assets/xpm/pause/pause_resume_btn_sel.xpm"
 #include "../../assets/xpm/pause/pause_quit_btn.xpm"
 #include "../../assets/xpm/pause/pause_quit_btn_sel.xpm"
-#include "../../assets/getaway_car_title.xpm"
-#include "../../assets/start_button.xpm"
-#include "../../assets/exit_button.xpm"
+
+#include "../../assets/xpm/main/getaway_car_title.xpm"
+#include "../../assets/xpm/main/start_button.xpm"
+#include "../../assets/xpm/main/exit_button.xpm"
 #include "../../assets/xpm/cursor.xpm"
 
 static Resources res;
