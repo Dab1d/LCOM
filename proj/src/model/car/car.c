@@ -13,9 +13,10 @@ Car* create_car(int initial_lane, int lane_min, int lane_max, int car_width, int
     init_element(&car->base, lane_to_x(initial_lane),
                  (double)(CAR_SCREEN_ROW * TRACK_TILE_HEIGHT), car_width, car_height);
 
-    car->lane           = initial_lane;
-    car->track_progress = 0;
-    car->state          = CAR_STATE_NORMAL;
+    car->lane             = initial_lane;
+    car->track_progress   = 0;
+    car->boost_remaining  = 0.0f;
+    car->state            = CAR_STATE_NORMAL;
     car->lane_min = lane_min;
     car->lane_max = lane_max;
     car_init_session(car, CAR_INITIAL_LIVES);
@@ -70,18 +71,20 @@ void car_apply_boost(Car* car, int tiles) {
     if (car == NULL || !car->base.is_active) return;
     if (car->state == CAR_STATE_EXPLODED)    return;
 
-    car->track_progress += tiles;
+    car->track_progress  += tiles;
+    car->boost_remaining += (float)(tiles * TRACK_TILE_HEIGHT);
 }
 
 void reset_car(Car* car, int initial_lane) {
     if (car == NULL) return;
 
-    car->lane           = initial_lane;
-    car->base.x         = lane_to_x(initial_lane);
-    car->base.y         = (double)(CAR_SCREEN_ROW * TRACK_TILE_HEIGHT);
-    car->base.is_active = true;
-    car->track_progress = 0;
-    car->state          = CAR_STATE_NORMAL;
+    car->lane             = initial_lane;
+    car->base.x           = lane_to_x(initial_lane);
+    car->base.y           = (double)(CAR_SCREEN_ROW * TRACK_TILE_HEIGHT);
+    car->base.is_active   = true;
+    car->track_progress   = 0;
+    car->boost_remaining  = 0.0f;
+    car->state            = CAR_STATE_NORMAL;
     car_init_session(car, CAR_INITIAL_LIVES);
 }
 

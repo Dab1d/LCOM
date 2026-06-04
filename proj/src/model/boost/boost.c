@@ -1,12 +1,9 @@
 #include "boost.h"
-#include "../car/car.h"
 #include <stdlib.h>
-
-#define CAR_SCREEN_ROW (TRACK_VISIBLE_ROWS - 2)
 
 static double row_to_y(int logical_row, int scroll_row, float scroll_offset) {
     int screen_row = logical_row - scroll_row;
-    return (double)(screen_row * TRACK_TILE_HEIGHT) - (double)scroll_offset;
+    return (double)((2 * CAR_SCREEN_ROW - screen_row) * TRACK_TILE_HEIGHT) + (double)scroll_offset;
 }
 
 Boost* create_boost(int row, int lane) {
@@ -34,7 +31,7 @@ void boost_update(Boost* boost, int scroll_row, float scroll_offset) {
 
     boost->base.y = row_to_y(boost->row, scroll_row, scroll_offset);
 
-    if (boost->base.y + boost->base.height < 0)
+    if (boost->base.y > (double)(TRACK_VISIBLE_ROWS * TRACK_TILE_HEIGHT))
         boost->base.is_active = false;
 }
 
@@ -45,15 +42,16 @@ bool boost_is_visible(const Boost* boost) {
     return boost->base.y < screen_height && boost->base.y + boost->base.height > 0;
 }
 
-bool boost_collides_with_car(const Boost* boost, int car_lane, int car_screen_row) {
+bool boost_collides_with_car(const Boost* boost, const Car* car) {
     if (boost == NULL || !boost->base.is_active) return false;
+    if (car  == NULL || !car->base.is_active)    return false;
 
-    bool lane_hit = (car_lane == boost->lane);
+    if (car->lane != boost->lane) return false;
 
-    int car_y     = CAR_SCREEN_ROW * TRACK_TILE_HEIGHT;
+    int car_y_top   = (int)car->base.y;
+    int car_y_bot   = car_y_top + CAR_HEIGHT;
     int boost_y_top = (int)boost->base.y;
-    int boost_y_bot = boost_y_top + boost->base.height;
-    bool row_hit  = (car_y >= boost_y_top && car_y < boost_y_bot);
+    int boost_y_bot = boost_y_top + (int)boost->base.height;
 
-    return lane_hit && row_hit;
+    return car_y_top < boost_y_bot && car_y_bot > boost_y_top;
 }

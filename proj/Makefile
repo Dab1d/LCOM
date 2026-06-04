@@ -29,6 +29,7 @@ SRCS = proj.c \
        src/model/car/car.c \
        src/model/track/track.c \
        src/model/obstacle/obstacle.c \
+       src/model/boost/boost.c \
        src/model/sprite/sprite.c \
        src/controller/input/input.c \
        src/controller/palette/palette.c \
@@ -37,6 +38,7 @@ SRCS = proj.c \
        src/model/resources/resources.c \
        src/view/car/car_view.c \
        src/view/obstacle/obstacle_view.c \
+       src/view/boost/boost_view.c \
        src/view/track/track_view.c \
        src/view/scenery/scenery_view.c \
        src/view/pause/pause_view.c \
@@ -52,6 +54,7 @@ HDRS = src/model/game/game.h \
        src/model/car/car.h \
        src/model/track/track.h \
        src/model/obstacle/obstacle.h \
+       src/model/boost/boost.h \
        src/model/sprite/sprite.h \
        src/controller/input/input.h \
        src/controller/palette/palette.h \
@@ -59,6 +62,7 @@ HDRS = src/model/game/game.h \
        src/view/view.h \
        src/model/resources/resources.h \
        src/view/obstacle/obstacle_view.h \
+       src/view/boost/boost_view.h \
        src/view/track/track_view.h \
        src/view/scenery/scenery_view.h \
        src/view/pause/pause_view.h \
@@ -123,6 +127,12 @@ src/model/resources/resources.o: src/model/resources/resources.c src/model/resou
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/view/car/car_view.o: src/view/car/car_view.c src/view/car/car_view.h
+	${CC} ${CFLAGS} -c $< -o $@
+
+src/model/boost/boost.o: src/model/boost/boost.c src/model/boost/boost.h
+	${CC} ${CFLAGS} -c $< -o $@
+
+src/view/boost/boost_view.o: src/view/boost/boost_view.c src/view/boost/boost_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/view/obstacle/obstacle_view.o: src/view/obstacle/obstacle_view.c src/view/obstacle/obstacle_view.h
