@@ -16,6 +16,7 @@
 #include "../../view/heart/heart_view.h"
 #include "../../view/timer/timer_view.h"
 #include "../../view/screens/menu/menu_view.h"
+#include "../../view/screens/mode_select/mode_select_view.h"
 
 #define CLUSTER_CHANCE    70
 #define BOOST_TILES       2
@@ -161,11 +162,21 @@ static void game_process_input(void) {
             if (input_mouse_over_exit())  game.menu_selection = MENU_EXIT;
 
             if (input_keyboard_start_pressed()) {
-                if (game.menu_selection == MENU_START) game_reset(&game);
+                if (game.menu_selection == MENU_START) game.state = MODE_SELECT;
                 else game.state = EXIT;
             }
-            if (input_mouse_start_pressed()) game_reset(&game);
+            if (input_mouse_start_pressed()) game.state = MODE_SELECT;
             if (input_mouse_exit_pressed())  game.state = EXIT;
+            break;
+        case MODE_SELECT:
+            if (input_esc_pressed()) { game.mode_selection = 0; game.state = MAIN_MENU; break; }
+            if (input_mode_nav_left())               game.mode_selection = 0;
+            if (input_mode_nav_right())              game.mode_selection = 1;
+            if (input_mouse_over_race_card())        game.mode_selection = 0;
+            if (input_mouse_over_endurance_card())   game.mode_selection = 1;
+            if (input_mouse_race_card_pressed())     { game.mode_selection = 0; game_reset(&game); }
+            else if (input_mouse_endurance_card_pressed()) { game.mode_selection = 1; game_reset(&game); }
+            else if (input_keyboard_confirm_pressed()) game_reset(&game);
             break;
         case GAMEPLAY:
             if (input_keyboard_pause_pressed()) {
@@ -310,6 +321,9 @@ static void game_render(void) {
         case MAIN_MENU:
             menu_view_draw(game.menu_selection, game.selected_theme);
             break;
+        case MODE_SELECT:
+            mode_select_view_draw(game.mode_selection);
+            break;
         case GAMEPLAY:
             track_view_draw(game.track);
             scenery_view_draw(game.scenery, game.track->theme);
@@ -362,6 +376,7 @@ void game_init(void) {
     game.pause_selected = 0;
     game.menu_selection = 0;
     game.selected_theme = TRACK_THEME_CITY;
+    game.mode_selection = 0;
     game.track = NULL;
     game.car1 = NULL;
     game.car2 = NULL;
@@ -398,6 +413,7 @@ void game_tick(void) {
             if (game_is_over()) game.state = GAME_OVER;
             break;
         case MAIN_MENU:
+        case MODE_SELECT:
         case PAUSE:
         case GAME_OVER:
         case EXIT:

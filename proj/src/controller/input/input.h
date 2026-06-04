@@ -45,6 +45,14 @@ int input_menu_nav_down(void);
 int input_menu_nav_left(void);
 int input_menu_nav_right(void);
 
+// Mode select navigation
+int input_mode_nav_left(void);
+int input_mode_nav_right(void);
+int input_mouse_over_race_card(void);
+int input_mouse_over_endurance_card(void);
+int input_mouse_race_card_pressed(void);
+int input_mouse_endurance_card_pressed(void);
+
 // Gameplay mouse → car2 lane control (consumes accumulated dx)
 int input_mouse_car2_left(void);
 int input_mouse_car2_right(void);
