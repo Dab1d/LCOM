@@ -250,6 +250,13 @@ int input_cursor_x(void);
  */
 int input_cursor_y(void);
 
-/** @} */
+// Car select navigation
+int input_p1_nav_left(void);
+int input_p1_nav_right(void);
+int input_p2_nav_left(void);
+int input_p2_nav_right(void);
+int input_car_select_race_pressed(void);
+int input_mouse_over_car_select_race_btn(void);
+int input_mouse_car_select_race_pressed(void);
 
 #endif /* __PROJ_INPUT_H */

@@ -8,12 +8,8 @@
 
 #include "../sprite/sprite.h"
 
-/**
- * @brief Container for every sprite used by the game.
- *
- * Owned exclusively by the resources module; all other modules hold
- * non-owning pointers obtained through the getter functions below.
- */
+#define CAR_FORMAT_MAX 8
+
 typedef struct {
     Sprite *car_sprites[2][4];        /**< [player-1][CarState] */
     Sprite *obstacle_sprite;          /**< Rock obstacle — city theme. */
@@ -36,7 +32,7 @@ typedef struct {
     Sprite *cursor_sprite;            /**< Mouse cursor. */
     Sprite *banana_sprite;            /**< Banana-peel obstacle. */
     Sprite *heart_sprite;             /**< Heart icon for life counter. */
-    Sprite *digit_sprites[10];        /**< Digit glyphs 0–9 for the timer. */
+    Sprite *digit_sprites[10];        /**< Digit glyphs 0-9 for the timer. */
     Sprite *colon_sprite;             /**< Colon ':' glyph for the timer. */
     Sprite *fence_sprite;             /**< Fence scenery element. */
     Sprite *oil_puddle_sprite;        /**< Oil puddle obstacle. */
@@ -46,6 +42,8 @@ typedef struct {
     Sprite *mode_endurance_card;      /**< ENDURANCE mode card graphic. */
     Sprite *mode_race_label;          /**< RACE mode label. */
     Sprite *mode_endurance_label;     /**< ENDURANCE mode label. */
+    Sprite *car_format_sprites[CAR_FORMAT_MAX][2][4]; /**< [fmt][player][CarState] */
+    int     car_format_count;         /**< Number of loaded car format sprites. */
 } Resources;
 
 /**
@@ -234,5 +232,8 @@ Sprite* resources_get_mode_race_label(void);
  * @return Non-owning pointer to the sprite.
  */
 Sprite* resources_get_mode_endurance_label(void);
+int     resources_get_car_format_count(void);
+Sprite* resources_get_car_format_preview(int fmt, int player);
+void    resources_apply_car_format(int fmt1, int fmt2);
 
 #endif /* __PROJ_RESOURCES_H */

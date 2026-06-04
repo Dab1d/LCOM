@@ -47,6 +47,7 @@ SRCS = proj.c \
        src/view/screens/menu/menu_view.c \
        src/view/screens/win/win_view.c \
        src/view/screens/mode_select/mode_select_view.c \
+       src/view/screens/car_select/car_select_view.c \
        src/model/cursor/cursor.c \
        src/model/leaderboard/leaderboard.c
 
@@ -76,6 +77,7 @@ HDRS = src/model/game/game.h \
        src/view/screens/menu/menu_view.h \
        src/view/screens/win/win_view.h \
        src/view/screens/mode_select/mode_select_view.h \
+       src/view/screens/car_select/car_select_view.h \
        src/model/cursor/cursor.h \
        src/model/leaderboard/leaderboard.h
 
@@ -166,6 +168,9 @@ src/view/screens/win/win_view.o: src/view/screens/win/win_view.c src/view/screen
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/view/screens/mode_select/mode_select_view.o: src/view/screens/mode_select/mode_select_view.c src/view/screens/mode_select/mode_select_view.h
+	${CC} ${CFLAGS} -c $< -o $@
+
+src/view/screens/car_select/car_select_view.o: src/view/screens/car_select/car_select_view.c src/view/screens/car_select/car_select_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/view/elements/heart/heart_view.o: src/view/elements/heart/heart_view.c src/view/elements/heart/heart_view.h

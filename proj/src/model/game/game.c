@@ -17,6 +17,7 @@
 #include "../../view/elements/timer/timer_view.h"
 #include "../../view/screens/menu/menu_view.h"
 #include "../../view/screens/mode_select/mode_select_view.h"
+#include "../../view/screens/car_select/car_select_view.h"
 
 #define CLUSTER_CHANCE    70
 #define BOOST_TILES       2
@@ -179,14 +180,28 @@ static void game_process_input(void) {
             if (input_mouse_over_exit())  game.menu_selection = MENU_EXIT;
 
             if (input_keyboard_start_pressed()) {
-                if (game.menu_selection == MENU_START) game.state = MODE_SELECT;
+                if (game.menu_selection == MENU_START) game.state = CAR_SELECT;
                 else game.state = EXIT;
             }
-            if (input_mouse_start_pressed()) game.state = MODE_SELECT;
+            if (input_mouse_start_pressed()) game.state = CAR_SELECT;
             if (input_mouse_exit_pressed())  game.state = EXIT;
             break;
+        case CAR_SELECT: {
+            int n = resources_get_car_format_count();
+            if (n < 1) n = 1;
+            if (input_esc_pressed()) { game.state = MAIN_MENU; break; }
+            if (input_p1_nav_left())  game.car1_format = (game.car1_format - 1 + n) % n;
+            if (input_p1_nav_right()) game.car1_format = (game.car1_format + 1)     % n;
+            if (input_p2_nav_left())  game.car2_format = (game.car2_format - 1 + n) % n;
+            if (input_p2_nav_right()) game.car2_format = (game.car2_format + 1)     % n;
+            if (input_car_select_race_pressed() || input_mouse_car_select_race_pressed()) {
+                resources_apply_car_format(game.car1_format, game.car2_format);
+                game.state = MODE_SELECT;
+            }
+            break;
+        }
         case MODE_SELECT:
-            if (input_esc_pressed()) { game.mode_selection = 0; game.state = MAIN_MENU; break; }
+            if (input_esc_pressed()) { game.mode_selection = 0; game.state = CAR_SELECT; break; }
             if (input_mode_nav_left())               game.mode_selection = 0;
             if (input_mode_nav_right())              game.mode_selection = 1;
             if (input_mouse_over_race_card())        game.mode_selection = 0;
@@ -338,6 +353,12 @@ static void game_render(void) {
         case MAIN_MENU:
             menu_view_draw(game.menu_selection, game.selected_theme);
             break;
+        case CAR_SELECT:
+            car_select_view_draw(
+                game.car1_format, game.car2_format,
+                resources_get_car_format_count()
+            );
+            break;
         case MODE_SELECT:
             mode_select_view_draw(game.mode_selection);
             break;
@@ -400,6 +421,8 @@ void game_init(void) {
     game.scenery = NULL;
     game.obstacle_count = 0;
     game.boost_count = 0;
+    game.car1_format = 0;
+    game.car2_format = 0;
 }
 
 void game_cleanup(void) {
@@ -428,6 +451,8 @@ void game_tick(void) {
             game_update();
             game_process_collisions();
             if (game_is_over()) game.state = GAME_OVER;
+            break;
+        case CAR_SELECT:
             break;
         case MAIN_MENU:
         case MODE_SELECT:

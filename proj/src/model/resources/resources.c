@@ -26,18 +26,37 @@
 #include "../../assets/xpm/biomes/desert/scenery/fence.xpm"
 #include "../../assets/xpm/biomes/desert/tiles/tile_sand_pebbles.xpm"
 
-#include "../../assets/xpm/cars/car_blue.xpm"
-#include "../../assets/xpm/cars/car_blue_dmg1.xpm"
-#include "../../assets/xpm/cars/car_blue_dmg2.xpm"
-#include "../../assets/xpm/cars/car_blue_destroyed.xpm"
+#include "../../assets/xpm/elements/cars/car_blue.xpm"
+#include "../../assets/xpm/elements/cars/car_blue_dmg1.xpm"
+#include "../../assets/xpm/elements/cars/car_blue_dmg2.xpm"
+#include "../../assets/xpm/elements/cars/car_blue_destroyed.xpm"
 
-#include "../../assets/xpm/cars/car_red.xpm"
-#include "../../assets/xpm/cars/car_red_dmg1.xpm"
-#include "../../assets/xpm/cars/car_red_dmg2.xpm"
-#include "../../assets/xpm/cars/car_red_destroyed.xpm"
+#include "../../assets/xpm/elements/cars/car_red.xpm"
+#include "../../assets/xpm/elements/cars/car_red_dmg1.xpm"
+#include "../../assets/xpm/elements/cars/car_red_dmg2.xpm"
+#include "../../assets/xpm/elements/cars/car_red_destroyed.xpm"
+
+/* ── car selection formats (s1=normal, s2=damaged, s3=burning, s4=exploded) ── */
+/* ── car rotation sprites (8 rotations, step 45°: 00,02,04,06,08,10,12,14) ── */
+#include "../../assets/xpm/elements/cars/carBlue00/carB00_s1.xpm"
+#include "../../assets/xpm/elements/cars/carBlue02/carB02_s1.xpm"
+#include "../../assets/xpm/elements/cars/carBlue04/carB04_s1.xpm"
+#include "../../assets/xpm/elements/cars/carBlue06/carB06_s1.xpm"
+#include "../../assets/xpm/elements/cars/carBlue08/carB08_s1.xpm"
+#include "../../assets/xpm/elements/cars/carBlue10/carB10_s1.xpm"
+#include "../../assets/xpm/elements/cars/carBlue12/carB12_s1.xpm"
+#include "../../assets/xpm/elements/cars/carBlue14/carB14_s1.xpm"
+#include "../../assets/xpm/elements/cars/carRed00/carR00_s1.xpm"
+#include "../../assets/xpm/elements/cars/carRed02/carR02_s1.xpm"
+#include "../../assets/xpm/elements/cars/carRed04/carR04_s1.xpm"
+#include "../../assets/xpm/elements/cars/carRed06/carR06_s1.xpm"
+#include "../../assets/xpm/elements/cars/carRed08/carR08_s1.xpm"
+#include "../../assets/xpm/elements/cars/carRed10/carR10_s1.xpm"
+#include "../../assets/xpm/elements/cars/carRed12/carR12_s1.xpm"
+#include "../../assets/xpm/elements/cars/carRed14/carR14_s1.xpm"
 
 #include "../../assets/xpm/pause/pause_panel.xpm"
-#include "../../assets/xpm/banana.xpm"
+#include "../../assets/xpm/elements/banana.xpm"
 #include "../../assets/xpm/pause/pause_resume_btn.xpm"
 #include "../../assets/xpm/pause/pause_resume_btn_sel.xpm"
 #include "../../assets/xpm/pause/pause_quit_btn.xpm"
@@ -58,8 +77,8 @@
 #include "../../assets/xpm/main/getaway_car_title.xpm"
 #include "../../assets/xpm/main/start_button.xpm"
 #include "../../assets/xpm/main/exit_button.xpm"
-#include "../../assets/xpm/cursor.xpm"
-#include "../../assets/xpm/heart.xpm"
+#include "../../assets/xpm/elements/cursor.xpm"
+#include "../../assets/xpm/elements/heart.xpm"
 
 #include "../../assets/xpm/modes/mode_select_title.xpm"
 #include "../../assets/xpm/modes/mode_race_card.xpm"
@@ -174,6 +193,38 @@ int resources_load(void) {
     res.mode_endurance_label = create_sprite((xpm_map_t)title_endurance);
     if (!res.mode_endurance_label) return 1;
 
+    {
+        static xpm_map_t fmt_blue_s1[CAR_FORMAT_MAX] = {
+            (xpm_map_t)car_blue_00_s1, (xpm_map_t)car_blue_02_s1,
+            (xpm_map_t)car_blue_04_s1, (xpm_map_t)car_blue_06_s1,
+            (xpm_map_t)car_blue_08_s1, (xpm_map_t)car_blue_10_s1,
+            (xpm_map_t)car_blue_12_s1, (xpm_map_t)car_blue_14_s1,
+        };
+        static xpm_map_t fmt_red_s1[CAR_FORMAT_MAX] = {
+            (xpm_map_t)car_red_00_s1, (xpm_map_t)car_red_02_s1,
+            (xpm_map_t)car_red_04_s1, (xpm_map_t)car_red_06_s1,
+            (xpm_map_t)car_red_08_s1, (xpm_map_t)car_red_10_s1,
+            (xpm_map_t)car_red_12_s1, (xpm_map_t)car_red_14_s1,
+        };
+        res.car_format_count = 0;
+        for (int f = 0; f < CAR_FORMAT_MAX; f++) {
+            Sprite *sb = create_sprite(fmt_blue_s1[f]);
+            Sprite *sr = create_sprite(fmt_red_s1[f]);
+            if (!sb || !sr) {
+                if (sb) sprite_destroy(sb);
+                if (sr) sprite_destroy(sr);
+                break;
+            }
+            res.car_format_sprites[f][0][CAR_STATE_NORMAL] = sb;
+            res.car_format_sprites[f][1][CAR_STATE_NORMAL] = sr;
+            for (int s = 1; s < 4; s++) {
+                res.car_format_sprites[f][0][s] = NULL;
+                res.car_format_sprites[f][1][s] = NULL;
+            }
+            res.car_format_count++;
+        }
+    }
+
     return 0;
 }
 
@@ -216,6 +267,14 @@ void resources_destroy(void) {
     if (res.mode_endurance_card) { sprite_destroy(res.mode_endurance_card); res.mode_endurance_card = NULL; }
     if (res.mode_race_label)      { sprite_destroy(res.mode_race_label);      res.mode_race_label      = NULL; }
     if (res.mode_endurance_label) { sprite_destroy(res.mode_endurance_label); res.mode_endurance_label = NULL; }
+    for (int f = 0; f < res.car_format_count; f++)
+        for (int p = 0; p < 2; p++)
+            for (int s = 0; s < 4; s++)
+                if (res.car_format_sprites[f][p][s]) {
+                    sprite_destroy(res.car_format_sprites[f][p][s]);
+                    res.car_format_sprites[f][p][s] = NULL;
+                }
+    res.car_format_count = 0;
 }
 
 Sprite* resources_get_car_sprite(int player, int state) {
@@ -300,3 +359,21 @@ Sprite* resources_get_mode_race_card(void)       { return res.mode_race_card; }
 Sprite* resources_get_mode_endurance_card(void)  { return res.mode_endurance_card; }
 Sprite* resources_get_mode_race_label(void)      { return res.mode_race_label; }
 Sprite* resources_get_mode_endurance_label(void) { return res.mode_endurance_label; }
+
+int resources_get_car_format_count(void) { return res.car_format_count; }
+
+Sprite* resources_get_car_format_preview(int fmt, int player) {
+    if (fmt < 0 || fmt >= res.car_format_count || player < 0 || player > 1) return NULL;
+    return res.car_format_sprites[fmt][player][CAR_STATE_NORMAL];
+}
+
+void resources_apply_car_format(int fmt1, int fmt2) {
+    if (fmt1 < 0 || fmt1 >= res.car_format_count) return;
+    if (fmt2 < 0 || fmt2 >= res.car_format_count) return;
+    for (int s = 0; s < 4; s++) {
+        if (res.car_format_sprites[fmt1][0][s])
+            res.car_sprites[0][s] = res.car_format_sprites[fmt1][0][s];
+        if (res.car_format_sprites[fmt2][1][s])
+            res.car_sprites[1][s] = res.car_format_sprites[fmt2][1][s];
+    }
+}
