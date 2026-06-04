@@ -86,6 +86,11 @@
 #include "../../assets/xpm/modes/title_race.xpm"
 #include "../../assets/xpm/modes/title_endurance.xpm"
 
+#include "../../assets/xpm/win/blue_wins.xpm"
+#include "../../assets/xpm/win/red_wins.xpm"
+#include "../../assets/xpm/win/win_play_again_btn.xpm"
+#include "../../assets/xpm/win/win_menu_btn.xpm"
+
 static Resources res;
 
 int resources_load(void) {
@@ -225,6 +230,15 @@ int resources_load(void) {
         }
     }
 
+    res.win_img[0] = create_sprite((xpm_map_t)blue_wins);
+    if (!res.win_img[0]) return 1;
+    res.win_img[1] = create_sprite((xpm_map_t)red_wins);
+    if (!res.win_img[1]) return 1;
+    res.win_play_again_btn = create_sprite((xpm_map_t)win_play_again_btn);
+    if (!res.win_play_again_btn) return 1;
+    res.win_menu_btn = create_sprite((xpm_map_t)win_menu_btn);
+    if (!res.win_menu_btn) return 1;
+
     return 0;
 }
 
@@ -275,6 +289,10 @@ void resources_destroy(void) {
                     res.car_format_sprites[f][p][s] = NULL;
                 }
     res.car_format_count = 0;
+    for (int i = 0; i < 2; i++)
+        if (res.win_img[i]) { sprite_destroy(res.win_img[i]); res.win_img[i] = NULL; }
+    if (res.win_play_again_btn) { sprite_destroy(res.win_play_again_btn); res.win_play_again_btn = NULL; }
+    if (res.win_menu_btn)       { sprite_destroy(res.win_menu_btn);       res.win_menu_btn       = NULL; }
 }
 
 Sprite* resources_get_car_sprite(int player, int state) {
@@ -377,3 +395,11 @@ void resources_apply_car_format(int fmt1, int fmt2) {
             res.car_sprites[1][s] = res.car_format_sprites[fmt2][1][s];
     }
 }
+
+Sprite* resources_get_win_img(int winner) {
+    if (winner == 1) return res.win_img[0]; /* blue wins */
+    if (winner == 2) return res.win_img[1]; /* red wins  */
+    return NULL;
+}
+Sprite* resources_get_win_play_again_btn(void) { return res.win_play_again_btn; }
+Sprite* resources_get_win_menu_btn(void)       { return res.win_menu_btn; }
