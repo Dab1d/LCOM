@@ -55,6 +55,10 @@
 /* ── forest / blossom ── */
 #include "../../assets/xpm/biomes/forest/tiles/tile_road_forest.xpm"
 #include "../../assets/xpm/biomes/forest/tiles/ground_forest.xpm"
+#include "../../assets/xpm/biomes/forest/tiles/ground_forest2.xpm"
+#include "../../assets/xpm/biomes/forest/tiles/tile_road_cobble.xpm"
+#include "../../assets/xpm/biomes/forest/tiles/ground_forest_branches.xpm"
+#include "../../assets/xpm/biomes/forest/tiles/blossom_wall.xpm"
 #include "../../assets/xpm/biomes/forest/scenery/blossom_tree.xpm"
 #include "../../assets/xpm/biomes/forest/scenery/blossom_tree2.xpm"
 #include "../../assets/xpm/biomes/forest/scenery/blossom_petals.xpm"
@@ -63,6 +67,8 @@
 #include "../../assets/xpm/biomes/forest/obstacles/blossom_lantern2.xpm"
 #include "../../assets/xpm/biomes/forest/obstacles/blossom_branch.xpm"
 #include "../../assets/xpm/biomes/forest/obstacles/blossom_stump.xpm"
+#include "../../assets/xpm/biomes/forest/obstacles/blossom_log.xpm"
+#include "../../assets/xpm/biomes/forest/obstacles/blossom_flower.xpm"
 
 /* ── biome selector UI ── */
 #include "../../assets/xpm/biomes/forest/ui/biome_select_title.xpm"
@@ -177,11 +183,21 @@ int resources_load(void) {
     for (int t = 0; t < 4; t++)
         if (!res.tile_sprites[TRACK_THEME_FOREST][t]) return 1;
 
-    res.ground_sprites[TRACK_THEME_CITY]   = create_sprite((xpm_map_t)grass1);
-    res.ground_sprites[TRACK_THEME_DESERT] = create_sprite((xpm_map_t)tile_sand_xpm);
-    res.ground_sprites[TRACK_THEME_FOREST] = create_sprite((xpm_map_t)ground_forest_xpm);
+    res.ground_tiles[TRACK_THEME_CITY][GROUND_TILE_SOIL]   = create_sprite((xpm_map_t)grass1);
+    res.ground_tiles[TRACK_THEME_DESERT][GROUND_TILE_SOIL] = create_sprite((xpm_map_t)tile_sand_xpm);
+    res.ground_tiles[TRACK_THEME_FOREST][GROUND_TILE_SOIL] = create_sprite((xpm_map_t)ground_forest_xpm);
     for (int i = 0; i < TRACK_THEME_COUNT; i++)
-        if (!res.ground_sprites[i]) return 1;
+        if (!res.ground_tiles[i][GROUND_TILE_SOIL]) return 1;
+
+    res.ground_tiles[TRACK_THEME_FOREST][GROUND_TILE_ROCKS]  = create_sprite((xpm_map_t)ground_forest2_xpm);
+    if (!res.ground_tiles[TRACK_THEME_FOREST][GROUND_TILE_ROCKS]) return 1;
+    res.ground_tiles[TRACK_THEME_FOREST][GROUND_TILE_COBBLE] = create_sprite((xpm_map_t)tile_road_cobble_xpm);
+    if (!res.ground_tiles[TRACK_THEME_FOREST][GROUND_TILE_COBBLE]) return 1;
+    res.ground_tiles[TRACK_THEME_FOREST][GROUND_TILE_BLOCK]  = create_sprite((xpm_map_t)ground_forest_branches_xpm);
+    if (!res.ground_tiles[TRACK_THEME_FOREST][GROUND_TILE_BLOCK]) return 1;
+
+    res.wall_sprites[TRACK_THEME_FOREST] = create_sprite((xpm_map_t)blossom_wall_xpm);
+    if (!res.wall_sprites[TRACK_THEME_FOREST]) return 1;
 
     res.scenery_sprites[TRACK_THEME_CITY]   = create_sprite((xpm_map_t)tree);
     res.scenery_sprites[TRACK_THEME_DESERT] = create_sprite((xpm_map_t)cactus_tall_xpm);
@@ -197,6 +213,19 @@ int resources_load(void) {
     res.obstacle_sprites[TRACK_THEME_FOREST] = create_sprite((xpm_map_t)blossom_lantern_xpm);
     for (int i = 0; i < 3; i++)
         if (!res.obstacle_sprites[i]) return 1;
+
+    {
+        static xpm_map_t forest_obs_xpms[4] = {
+            (xpm_map_t)blossom_branch_xpm,
+            (xpm_map_t)blossom_stump_xpm,
+            (xpm_map_t)blossom_log_xpm,
+            (xpm_map_t)blossom_flower_xpm,
+        };
+        for (int i = 0; i < 4; i++) {
+            res.forest_obstacle_sprites[i] = create_sprite(forest_obs_xpms[i]);
+            if (!res.forest_obstacle_sprites[i]) return 1;
+        }
+    }
 
     res.haybale_sprite = create_sprite((xpm_map_t)obstacle_haybale_xpm);
     if (!res.haybale_sprite) return 1;
@@ -363,7 +392,9 @@ void resources_destroy(void) {
         for (int t = 0; t < 4; t++)
             if (res.tile_sprites[th][t]) { sprite_destroy(res.tile_sprites[th][t]); res.tile_sprites[th][t] = NULL; }
     for (int i = 0; i < TRACK_THEME_COUNT; i++) {
-        if (res.ground_sprites[i])   { sprite_destroy(res.ground_sprites[i]);   res.ground_sprites[i]   = NULL; }
+        for (int v = 0; v < GROUND_TILE_COUNT; v++)
+            if (res.ground_tiles[i][v]) { sprite_destroy(res.ground_tiles[i][v]); res.ground_tiles[i][v] = NULL; }
+        if (res.wall_sprites[i])     { sprite_destroy(res.wall_sprites[i]);     res.wall_sprites[i]     = NULL; }
         if (res.scenery_sprites[i])  { sprite_destroy(res.scenery_sprites[i]);  res.scenery_sprites[i]  = NULL; }
         if (res.obstacle_sprites[i]) { sprite_destroy(res.obstacle_sprites[i]); res.obstacle_sprites[i] = NULL; }
         if (res.biome_labels[i])     { sprite_destroy(res.biome_labels[i]);     res.biome_labels[i]     = NULL; }
@@ -373,6 +404,8 @@ void resources_destroy(void) {
     if (res.haybale_sprite)     { sprite_destroy(res.haybale_sprite);     res.haybale_sprite     = NULL; }
     for (int i = 0; i < 16; i++)
         if (res.city_obstacle_sprites[i]) { sprite_destroy(res.city_obstacle_sprites[i]); res.city_obstacle_sprites[i] = NULL; }
+    for (int i = 0; i < 4; i++)
+        if (res.forest_obstacle_sprites[i]) { sprite_destroy(res.forest_obstacle_sprites[i]); res.forest_obstacle_sprites[i] = NULL; }
     if (res.boost_sprite)    { sprite_destroy(res.boost_sprite);    res.boost_sprite    = NULL; }
     for (int i = 0; i < 3; i++)
         if (res.city_boost_sprites[i]) { sprite_destroy(res.city_boost_sprites[i]); res.city_boost_sprites[i] = NULL; }
@@ -441,9 +474,20 @@ Sprite* resources_get_tile_sprite_themed(int type, int theme) {
     return res.tile_sprites[theme][type];
 }
 
+Sprite* resources_get_ground_tile(int theme, int variant) {
+    if (theme < 0 || theme >= TRACK_THEME_COUNT) return res.ground_tiles[TRACK_THEME_CITY][GROUND_TILE_SOIL];
+    if (variant < 0 || variant >= GROUND_TILE_COUNT) return res.ground_tiles[theme][GROUND_TILE_SOIL];
+    return res.ground_tiles[theme][variant];
+}
+
 Sprite* resources_get_ground_sprite(int theme) {
-    if (theme < 0 || theme >= TRACK_THEME_COUNT) return res.ground_sprites[TRACK_THEME_CITY];
-    return res.ground_sprites[theme];
+    if (theme < 0 || theme >= TRACK_THEME_COUNT) return res.ground_tiles[TRACK_THEME_CITY][GROUND_TILE_SOIL];
+    return res.ground_tiles[theme][GROUND_TILE_SOIL];
+}
+
+Sprite* resources_get_wall_sprite(int theme) {
+    if (theme < 0 || theme >= TRACK_THEME_COUNT) return NULL;
+    return res.wall_sprites[theme];
 }
 
 Sprite* resources_get_scenery_sprite(int theme) {
@@ -454,7 +498,7 @@ Sprite* resources_get_scenery_sprite(int theme) {
 Sprite* resources_get_divider_sprite(void) { return res.divider_sprite; }
 
 Sprite* resources_get_grass_sprite(void) {
-    return res.ground_sprites[TRACK_THEME_CITY];
+    return res.ground_tiles[TRACK_THEME_CITY][GROUND_TILE_SOIL];
 }
 
 Sprite* resources_get_tree_sprite(void) {
@@ -550,3 +594,7 @@ Sprite* resources_get_shield_aura_sprite(void) { return res.shield_aura_sprite; 
 Sprite* resources_get_road_detail_sprite(void)      { return res.road_detail_sprite; }
 Sprite* resources_get_inner_road_left_sprite(void)  { return res.inner_road_left_sprite; }
 Sprite* resources_get_inner_road_right_sprite(void) { return res.inner_road_right_sprite; }
+
+Sprite* resources_get_forest_obstacle_sprite(int idx) {
+    return res.forest_obstacle_sprites[((unsigned int)idx) % 4];
+}

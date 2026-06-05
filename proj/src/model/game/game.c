@@ -629,7 +629,7 @@ static void game_render(void) {
             break;
         case GAMEPLAY:
             track_view_draw(game.track);
-            scenery_view_draw(game.scenery, game.track->theme);
+            scenery_view_draw(game.scenery, game.track, game.track->theme);
             car_view_draw(game.car1, game.track->theme);
             car_view_draw(game.car2, game.track->theme);
             shield_aura_draw(game.car1);
@@ -653,7 +653,7 @@ static void game_render(void) {
             break;
         case PAUSE:
             track_view_draw(game.track);
-            scenery_view_draw(game.scenery, game.track->theme);
+            scenery_view_draw(game.scenery, game.track, game.track->theme);
             car_view_draw(game.car1, game.track->theme);
             car_view_draw(game.car2, game.track->theme);
             shield_aura_draw(game.car1);

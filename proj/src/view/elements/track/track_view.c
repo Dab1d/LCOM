@@ -12,6 +12,16 @@ void track_view_draw(const Track *track) {
             int lr   = track->scroll_row + 2 * CAR_SCREEN_ROW - screen_row;
             TileType type = track_get_tile(track, lr, lane);
             Sprite *sp = resources_get_tile_sprite_themed(type, track->theme);
+
+            /* Mix alternate road tile: cycle 1-main / 2-alt / 2-main per lane */
+            if (type == TILE_EMPTY) {
+                Sprite *alt = resources_get_ground_tile(track->theme, GROUND_TILE_COBBLE);
+                if (alt) {
+                    int pos = (lr + lane * 2) % 5;
+                    if (pos >= 1 && pos <= 2) sp = alt;
+                }
+            }
+
             if (!sp) continue;
             int x = ROAD_OFFSET_X + lane * CAR_LANE_WIDTH;
             draw_sprite(sp, x, y);
