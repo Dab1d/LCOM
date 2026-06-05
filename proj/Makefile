@@ -8,6 +8,7 @@ CFLAGS += -I../lab3
 #CFLAGS += -I../lab4
 CFLAGS += -I../lab5
 CFLAGS += -I../lab1
+CFLAGS += -Isrc
 
 DPADD += ${LIBLCF}
 
@@ -59,7 +60,8 @@ SRCS = proj.c \
 
 
 # Headers — listados explicitamente para dependências corretas
-HDRS = src/model/game/game.h \
+HDRS = src/config.h \
+       src/model/game/game.h \
        src/model/common/element/element.h \
        src/model/common/sprite/sprite.h \
        src/model/elements/car/car.h \
