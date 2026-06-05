@@ -1,5 +1,6 @@
 #include "boost.h"
 #include <stdlib.h>
+#include <time.h>
 
 static double row_to_y(int logical_row, int scroll_row, float scroll_offset) {
     int screen_row = logical_row - scroll_row;
@@ -10,8 +11,9 @@ Boost* create_boost(int row, int lane) {
     Boost* boost = (Boost*) malloc(sizeof(Boost));
     if (boost == NULL) return NULL;
 
-    boost->lane = lane;
-    boost->row  = row;
+    boost->lane       = lane;
+    boost->row        = row;
+    boost->sprite_idx = rand() % 3;
 
     double x = (double)(lane * CAR_LANE_WIDTH);
     double y = (double)(row * TRACK_TILE_HEIGHT);

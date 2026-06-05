@@ -4,6 +4,24 @@
 #include "../elements/track/track.h"
 #include <stdlib.h>
 
+/* ── city obstacles ── */
+#include "../../assets/xpm/biomes/city/obstacles/item_1_1.xpm"
+#include "../../assets/xpm/biomes/city/obstacles/item_1_2.xpm"
+#include "../../assets/xpm/biomes/city/obstacles/item_1_3.xpm"
+#include "../../assets/xpm/biomes/city/obstacles/item_1_4.xpm"
+#include "../../assets/xpm/biomes/city/obstacles/item_2_1.xpm"
+#include "../../assets/xpm/biomes/city/obstacles/item_2_2.xpm"
+#include "../../assets/xpm/biomes/city/obstacles/item_2_3.xpm"
+#include "../../assets/xpm/biomes/city/obstacles/item_2_4.xpm"
+#include "../../assets/xpm/biomes/city/obstacles/item_3_1.xpm"
+#include "../../assets/xpm/biomes/city/obstacles/item_3_2.xpm"
+#include "../../assets/xpm/biomes/city/obstacles/item_3_3.xpm"
+#include "../../assets/xpm/biomes/city/obstacles/item_3_4.xpm"
+#include "../../assets/xpm/biomes/city/obstacles/item_4_1.xpm"
+#include "../../assets/xpm/biomes/city/obstacles/item_4_2.xpm"
+#include "../../assets/xpm/biomes/city/obstacles/item_4_3.xpm"
+#include "../../assets/xpm/biomes/city/obstacles/item_4_4.xpm"
+
 /* ── city ── */
 #include "../../assets/xpm/biomes/city/tiles/tile_road.xpm"
 #include "../../assets/xpm/biomes/city/tiles/tile_obstacle.xpm"
@@ -13,6 +31,9 @@
 #include "../../assets/xpm/biomes/city/scenery/tree.xpm"
 #include "../../assets/xpm/biomes/city/objects/obstacle.xpm"
 #include "../../assets/xpm/biomes/city/objects/boost.xpm"
+#include "../../assets/xpm/biomes/city/objects/boost1.xpm"
+#include "../../assets/xpm/biomes/city/objects/boost2.xpm"
+#include "../../assets/xpm/biomes/city/objects/boost3.xpm"
 
 /* ── desert ── */
 #include "../../assets/xpm/biomes/desert/tiles/tile_road_desert.xpm"
@@ -140,6 +161,23 @@ int resources_load(void) {
     res.obstacle_sprite = create_sprite((xpm_map_t)obstacle_xpm);
     if (!res.obstacle_sprite) return 1;
 
+    {
+        static xpm_map_t city_obs_xpms[16] = {
+            (xpm_map_t)item_1_1_xpm, (xpm_map_t)item_1_2_xpm,
+            (xpm_map_t)item_1_3_xpm, (xpm_map_t)item_1_4_xpm,
+            (xpm_map_t)item_2_1_xpm, (xpm_map_t)item_2_2_xpm,
+            (xpm_map_t)item_2_3_xpm, (xpm_map_t)item_2_4_xpm,
+            (xpm_map_t)item_3_1_xpm, (xpm_map_t)item_3_2_xpm,
+            (xpm_map_t)item_3_3_xpm, (xpm_map_t)item_3_4_xpm,
+            (xpm_map_t)item_4_1_xpm, (xpm_map_t)item_4_2_xpm,
+            (xpm_map_t)item_4_3_xpm, (xpm_map_t)item_4_4_xpm,
+        };
+        for (int i = 0; i < 16; i++) {
+            res.city_obstacle_sprites[i] = create_sprite(city_obs_xpms[i]);
+            if (!res.city_obstacle_sprites[i]) return 1;
+        }
+    }
+
     res.grass_sprite = create_sprite((xpm_map_t)grass1);
     if (!res.grass_sprite) return 1;
 
@@ -160,6 +198,16 @@ int resources_load(void) {
 
     res.boost_sprite = create_sprite((xpm_map_t)boost_xpm);
     if (!res.boost_sprite) return 1;
+
+    {
+        static xpm_map_t city_boost_xpms[3] = {
+            (xpm_map_t)boost1, (xpm_map_t)boost2, (xpm_map_t)boost3,
+        };
+        for (int i = 0; i < 3; i++) {
+            res.city_boost_sprites[i] = create_sprite(city_boost_xpms[i]);
+            if (!res.city_boost_sprites[i]) return 1;
+        }
+    }
 
     res.pause_panel        = create_sprite((xpm_map_t)pause_panel_xpm);
     res.pause_resume_btn[0] = create_sprite((xpm_map_t)pause_resume_btn_xpm);
@@ -260,7 +308,11 @@ void resources_destroy(void) {
     if (res.obstacle_desert_sprite) { sprite_destroy(res.obstacle_desert_sprite); res.obstacle_desert_sprite = NULL; }
     if (res.haybale_sprite)         { sprite_destroy(res.haybale_sprite);         res.haybale_sprite         = NULL; }
     if (res.obstacle_sprite) { sprite_destroy(res.obstacle_sprite); res.obstacle_sprite = NULL; }
+    for (int i = 0; i < 16; i++)
+        if (res.city_obstacle_sprites[i]) { sprite_destroy(res.city_obstacle_sprites[i]); res.city_obstacle_sprites[i] = NULL; }
     if (res.boost_sprite)    { sprite_destroy(res.boost_sprite);    res.boost_sprite    = NULL; }
+    for (int i = 0; i < 3; i++)
+        if (res.city_boost_sprites[i]) { sprite_destroy(res.city_boost_sprites[i]); res.city_boost_sprites[i] = NULL; }
     if (res.grass_sprite)    { sprite_destroy(res.grass_sprite);    res.grass_sprite    = NULL; }
     if (res.tree_sprite)     { sprite_destroy(res.tree_sprite);     res.tree_sprite     = NULL; }
     if (res.pause_panel)     { sprite_destroy(res.pause_panel);     res.pause_panel     = NULL; }
@@ -409,3 +461,13 @@ Sprite* resources_get_win_img(int winner) {
 }
 Sprite* resources_get_win_play_again_btn(void) { return res.win_play_again_btn; }
 Sprite* resources_get_win_menu_btn(void)       { return res.win_menu_btn; }
+
+Sprite* resources_get_city_obstacle_sprite(int idx) {
+    if (idx < 0 || idx >= 16) return res.city_obstacle_sprites[0];
+    return res.city_obstacle_sprites[idx];
+}
+
+Sprite* resources_get_city_boost_sprite(int idx) {
+    if (idx < 0 || idx >= 3) return res.city_boost_sprites[0];
+    return res.city_boost_sprites[idx];
+}
