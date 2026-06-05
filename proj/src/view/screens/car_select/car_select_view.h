@@ -6,6 +6,11 @@
 #ifndef __PROJ_CAR_SELECT_VIEW_H
 #define __PROJ_CAR_SELECT_VIEW_H
 
+#define CAR_SELECT_RACE_BTN_X  384
+#define CAR_SELECT_RACE_BTN_Y  640
+#define CAR_SELECT_RACE_BTN_W  256
+#define CAR_SELECT_RACE_BTN_H   64
+
 /**
  * @brief Draws the car-selection screen showing each player's currently chosen skin.
  * @param p1_fmt    Format index currently selected by player 1 (0..fmt_count-1).

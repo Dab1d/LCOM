@@ -5,7 +5,7 @@
 #include <math.h>
 
 #define STRIP_TILES  3
-#define SCREEN_H_SV  768
+#include "config.h"
 #define WALL_COL_L   2
 #define WALL_COL_R   0
 
@@ -26,8 +26,8 @@ void scenery_view_draw(const Scenery *s, const Track *track, TrackTheme theme) {
     int road_end = ROAD_OFFSET_X + 10 * CAR_LANE_WIDTH;
     int strip_w  = STRIP_TILES * tile;
 
-    draw_rect(0,        0, strip_w, SCREEN_H_SV, biome_bg_color(theme));
-    draw_rect(road_end, 0, strip_w, SCREEN_H_SV, biome_bg_color(theme));
+    draw_rect(0,        0, strip_w, SCREEN_H, biome_bg_color(theme));
+    draw_rect(road_end, 0, strip_w, SCREEN_H, biome_bg_color(theme));
 
     Sprite *tree  = resources_get_scenery_sprite(theme);
     Sprite *fence = (theme == TRACK_THEME_DESERT) ? resources_get_fence_sprite() : NULL;

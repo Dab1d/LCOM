@@ -10,8 +10,7 @@
 #include "../../../assets/xpm/ui/screens/main/race_mini.xpm"
 #include "../../../assets/xpm/ui/screens/main/endur_mini.xpm"
 
-#define SCREEN_W      1024
-#define SCREEN_H       768
+#include "config.h"
 
 #define PANEL_X         62
 #define PANEL_Y         50

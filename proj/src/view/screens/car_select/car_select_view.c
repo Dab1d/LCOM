@@ -5,8 +5,7 @@
 #include "../../../controller/palette/palette.h"
 #include "../../../view/hud/timer/timer_view.h"
 
-#define SCREEN_W     1024
-#define HALF_W        512
+#include "config.h"
 #define PREVIEW_W     150
 #define PREVIEW_H     150
 #define PREVIEW_Y     300
@@ -20,10 +19,6 @@
 #define P2_LARROW_X   (P2_PREVIEW_X - ARROW_GAP - ARROW_SIZE)
 #define P2_RARROW_X   (P2_PREVIEW_X + PREVIEW_W + ARROW_GAP)
 #define COUNTER_Y     (PREVIEW_Y + PREVIEW_H + 20)
-#define RACE_BTN_W    256
-#define RACE_BTN_H     64
-#define RACE_BTN_X    ((SCREEN_W - RACE_BTN_W) / 2)
-#define RACE_BTN_Y    640
 #define BORDER_T        4
 
 static void draw_arrow_left(int x, int y, int size, uint8_t color) {
@@ -55,16 +50,16 @@ static void draw_counter(int cx, int y, int current, int total) {
     Sprite *d_cur = resources_get_digit_sprite(current + 1);
     Sprite *colon  = resources_get_colon_sprite();
     Sprite *d_tot  = resources_get_digit_sprite(total);
-    int dw = 20;
+    int dw = 32;
     if (d_cur) draw_sprite(d_cur, cx - dw - 4, y);
     if (colon)  draw_sprite(colon,  cx - colon->width / 2, y);
-    if (d_tot)  draw_sprite(d_tot,  cx + 4, y);
+    if (d_tot)  draw_sprite(d_tot,  cx + dw - 8, y);
 }
 
 void car_select_view_draw(int p1_fmt, int p2_fmt, int fmt_count) {
-    draw_rect(0,      HUD_BAR_H, HALF_W,  SCREEN_W - HUD_BAR_H, PAL_MENU_DARK);
-    draw_rect(HALF_W, HUD_BAR_H, HALF_W,  SCREEN_W - HUD_BAR_H, PAL_MENU_DARK);
-    draw_rect(HALF_W - 1, HUD_BAR_H, 2, SCREEN_W - HUD_BAR_H, PAL_GREY_MID);
+    draw_rect(0,      HUD_BAR_H, HALF_W,  SCREEN_H - HUD_BAR_H, PAL_MENU_DARK);
+    draw_rect(HALF_W, HUD_BAR_H, HALF_W,  SCREEN_H - HUD_BAR_H, PAL_MENU_DARK);
+    draw_rect(HALF_W - 1, HUD_BAR_H, 2, SCREEN_H - HUD_BAR_H, PAL_GREY_MID);
 
     /* P1 label indicator */
     draw_rect(HALF_W / 2 - 20, HUD_BAR_H + 10, 40, 20, PAL_P1_INDICATOR);
@@ -99,15 +94,15 @@ void car_select_view_draw(int p1_fmt, int p2_fmt, int fmt_count) {
     Sprite *rbtn = resources_get_mode_race_label();
     int hovered  = input_mouse_over_car_select_race_btn();
     if (rbtn) {
-        int w = hovered ? RACE_BTN_W * 9 / 8 : RACE_BTN_W;
-        int h = hovered ? RACE_BTN_H * 9 / 8 : RACE_BTN_H;
+        int w = hovered ? CAR_SELECT_RACE_BTN_W * 9 / 8 : CAR_SELECT_RACE_BTN_W;
+        int h = hovered ? CAR_SELECT_RACE_BTN_H * 9 / 8 : CAR_SELECT_RACE_BTN_H;
         draw_sprite_scaled(rbtn,
-            RACE_BTN_X - (w - RACE_BTN_W) / 2,
-            RACE_BTN_Y - (h - RACE_BTN_H) / 2,
+            CAR_SELECT_RACE_BTN_X - (w - CAR_SELECT_RACE_BTN_W) / 2,
+            CAR_SELECT_RACE_BTN_Y - (h - CAR_SELECT_RACE_BTN_H) / 2,
             w, h);
     } else {
         uint8_t bc = hovered ? PAL_BTN_YLW_LGT : PAL_BTN_YLW;
-        draw_rect(RACE_BTN_X, RACE_BTN_Y, RACE_BTN_W, RACE_BTN_H, bc);
+        draw_rect(CAR_SELECT_RACE_BTN_X, CAR_SELECT_RACE_BTN_Y, CAR_SELECT_RACE_BTN_W, CAR_SELECT_RACE_BTN_H, bc);
     }
 
     draw_sprite(resources_get_cursor_sprite(), input_cursor_x(), input_cursor_y());
