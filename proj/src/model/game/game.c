@@ -8,6 +8,7 @@
 #include "../../view/elements/car/car_view.h"
 #include "../../view/elements/obstacle/obstacle_view.h"
 #include "../../view/elements/boost/boost_view.h"
+#include "../../view/elements/shield/shield_view.h"
 #include "../../view/elements/track/track_view.h"
 #include "../scenery/scenery.h"
 #include "../../view/elements/scenery/scenery_view.h"
@@ -21,9 +22,10 @@
 #include "../../view/leaderboard_view.h"
 #include "../leaderboard/leaderboard.h"
 
-#define CLUSTER_CHANCE    70
-#define BOOST_TILES       2
+#define CLUSTER_CHANCE     70
+#define BOOST_TILES        2
 #define BOOST_SPAWN_CHANCE 65
+#define SHIELD_SPAWN_CHANCE 20
 #define MENU_START        0
 #define MENU_LEADERBOARD  1
 #define MENU_EXIT         2
@@ -47,17 +49,38 @@ static bool position_has_boost(int row, int lane) {
     return false;
 }
 
+static bool position_has_shield(int row, int lane) {
+    for (int i = 0; i < game.shield_count; i++) {
+        Shield *s = game.shields[i];
+        if (s && s->base.is_active && s->row == row && s->lane == lane) return true;
+    }
+    return false;
+}
+
 static void spawn_boost(int row, int lane_min, int lane_max) {
     if (game.boost_count >= MAX_BOOSTS) return;
     int start = lane_min + rand() % (lane_max - lane_min + 1);
     int lane = -1;
     for (int i = 0; i <= lane_max - lane_min; i++) {
         int candidate = lane_min + (start - lane_min + i) % (lane_max - lane_min + 1);
-        if (!position_has_obstacle(row, candidate)) { lane = candidate; break; }
+        if (!position_has_obstacle(row, candidate) && !position_has_shield(row, candidate)) { lane = candidate; break; }
     }
     if (lane == -1) return;
     game.boosts[game.boost_count] = create_boost(row, lane);
     game.boost_count++;
+}
+
+static void spawn_shield(int row, int lane_min, int lane_max) {
+    if (game.shield_count >= MAX_SHIELDS) return;
+    int start = lane_min + rand() % (lane_max - lane_min + 1);
+    int lane = -1;
+    for (int i = 0; i <= lane_max - lane_min; i++) {
+        int candidate = lane_min + (start - lane_min + i) % (lane_max - lane_min + 1);
+        if (!position_has_obstacle(row, candidate) && !position_has_boost(row, candidate)) { lane = candidate; break; }
+    }
+    if (lane == -1) return;
+    game.shields[game.shield_count] = create_shield(row, lane);
+    game.shield_count++;
 }
 
 static void spawn_single(int row, int lane_min, int lane_max) {
@@ -139,6 +162,13 @@ static void game_cleanup_inactive(void) {
         else { destroy_boost(game.boosts[i]); game.boosts[i] = NULL; }
     }
     game.boost_count = w;
+    w = 0;
+    for (int i = 0; i < game.shield_count; i++) {
+        if (game.shields[i] && game.shields[i]->base.is_active)
+            game.shields[w++] = game.shields[i];
+        else { destroy_shield(game.shields[i]); game.shields[i] = NULL; }
+    }
+    game.shield_count = w;
 }
 
 static void game_spawn_endurance(void) {
@@ -159,6 +189,10 @@ static void game_spawn_endurance(void) {
         if (row % 10 == 0) {
             if (p1 && rand() % 100 < BOOST_SPAWN_CHANCE) spawn_boost(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
             if (p2 && rand() % 100 < BOOST_SPAWN_CHANCE) spawn_boost(row, PLAYER2_LANE_START, PLAYER2_LANE_END);
+        }
+        if (row % 20 == 0) {
+            if (p1 && rand() % 100 < SHIELD_SPAWN_CHANCE) spawn_shield(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
+            if (p2 && rand() % 100 < SHIELD_SPAWN_CHANCE) spawn_shield(row, PLAYER2_LANE_START, PLAYER2_LANE_END);
         }
         if (row % 15 == 0 && game.track->theme == TRACK_THEME_DESERT) {
             if (p1 && rand() % 100 < 40) spawn_oil(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
@@ -183,6 +217,7 @@ void game_var_init(Game *game) {
     game->win_selected = 0;
     game->obstacle_count = 0;
     game->boost_count = 0;
+    game->shield_count = 0;
     game->elapsed_ticks = 0;
     game->last_spawn_row  = 20;
     game->car1_death_tick = 0;
@@ -227,6 +262,13 @@ void game_create(Game *game) {
                     spawn_oil(row + 7, PLAYER2_LANE_START, PLAYER2_LANE_END);
             }
         }
+
+        for (int row = 25; row < TRACK_TOTAL_ROWS - 10 && game->shield_count < MAX_SHIELDS; row += 20) {
+            if (rand() % 100 < SHIELD_SPAWN_CHANCE)
+                spawn_shield(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
+            if (rand() % 100 < SHIELD_SPAWN_CHANCE)
+                spawn_shield(row + 10, PLAYER2_LANE_START, PLAYER2_LANE_END);
+        }
     } else {
         /* Endurance mode: semear janela inicial; spawn dinâmico trata do resto */
         game_spawn_endurance();
@@ -266,6 +308,13 @@ void game_reset(Game *game) {
         }
     }
     game->boost_count = 0;
+    for (int i = 0; i < game->shield_count; i++) {
+        if (game->shields[i]) {
+            destroy_shield(game->shields[i]);
+            game->shields[i] = NULL;
+        }
+    }
+    game->shield_count = 0;
     game_create(game);
 }
 
@@ -416,6 +465,13 @@ static void game_update(void) {
         if (game.boosts[i] != NULL)
             boost_update(game.boosts[i], game.track->scroll_row, game.track->scroll_offset);
     }
+    for (int i = 0; i < game.shield_count; i++) {
+        if (game.shields[i] != NULL)
+            shield_update(game.shields[i], game.track->scroll_row, game.track->scroll_offset);
+    }
+
+    if (game.car1->shield_ticks > 0) game.car1->shield_ticks--;
+    if (game.car2->shield_ticks > 0) game.car2->shield_ticks--;
 }
 
 static void game_process_collisions(void) {
@@ -428,8 +484,12 @@ static void game_process_collisions(void) {
 
         if (c1_active_before && obstacle_collides_with_car(obs, game.car1)) {
             if (obs->type == OBSTACLE_BANANA || obs->type == OBSTACLE_OIL) {
-                car_banana_slip(game.car1);
-                input_set_car1_inverted(180);
+                if (game.car1->shield_ticks > 0)
+                    game.car1->shield_ticks = 0;
+                else {
+                    car_banana_slip(game.car1);
+                    input_set_car1_inverted(180);
+                }
             } else {
                 car_take_damage(game.car1);
             }
@@ -437,8 +497,12 @@ static void game_process_collisions(void) {
         }
         if (c2_active_before && obstacle_collides_with_car(obs, game.car2)) {
             if (obs->type == OBSTACLE_BANANA || obs->type == OBSTACLE_OIL) {
-                car_banana_slip(game.car2);
-                input_set_car2_inverted(180);
+                if (game.car2->shield_ticks > 0)
+                    game.car2->shield_ticks = 0;
+                else {
+                    car_banana_slip(game.car2);
+                    input_set_car2_inverted(180);
+                }
             } else {
                 car_take_damage(game.car2);
             }
@@ -456,6 +520,19 @@ static void game_process_collisions(void) {
         } else if (c2_active_before && boost_collides_with_car(boost, game.car2)) {
             car_apply_boost(game.car2, BOOST_TILES);
             boost->base.is_active = false;
+        }
+    }
+
+    for (int i = 0; i < game.shield_count; i++) {
+        Shield *shield = game.shields[i];
+        if (shield == NULL || !shield->base.is_active) continue;
+
+        if (c1_active_before && shield_collides_with_car(shield, game.car1)) {
+            car_apply_shield(game.car1, SHIELD_DURATION_TICKS);
+            shield->base.is_active = false;
+        } else if (c2_active_before && shield_collides_with_car(shield, game.car2)) {
+            car_apply_shield(game.car2, SHIELD_DURATION_TICKS);
+            shield->base.is_active = false;
         }
     }
 
@@ -545,6 +622,8 @@ static void game_render(void) {
             scenery_view_draw(game.scenery, game.track->theme);
             car_view_draw(game.car1, game.track->theme);
             car_view_draw(game.car2, game.track->theme);
+            shield_aura_draw(game.car1);
+            shield_aura_draw(game.car2);
             for (int i = 0; i < game.obstacle_count; i++) {
                 if (obstacle_is_visible(game.obstacles[i]))
                     obstacle_view_draw(game.obstacles[i], game.track->theme);
@@ -553,8 +632,12 @@ static void game_render(void) {
                 if (boost_is_visible(game.boosts[i]))
                     boost_view_draw(game.boosts[i]);
             }
+            for (int i = 0; i < game.shield_count; i++) {
+                if (shield_is_visible(game.shields[i]))
+                    shield_view_draw(game.shields[i]);
+            }
             timer_view_draw(game.elapsed_ticks);
-            heart_view_draw(game.car1, game.car2);
+            heart_view_draw(game.car1, game.car2, input_get_car1_inverted_ticks(), input_get_car2_inverted_ticks());
             break;
         case GAME_OVER:
             break;
@@ -563,6 +646,8 @@ static void game_render(void) {
             scenery_view_draw(game.scenery, game.track->theme);
             car_view_draw(game.car1, game.track->theme);
             car_view_draw(game.car2, game.track->theme);
+            shield_aura_draw(game.car1);
+            shield_aura_draw(game.car2);
             for (int i = 0; i < game.obstacle_count; i++) {
                 if (obstacle_is_visible(game.obstacles[i]))
                     obstacle_view_draw(game.obstacles[i], game.track->theme);
@@ -571,8 +656,12 @@ static void game_render(void) {
                 if (boost_is_visible(game.boosts[i]))
                     boost_view_draw(game.boosts[i]);
             }
+            for (int i = 0; i < game.shield_count; i++) {
+                if (shield_is_visible(game.shields[i]))
+                    shield_view_draw(game.shields[i]);
+            }
             timer_view_draw(game.elapsed_ticks);
-            heart_view_draw(game.car1, game.car2);
+            heart_view_draw(game.car1, game.car2, input_get_car1_inverted_ticks(), input_get_car2_inverted_ticks());
             pause_view_draw(game.pause_selected);
             draw_sprite(resources_get_cursor_sprite(), input_cursor_x(), input_cursor_y());
             break;
@@ -602,6 +691,7 @@ void game_init(void) {
     game.scenery = NULL;
     game.obstacle_count = 0;
     game.boost_count = 0;
+    game.shield_count = 0;
     game.car1_format = 0;
     game.car2_format = 0;
 }

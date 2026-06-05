@@ -16,6 +16,6 @@
  * @param car1 Player 1 car (read-only).
  * @param car2 Player 2 car (read-only).
  */
-void heart_view_draw(const Car *car1, const Car *car2);
+void heart_view_draw(const Car *car1, const Car *car2, int banana_ticks1, int banana_ticks2);
 
 #endif /* __PROJ_HEART_VIEW_H */
