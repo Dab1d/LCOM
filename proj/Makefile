@@ -45,6 +45,7 @@ SRCS = proj.c \
        src/view/elements/scenery/scenery_view.c \
        src/view/elements/heart/heart_view.c \
        src/view/elements/timer/timer_view.c \
+       src/view/elements/minimap/minimap_view.c \
        src/view/screens/pause/pause_view.c \
        src/view/screens/menu/menu_view.c \
        src/view/screens/win/win_view.c \
@@ -78,6 +79,7 @@ HDRS = src/model/game/game.h \
        src/view/elements/scenery/scenery_view.h \
        src/view/elements/heart/heart_view.h \
        src/view/elements/timer/timer_view.h \
+       src/view/elements/minimap/minimap_view.h \
        src/view/screens/pause/pause_view.h \
        src/view/screens/menu/menu_view.h \
        src/view/screens/win/win_view.h \
@@ -192,6 +194,9 @@ src/view/elements/heart/heart_view.o: src/view/elements/heart/heart_view.c src/v
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/view/elements/timer/timer_view.o: src/view/elements/timer/timer_view.c src/view/elements/timer/timer_view.h
+	${CC} ${CFLAGS} -c $< -o $@
+
+src/view/elements/minimap/minimap_view.o: src/view/elements/minimap/minimap_view.c src/view/elements/minimap/minimap_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/controller/graphics/graphics.o: src/controller/graphics/graphics.c src/controller/graphics/graphics.h

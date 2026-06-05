@@ -16,6 +16,7 @@
 #include "../../view/screens/win/win_view.h"
 #include "../../view/elements/heart/heart_view.h"
 #include "../../view/elements/timer/timer_view.h"
+#include "../../view/elements/minimap/minimap_view.h"
 #include "../../view/screens/menu/menu_view.h"
 #include "../../view/screens/mode_select/mode_select_view.h"
 #include "../../view/screens/car_select/car_select_view.h"
@@ -638,6 +639,8 @@ static void game_render(void) {
             }
             timer_view_draw(game.elapsed_ticks);
             heart_view_draw(game.car1, game.car2, input_get_car1_inverted_ticks(), input_get_car2_inverted_ticks());
+            if (game.mode_selection == 0)
+                minimap_view_draw(game.car1, game.car2, game.track);
             break;
         case GAME_OVER:
             break;
@@ -662,6 +665,8 @@ static void game_render(void) {
             }
             timer_view_draw(game.elapsed_ticks);
             heart_view_draw(game.car1, game.car2, input_get_car1_inverted_ticks(), input_get_car2_inverted_ticks());
+            if (game.mode_selection == 0)
+                minimap_view_draw(game.car1, game.car2, game.track);
             pause_view_draw(game.pause_selected);
             draw_sprite(resources_get_cursor_sprite(), input_cursor_x(), input_cursor_y());
             break;
