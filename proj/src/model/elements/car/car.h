@@ -44,8 +44,7 @@ typedef struct {
     int     lane_min;       /**< Leftmost lane this car may occupy. */
     int     lane_max;       /**< Rightmost lane this car may occupy. */
     int     track_progress; /**< Logical rows completed (higher = further ahead). */
-    float   boost_remaining;  /**< Boost animation: pixels to travel forward (upward). */
-    float   setback_remaining;/**< Setback animation: pixels to travel backward (downward). */
+    float   boost_remaining;/**< Pixels remaining in the boost forward-animation (car moves up while > 0). */
     CarState state;         /**< Current damage/visual state. */
     int     score;          /**< Accumulated score for this session. */
     int     lives;          /**< Lives remaining; reaches 0 on EXPLODED. */
@@ -93,13 +92,6 @@ void car_take_damage(Car *car);
 void car_apply_boost(Car *car, int tiles);
 
 /**
- * @brief Pushes the car backward on screen (setback animation, no track-progress change).
- * @param car   Car to push back.
- * @param tiles Number of logical rows worth of backward movement.
- */
-void car_apply_setback(Car *car, int tiles);
-
-/**
  * @brief Slides the car one lane in a random direction (banana-peel effect).
  * @param car Car to slip.
  */
@@ -125,5 +117,14 @@ void car_init_session(Car *car, int initial_lives);
  * @param ticks Duration in game ticks (use SHIELD_DURATION_TICKS for 5 s).
  */
 void car_apply_shield(Car *car, int ticks);
+
+/**
+ * @brief Converts a logical lane index to an X pixel coordinate.
+ * @param lane Lane index (0-based).
+ * @return X position of the lane's left edge in pixels.
+ */
+static inline double car_lane_to_x(int lane) {
+    return (double)(lane * CAR_LANE_WIDTH);
+}
 
 #endif /* CAR_H */

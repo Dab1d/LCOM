@@ -1,3 +1,8 @@
+/**
+ * @file minimap_view.h
+ * @brief Race-progress minimap rendering (race mode only).
+ */
+
 #ifndef __PROJ_MINIMAP_VIEW_H
 #define __PROJ_MINIMAP_VIEW_H
 

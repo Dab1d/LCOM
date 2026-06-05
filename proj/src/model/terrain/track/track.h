@@ -119,4 +119,16 @@ void track_clear_tile(Track *track, int row, int lane);
  */
 bool track_is_finished(const Track *track);
 
+/**
+ * @brief Converts a logical row to a screen Y pixel coordinate.
+ * @param logical_row  The row index in the track grid.
+ * @param scroll_row   The logical row at the top of the screen.
+ * @param scroll_offset Sub-tile pixel offset (0..TRACK_TILE_HEIGHT-1).
+ * @return Y pixel position of the row's top edge.
+ */
+static inline double track_row_to_y(int logical_row, int scroll_row, int scroll_offset) {
+    int screen_row = logical_row - scroll_row;
+    return (double)((2 * CAR_SCREEN_ROW - screen_row) * TRACK_TILE_HEIGHT + scroll_offset);
+}
+
 #endif /* TRACK_H */

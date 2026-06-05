@@ -1,6 +1,6 @@
 /**
  * @file win_view.h
- * @brief Win/result screen rendering.
+ * @brief Win/result screen rendering: winner image and interactive buttons.
  */
 
 #ifndef __PROJ_WIN_VIEW_H

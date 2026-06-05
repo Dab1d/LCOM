@@ -521,13 +521,6 @@ Sprite* resources_get_scenery_sprite(int theme) {
 
 Sprite* resources_get_divider_sprite(void) { return res.divider_sprite; }
 
-Sprite* resources_get_grass_sprite(void) {
-    return res.ground_tiles[TRACK_THEME_CITY][GROUND_TILE_SOIL];
-}
-
-Sprite* resources_get_tree_sprite(void) {
-    return res.scenery_sprites[TRACK_THEME_CITY];
-}
 
 Sprite* resources_get_pause_panel(void) {
     return res.pause_panel;

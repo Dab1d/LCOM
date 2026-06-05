@@ -2,22 +2,17 @@
 #include <stdlib.h>
 #include "../../terrain/track/track.h"
 
-static double lane_to_x(int lane) {
-    return (double)(lane * CAR_LANE_WIDTH);
-}
-
 Car* create_car(int initial_lane, int lane_min, int lane_max, int car_width, int car_height) {
     Car* car = (Car*) malloc(sizeof(Car));
     if (car == NULL) return NULL;
 
-    init_element(&car->base, lane_to_x(initial_lane),
+    init_element(&car->base, car_lane_to_x(initial_lane),
                  (double)(CAR_SCREEN_ROW * TRACK_TILE_HEIGHT), car_width, car_height);
 
-    car->lane              = initial_lane;
-    car->track_progress    = 0;
-    car->boost_remaining   = 0.0f;
-    car->setback_remaining = 0.0f;
-    car->state             = CAR_STATE_NORMAL;
+    car->lane             = initial_lane;
+    car->track_progress   = 0;
+    car->boost_remaining  = 0.0f;
+    car->state            = CAR_STATE_NORMAL;
     car->lane_min = lane_min;
     car->lane_max = lane_max;
     car->exploding        = false;
@@ -41,7 +36,7 @@ void car_move_lane(Car* car, int direction) {
     if (new_lane < car->lane_min || new_lane > car->lane_max) return;
 
     car->lane   = new_lane;
-    car->base.x = lane_to_x(new_lane);
+    car->base.x = car_lane_to_x(new_lane);
 }
 
 void car_take_damage(Car* car) {
@@ -82,7 +77,7 @@ void car_banana_slip(Car* car) {
         new_lane = car->lane - dir;   /* tenta a direção oposta */
     if (new_lane >= car->lane_min && new_lane <= car->lane_max) {
         car->lane   = new_lane;
-        car->base.x = lane_to_x(new_lane);
+        car->base.x = car_lane_to_x(new_lane);
     }
 }
 
@@ -98,13 +93,12 @@ void reset_car(Car* car, int initial_lane) {
     if (car == NULL) return;
 
     car->lane             = initial_lane;
-    car->base.x           = lane_to_x(initial_lane);
+    car->base.x           = car_lane_to_x(initial_lane);
     car->base.y           = (double)(CAR_SCREEN_ROW * TRACK_TILE_HEIGHT);
     car->base.is_active   = true;
-    car->track_progress    = 0;
-    car->boost_remaining   = 0.0f;
-    car->setback_remaining = 0.0f;
-    car->state             = CAR_STATE_NORMAL;
+    car->track_progress   = 0;
+    car->boost_remaining  = 0.0f;
+    car->state            = CAR_STATE_NORMAL;
     car->exploding        = false;
     car->shield_ticks     = 0;
     car_init_session(car, CAR_INITIAL_LIVES);
@@ -120,10 +114,4 @@ void car_apply_shield(Car* car, int ticks) {
     if (car == NULL || !car->base.is_active) return;
     if (car->state == CAR_STATE_EXPLODED)    return;
     car->shield_ticks = ticks;
-}
-
-void car_apply_setback(Car* car, int tiles) {
-    if (car == NULL || !car->base.is_active) return;
-    if (car->state == CAR_STATE_EXPLODED)    return;
-    car->setback_remaining += (float)(tiles * TRACK_TILE_HEIGHT);
 }
