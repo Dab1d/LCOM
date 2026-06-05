@@ -26,9 +26,10 @@ uint8_t mask(int pos, ...) {
     va_list ap;
     va_start(ap, pos);
     while (pos != MSK_END) {
-        set(res, pos);     
+        res = set(res, pos);
         pos = va_arg(ap, int);  
     }
     va_end(ap);
     return res;
 }
+

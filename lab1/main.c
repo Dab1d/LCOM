@@ -61,21 +61,11 @@ void test_rtc_date() {
 }
 
 int main() {
-  // During initialization, a privileged user process should synchronize with
-  // the RS. This will be done by LCOM facilities later on, but for now we call
-  // sef_startup() ourselves.
-  sef_startup();
-
-  // System services have no controlling terminal and typically redirect their
-  // output to some log file. For the purpose of this lab, we redirect stdout
-  // and stderr to the console so we can see our test results. LCOM facilities
-  // will handle this in a better way later on.
-  freopen("/dev/console", "w", stdout);
-  setvbuf(stdout, NULL, _IONBF, 0);
-
-  // Run our tests.
-  test_bitwise();
-  test_privileged_operation();
-  test_rtc_date();
-  printf("All tests passed! Way to go.\n");
+    sef_startup();
+    freopen("/dev/console", "w", stdout);
+    setvbuf(stdout, NULL, _IONBF, 0);
+    test_bitwise();
+    test_privileged_operation();
+    test_rtc_date();
+    return 0;
 }
