@@ -6,8 +6,8 @@
 #ifndef SHIELD_H
 #define SHIELD_H
 
-#include "../element/element.h"
-#include "../track/track.h"
+#include "../../common/element/element.h"
+#include "../../terrain/track/track.h"
 #include "../car/car.h"
 
 #define SHIELD_DURATION_TICKS 300 /**< 5 seconds at 60 Hz. */

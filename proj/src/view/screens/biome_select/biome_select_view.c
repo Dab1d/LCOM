@@ -3,7 +3,7 @@
 #include "../../../model/resources/resources.h"
 #include "../../../controller/input/input.h"
 #include "../../../controller/palette/palette.h"
-#include "../../../view/elements/timer/timer_view.h"
+#include "../../../view/hud/timer/timer_view.h"
 
 static uint8_t biome_bg_color(TrackTheme theme) {
     switch (theme) {

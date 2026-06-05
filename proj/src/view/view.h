@@ -8,7 +8,7 @@
 #ifndef __PROJ_VIEW_H
 #define __PROJ_VIEW_H
 
-#include "../model/sprite/sprite.h"
+#include "../model/common/sprite/sprite.h"
 #include "../model/elements/car/car.h"
 #include "../model/elements/obstacle/obstacle.h"
 #include "../controller/palette/palette.h"

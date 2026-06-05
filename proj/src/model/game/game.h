@@ -8,11 +8,11 @@
 
 #include <stdint.h>
 #include "../elements/car/car.h"
-#include "../elements/track/track.h"
+#include "../terrain/track/track.h"
 #include "../elements/obstacle/obstacle.h"
 #include "../elements/boost/boost.h"
 #include "../elements/shield/shield.h"
-#include "../scenery/scenery.h"
+#include "../terrain/scenery/scenery.h"
 
 #define MAX_OBSTACLES 200 /**< Maximum number of obstacle objects alive at once. */
 #define MAX_BOOSTS     50 /**< Maximum number of boost pickups alive at once. */
@@ -45,8 +45,8 @@ typedef struct {
     int        winner;          /**< 0=none, 1=Player 1, 2=Player 2. */
     uint32_t   elapsed_ticks;   /**< Ticks elapsed during GAMEPLAY (60 Hz). */
     TrackTheme selected_theme;  /**< Biome chosen on the menu. */
-    int        car1_format;     /**< Car skin chosen by player 1. */
-    int        car2_format;     /**< Car skin chosen by player 2. */
+    int        car1_design;     /**< Car design chosen by player 1. */
+    int        car2_design;     /**< Car design chosen by player 2. */
 
     Track     *track;           /**< Active track (owns scroll speed). */
     Car       *car1;            /**< Player 1 car (owns lives and score). */
