@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 
-static double row_to_y(int logical_row, int scroll_row, float scroll_offset) {
+static double row_to_y(int logical_row, int scroll_row, int scroll_offset) {
     int screen_row = logical_row - scroll_row;
-    return (double)((2 * CAR_SCREEN_ROW - screen_row) * TRACK_TILE_HEIGHT) + (double)scroll_offset;
+    return (double)((2 * CAR_SCREEN_ROW - screen_row) * TRACK_TILE_HEIGHT + scroll_offset);
 }
 
 Boost* create_boost(int row, int lane) {
@@ -28,7 +28,7 @@ void destroy_boost(Boost* boost) {
         free(boost);
 }
 
-void boost_update(Boost* boost, int scroll_row, float scroll_offset) {
+void boost_update(Boost* boost, int scroll_row, int scroll_offset) {
     if (boost == NULL || !boost->base.is_active) return;
 
     boost->base.y = row_to_y(boost->row, scroll_row, scroll_offset);

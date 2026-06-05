@@ -45,7 +45,7 @@ void   destroy_boost(Boost *boost);
  * @param scroll_row    Current logical row at the top of the screen.
  * @param scroll_offset Sub-tile pixel offset (0..TRACK_TILE_HEIGHT-1).
  */
-void boost_update(Boost *boost, int scroll_row, float scroll_offset);
+void boost_update(Boost *boost, int scroll_row, int scroll_offset);
 
 /**
  * @brief Checks whether the boost is within the visible screen area.
