@@ -1,6 +1,6 @@
 #include "car.h"
 #include <stdlib.h>
-#include "../track/track.h"
+#include "../../terrain/track/track.h"
 
 static double lane_to_x(int lane) {
     return (double)(lane * CAR_LANE_WIDTH);

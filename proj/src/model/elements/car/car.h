@@ -7,7 +7,7 @@
 #define CAR_H
 
 #include "../../common/element/element.h"
-#include "../track/track.h"
+#include "../../terrain/track/track.h"
 #include <stdbool.h>
 
 /** @defgroup car_dimensions Car size constants

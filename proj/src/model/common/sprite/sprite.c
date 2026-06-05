@@ -1,5 +1,5 @@
 #include "sprite.h"
-#include "../../controller/palette/palette.h"
+#include "../../../controller/palette/palette.h"
 #include <lcom/lcf.h>
 #include <stdlib.h>
 

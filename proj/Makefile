@@ -7,14 +7,14 @@ CFLAGS += -pedantic -D __LCOM_OPTIMIZED__
 CFLAGS += -I../lab3
 #CFLAGS += -I../lab4
 CFLAGS += -I../lab5
-CFLAGS += -I../lab1
+CFLAGS += -I../lab1proj
 
 DPADD += ${LIBLCF}
 
 # Os .a dos labs têm de vir ANTES de -llcf. O linker resolve símbolos pela ordem
 # em que encontra as bibliotecas: se -llcf viesse primeiro, usaria os stubs do LCF
 # (ex: timer_set_frequency "not implemented") em vez das implementações dos labs.
-LDADD += ../lab1/liblab1.a \
+LDADD += ../lab1proj/liblab1proj.a \
          ../lab2/libtimer.a \
          ../lab3/libkbc.a \
          ../lab4/libmouse.a \

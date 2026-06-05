@@ -7,7 +7,7 @@
 #define OBSTACLE_H
 
 #include "../../common/element/element.h"
-#include "../track/track.h"
+#include "../../terrain/track/track.h"
 #include "../car/car.h"
 
 /**
