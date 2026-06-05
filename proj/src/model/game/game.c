@@ -187,10 +187,6 @@ static void game_spawn_endurance(void) {
             if (p1 && rand() % 100 < 35) spawn_banana(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
             if (p2 && rand() % 100 < 35) spawn_banana(row, PLAYER2_LANE_START, PLAYER2_LANE_END);
         }
-        if (row % 10 == 0) {
-            if (p1 && rand() % 100 < BOOST_SPAWN_CHANCE) spawn_boost(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
-            if (p2 && rand() % 100 < BOOST_SPAWN_CHANCE) spawn_boost(row, PLAYER2_LANE_START, PLAYER2_LANE_END);
-        }
         if (row % 20 == 0) {
             if (p1 && rand() % 100 < SHIELD_SPAWN_CHANCE) spawn_shield(row, PLAYER1_LANE_START, PLAYER1_LANE_END);
             if (p2 && rand() % 100 < SHIELD_SPAWN_CHANCE) spawn_shield(row, PLAYER2_LANE_START, PLAYER2_LANE_END);
