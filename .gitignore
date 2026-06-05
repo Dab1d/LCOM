@@ -40,4 +40,5 @@ trace.txt
 .codex
 .minix-src/
 .claude
+.gdbinit
 CMakeLists.txt
