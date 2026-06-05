@@ -42,11 +42,11 @@ SRCS = proj.c \
        src/view/elements/obstacle/obstacle_view.c \
        src/view/elements/boost/boost_view.c \
        src/view/elements/shield/shield_view.c \
-       src/view/elements/track/track_view.c \
-       src/view/elements/scenery/scenery_view.c \
-       src/view/elements/heart/heart_view.c \
-       src/view/elements/timer/timer_view.c \
-       src/view/elements/minimap/minimap_view.c \
+       src/view/terrain/track/track_view.c \
+       src/view/terrain/scenery/scenery_view.c \
+       src/view/hud/heart/heart_view.c \
+       src/view/hud/timer/timer_view.c \
+       src/view/hud/minimap/minimap_view.c \
        src/view/screens/pause/pause_view.c \
        src/view/screens/menu/menu_view.c \
        src/view/screens/win/win_view.c \
@@ -77,11 +77,11 @@ HDRS = src/model/game/game.h \
        src/view/elements/obstacle/obstacle_view.h \
        src/view/elements/boost/boost_view.h \
        src/view/elements/shield/shield_view.h \
-       src/view/elements/track/track_view.h \
-       src/view/elements/scenery/scenery_view.h \
-       src/view/elements/heart/heart_view.h \
-       src/view/elements/timer/timer_view.h \
-       src/view/elements/minimap/minimap_view.h \
+       src/view/terrain/track/track_view.h \
+       src/view/terrain/scenery/scenery_view.h \
+       src/view/hud/heart/heart_view.h \
+       src/view/hud/timer/timer_view.h \
+       src/view/hud/minimap/minimap_view.h \
        src/view/screens/pause/pause_view.h \
        src/view/screens/menu/menu_view.h \
        src/view/screens/win/win_view.h \
@@ -170,11 +170,11 @@ src/view/elements/boost/boost_view.o: src/view/elements/boost/boost_view.c src/v
 src/view/elements/obstacle/obstacle_view.o: src/view/elements/obstacle/obstacle_view.c src/view/elements/obstacle/obstacle_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/view/elements/track/track_view.o: src/view/elements/track/track_view.c src/view/elements/track/track_view.h
+src/view/terrain/track/track_view.o: src/view/terrain/track/track_view.c src/view/terrain/track/track_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 
-src/view/elements/scenery/scenery_view.o: src/view/elements/scenery/scenery_view.c src/view/elements/scenery/scenery_view.h
+src/view/terrain/scenery/scenery_view.o: src/view/terrain/scenery/scenery_view.c src/view/terrain/scenery/scenery_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/view/screens/pause/pause_view.o: src/view/screens/pause/pause_view.c src/view/screens/pause/pause_view.h
@@ -195,13 +195,13 @@ src/view/screens/car_select/car_select_view.o: src/view/screens/car_select/car_s
 src/view/screens/biome_select/biome_select_view.o: src/view/screens/biome_select/biome_select_view.c src/view/screens/biome_select/biome_select_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/view/elements/heart/heart_view.o: src/view/elements/heart/heart_view.c src/view/elements/heart/heart_view.h
+src/view/hud/heart/heart_view.o: src/view/hud/heart/heart_view.c src/view/hud/heart/heart_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/view/elements/timer/timer_view.o: src/view/elements/timer/timer_view.c src/view/elements/timer/timer_view.h
+src/view/hud/timer/timer_view.o: src/view/hud/timer/timer_view.c src/view/hud/timer/timer_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/view/elements/minimap/minimap_view.o: src/view/elements/minimap/minimap_view.c src/view/elements/minimap/minimap_view.h
+src/view/hud/minimap/minimap_view.o: src/view/hud/minimap/minimap_view.c src/view/hud/minimap/minimap_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/controller/graphics/graphics.o: src/controller/graphics/graphics.c src/controller/graphics/graphics.h
