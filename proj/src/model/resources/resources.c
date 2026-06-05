@@ -60,15 +60,10 @@
 #include "../../assets/xpm/biomes/forest/tiles/ground_forest_branches.xpm"
 #include "../../assets/xpm/biomes/forest/tiles/blossom_wall.xpm"
 #include "../../assets/xpm/biomes/forest/scenery/blossom_tree.xpm"
-#include "../../assets/xpm/biomes/forest/scenery/blossom_tree2.xpm"
-#include "../../assets/xpm/biomes/forest/scenery/blossom_petals.xpm"
-#include "../../assets/xpm/biomes/forest/scenery/blossom_umbrella.xpm"
 #include "../../assets/xpm/biomes/forest/objects/blossom_lantern.xpm"
-#include "../../assets/xpm/biomes/forest/objects/blossom_lantern2.xpm"
 #include "../../assets/xpm/biomes/forest/objects/blossom_branch.xpm"
 #include "../../assets/xpm/biomes/forest/objects/blossom_stump.xpm"
 #include "../../assets/xpm/biomes/forest/objects/blossom_log.xpm"
-#include "../../assets/xpm/biomes/forest/objects/blossom_flower.xpm"
 
 /* ── biome selector UI ── */
 #include "../../assets/xpm/ui/screens/biome_select/biome_select_title.xpm"
@@ -219,7 +214,7 @@ int resources_load(void) {
             (xpm_map_t)blossom_branch_xpm,
             (xpm_map_t)blossom_stump_xpm,
             (xpm_map_t)blossom_log_xpm,
-            (xpm_map_t)blossom_flower_xpm,
+            (xpm_map_t)blossom_lantern_xpm,
         };
         for (int i = 0; i < 4; i++) {
             res.forest_obstacle_sprites[i] = create_sprite(forest_obs_xpms[i]);
