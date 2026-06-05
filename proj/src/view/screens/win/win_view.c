@@ -12,11 +12,18 @@ static void draw_btn_highlight(int x, int y, int w, int h) {
 }
 
 void win_view_draw(int winner, int selected) {
-    Sprite *img      = resources_get_win_img(winner);
     Sprite *play_btn = resources_get_win_play_again_btn();
     Sprite *menu_btn = resources_get_win_menu_btn();
 
-    if (img) draw_sprite_scaled(img, WIN_IMG_X, WIN_IMG_Y, WIN_IMG_W, WIN_IMG_H);
+    if (winner == 0) {
+        Sprite *blue = resources_get_win_img(1);
+        Sprite *red  = resources_get_win_img(2);
+        if (blue) draw_sprite_scaled(blue, WIN_DRAW_X, WIN_DRAW_Y, WIN_DRAW_IMG_W, WIN_DRAW_IMG_H);
+        if (red)  draw_sprite_scaled(red,  WIN_DRAW_X + WIN_DRAW_IMG_W + WIN_DRAW_GAP, WIN_DRAW_Y, WIN_DRAW_IMG_W, WIN_DRAW_IMG_H);
+    } else {
+        Sprite *img = resources_get_win_img(winner);
+        if (img) draw_sprite_scaled(img, WIN_IMG_X, WIN_IMG_Y, WIN_IMG_W, WIN_IMG_H);
+    }
 
     int sel_w = WIN_BTN_W * 9 / 8;
     int sel_h = WIN_BTN_H * 9 / 8;

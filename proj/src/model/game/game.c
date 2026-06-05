@@ -573,7 +573,7 @@ static bool game_is_over(void) {
         bool c2_fin = car_at_finish_line(game.car2);
         if (c1_fin || c2_fin) {
             if (c1_fin && c2_fin)
-                game.winner = (game.car1->track_progress >= game.car2->track_progress) ? 1 : 2;
+                game.winner = 0;
             else
                 game.winner = c1_fin ? 1 : 2;
             return true;
@@ -736,7 +736,7 @@ void game_tick(void) {
                 if (game.mode_selection == 1) {
                     int h, m, s;
                     leaderboard_read_rtc(&h, &m, &s);
-                    const char *winner_name = (game.winner == 1) ? "BLUE" : "RED";
+                    const char *winner_name = (game.winner == 1) ? "BLUE" : (game.winner == 2) ? "RED" : "DRAW";
                     leaderboard_add(winner_name,
                                     (int)(game.elapsed_ticks / 60),
                                     h, m, s);
