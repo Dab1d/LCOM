@@ -71,32 +71,42 @@
 #include "../../assets/xpm/ui/screens/biome_select/biome_label_desert.xpm"
 #include "../../assets/xpm/ui/screens/biome_select/biome_label_forest.xpm"
 
-#include "../../assets/xpm/elements/cars/car_blue.xpm"
-#include "../../assets/xpm/elements/cars/car_blue_dmg1.xpm"
-#include "../../assets/xpm/elements/cars/car_blue_dmg2.xpm"
-#include "../../assets/xpm/elements/cars/car_blue_destroyed.xpm"
+/* ── car sprites: 4 designs × 2 players × 4 damage states ── */
+#include "../../assets/xpm/elements/cars/car1/p1/s1.xpm"
+#include "../../assets/xpm/elements/cars/car1/p1/s2.xpm"
+#include "../../assets/xpm/elements/cars/car1/p1/s3.xpm"
+#include "../../assets/xpm/elements/cars/car1/p1/s4.xpm"
+#include "../../assets/xpm/elements/cars/car1/p2/s1.xpm"
+#include "../../assets/xpm/elements/cars/car1/p2/s2.xpm"
+#include "../../assets/xpm/elements/cars/car1/p2/s3.xpm"
+#include "../../assets/xpm/elements/cars/car1/p2/s4.xpm"
 
-#include "../../assets/xpm/elements/cars/car_red.xpm"
-#include "../../assets/xpm/elements/cars/car_red_dmg1.xpm"
-#include "../../assets/xpm/elements/cars/car_red_dmg2.xpm"
-#include "../../assets/xpm/elements/cars/car_red_destroyed.xpm"
+#include "../../assets/xpm/elements/cars/car2/p1/s1.xpm"
+#include "../../assets/xpm/elements/cars/car2/p1/s2.xpm"
+#include "../../assets/xpm/elements/cars/car2/p1/s3.xpm"
+#include "../../assets/xpm/elements/cars/car2/p1/s4.xpm"
+#include "../../assets/xpm/elements/cars/car2/p2/s1.xpm"
+#include "../../assets/xpm/elements/cars/car2/p2/s2.xpm"
+#include "../../assets/xpm/elements/cars/car2/p2/s3.xpm"
+#include "../../assets/xpm/elements/cars/car2/p2/s4.xpm"
 
-#include "../../assets/xpm/elements/cars/carBlue00/carB00_s1.xpm"
-#include "../../assets/xpm/elements/cars/carBlue02/carB02_s1.xpm"
-#include "../../assets/xpm/elements/cars/carBlue04/carB04_s1.xpm"
-#include "../../assets/xpm/elements/cars/carBlue06/carB06_s1.xpm"
-#include "../../assets/xpm/elements/cars/carBlue08/carB08_s1.xpm"
-#include "../../assets/xpm/elements/cars/carBlue10/carB10_s1.xpm"
-#include "../../assets/xpm/elements/cars/carBlue12/carB12_s1.xpm"
-#include "../../assets/xpm/elements/cars/carBlue14/carB14_s1.xpm"
-#include "../../assets/xpm/elements/cars/carRed00/carR00_s1.xpm"
-#include "../../assets/xpm/elements/cars/carRed02/carR02_s1.xpm"
-#include "../../assets/xpm/elements/cars/carRed04/carR04_s1.xpm"
-#include "../../assets/xpm/elements/cars/carRed06/carR06_s1.xpm"
-#include "../../assets/xpm/elements/cars/carRed08/carR08_s1.xpm"
-#include "../../assets/xpm/elements/cars/carRed10/carR10_s1.xpm"
-#include "../../assets/xpm/elements/cars/carRed12/carR12_s1.xpm"
-#include "../../assets/xpm/elements/cars/carRed14/carR14_s1.xpm"
+#include "../../assets/xpm/elements/cars/car3/p1/s1.xpm"
+#include "../../assets/xpm/elements/cars/car3/p1/s2.xpm"
+#include "../../assets/xpm/elements/cars/car3/p1/s3.xpm"
+#include "../../assets/xpm/elements/cars/car3/p1/s4.xpm"
+#include "../../assets/xpm/elements/cars/car3/p2/s1.xpm"
+#include "../../assets/xpm/elements/cars/car3/p2/s2.xpm"
+#include "../../assets/xpm/elements/cars/car3/p2/s3.xpm"
+#include "../../assets/xpm/elements/cars/car3/p2/s4.xpm"
+
+#include "../../assets/xpm/elements/cars/car4/p1/s1.xpm"
+#include "../../assets/xpm/elements/cars/car4/p1/s2.xpm"
+#include "../../assets/xpm/elements/cars/car4/p1/s3.xpm"
+#include "../../assets/xpm/elements/cars/car4/p1/s4.xpm"
+#include "../../assets/xpm/elements/cars/car4/p2/s1.xpm"
+#include "../../assets/xpm/elements/cars/car4/p2/s2.xpm"
+#include "../../assets/xpm/elements/cars/car4/p2/s3.xpm"
+#include "../../assets/xpm/elements/cars/car4/p2/s4.xpm"
 
 #include "../../assets/xpm/ui/screens/pause/pause_panel.xpm"
 #include "../../assets/xpm/elements/banana.xpm"
@@ -136,28 +146,40 @@
 #include "../../assets/xpm/ui/screens/win/win_play_again_btn.xpm"
 #include "../../assets/xpm/ui/screens/win/win_menu_btn.xpm"
 
+static const xpm_map_t car_fmt_xpms[4][CAR_PLAYER_COUNT][CAR_STATE_COUNT] = {
+    { { (xpm_map_t)car1_p1_s1, (xpm_map_t)car1_p1_s2,
+        (xpm_map_t)car1_p1_s3, (xpm_map_t)car1_p1_s4 },
+      { (xpm_map_t)car1_p2_s1, (xpm_map_t)car1_p2_s2,
+        (xpm_map_t)car1_p2_s3, (xpm_map_t)car1_p2_s4 } },
+    { { (xpm_map_t)car2_p1_s1, (xpm_map_t)car2_p1_s2,
+        (xpm_map_t)car2_p1_s3, (xpm_map_t)car2_p1_s4 },
+      { (xpm_map_t)car2_p2_s1, (xpm_map_t)car2_p2_s2,
+        (xpm_map_t)car2_p2_s3, (xpm_map_t)car2_p2_s4 } },
+    { { (xpm_map_t)car3_p1_s1, (xpm_map_t)car3_p1_s2,
+        (xpm_map_t)car3_p1_s3, (xpm_map_t)car3_p1_s4 },
+      { (xpm_map_t)car3_p2_s1, (xpm_map_t)car3_p2_s2,
+        (xpm_map_t)car3_p2_s3, (xpm_map_t)car3_p2_s4 } },
+    { { (xpm_map_t)car4_p1_s1, (xpm_map_t)car4_p1_s2,
+        (xpm_map_t)car4_p1_s3, (xpm_map_t)car4_p1_s4 },
+      { (xpm_map_t)car4_p2_s1, (xpm_map_t)car4_p2_s2,
+        (xpm_map_t)car4_p2_s3, (xpm_map_t)car4_p2_s4 } },
+};
+
 static Resources res;
 
 int resources_load(void) {
     {
-        static const xpm_map_t blue_xpms[CAR_STATE_COUNT] = {
-            (xpm_map_t)car_blue, (xpm_map_t)car_blue_dmg1,
-            (xpm_map_t)car_blue_dmg2, (xpm_map_t)car_blue_destroyed
-        };
-        static const xpm_map_t red_xpms[CAR_STATE_COUNT] = {
-            (xpm_map_t)car_red, (xpm_map_t)car_red_dmg1,
-            (xpm_map_t)car_red_dmg2, (xpm_map_t)car_red_destroyed
-        };
-        for (int s = 0; s < CAR_STATE_COUNT; s++) {
-            res.car_format_sprites[0][0][s] = create_sprite(blue_xpms[s]);
-            res.car_format_sprites[0][1][s] = create_sprite(red_xpms[s]);
-            if (!res.car_format_sprites[0][0][s] || !res.car_format_sprites[0][1][s]) return 1;
-        }
-        res.car_format_count = 1;
-        for (int s = 0; s < CAR_STATE_COUNT; s++) {
-            res.car_sprites[0][s] = res.car_format_sprites[0][0][s];
-            res.car_sprites[1][s] = res.car_format_sprites[0][1][s];
-        }
+        int n = 4;
+        for (int d = 0; d < n && d < CAR_FORMAT_MAX; d++)
+            for (int p = 0; p < CAR_PLAYER_COUNT; p++)
+                for (int s = 0; s < CAR_STATE_COUNT; s++) {
+                    res.car_format_sprites[d][p][s] = create_sprite(car_fmt_xpms[d][p][s]);
+                    if (!res.car_format_sprites[d][p][s]) return 1;
+                }
+        res.car_format_count = n;
+        for (int p = 0; p < CAR_PLAYER_COUNT; p++)
+            for (int s = 0; s < CAR_STATE_COUNT; s++)
+                res.car_sprites[p][s] = res.car_format_sprites[0][p][s];
     }
 
     /* City tiles */
