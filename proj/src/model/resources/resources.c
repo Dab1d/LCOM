@@ -139,19 +139,26 @@
 static Resources res;
 
 int resources_load(void) {
-    res.car_sprites[0][CAR_STATE_NORMAL]   = create_sprite((xpm_map_t)car_blue);
-    res.car_sprites[0][CAR_STATE_DAMAGED]  = create_sprite((xpm_map_t)car_blue_dmg1);
-    res.car_sprites[0][CAR_STATE_BURNING]  = create_sprite((xpm_map_t)car_blue_dmg2);
-    res.car_sprites[0][CAR_STATE_EXPLODED] = create_sprite((xpm_map_t)car_blue_destroyed);
-    for (int s = 0; s < CAR_STATE_COUNT; s++)
-        if (!res.car_sprites[0][s]) return 1;
-
-    res.car_sprites[1][CAR_STATE_NORMAL]   = create_sprite((xpm_map_t)car_red);
-    res.car_sprites[1][CAR_STATE_DAMAGED]  = create_sprite((xpm_map_t)car_red_dmg1);
-    res.car_sprites[1][CAR_STATE_BURNING]  = create_sprite((xpm_map_t)car_red_dmg2);
-    res.car_sprites[1][CAR_STATE_EXPLODED] = create_sprite((xpm_map_t)car_red_destroyed);
-    for (int s = 0; s < CAR_STATE_COUNT; s++)
-        if (!res.car_sprites[1][s]) return 1;
+    {
+        static const xpm_map_t blue_xpms[CAR_STATE_COUNT] = {
+            (xpm_map_t)car_blue, (xpm_map_t)car_blue_dmg1,
+            (xpm_map_t)car_blue_dmg2, (xpm_map_t)car_blue_destroyed
+        };
+        static const xpm_map_t red_xpms[CAR_STATE_COUNT] = {
+            (xpm_map_t)car_red, (xpm_map_t)car_red_dmg1,
+            (xpm_map_t)car_red_dmg2, (xpm_map_t)car_red_destroyed
+        };
+        for (int s = 0; s < CAR_STATE_COUNT; s++) {
+            res.car_format_sprites[0][0][s] = create_sprite(blue_xpms[s]);
+            res.car_format_sprites[0][1][s] = create_sprite(red_xpms[s]);
+            if (!res.car_format_sprites[0][0][s] || !res.car_format_sprites[0][1][s]) return 1;
+        }
+        res.car_format_count = 1;
+        for (int s = 0; s < CAR_STATE_COUNT; s++) {
+            res.car_sprites[0][s] = res.car_format_sprites[0][0][s];
+            res.car_sprites[1][s] = res.car_format_sprites[0][1][s];
+        }
+    }
 
     /* City tiles */
     res.tile_sprites[TRACK_THEME_CITY][TILE_EMPTY]    = create_sprite((xpm_map_t)tile_road_xpm);
@@ -351,7 +358,7 @@ int resources_load(void) {
 void resources_destroy(void) {
     for (int p = 0; p < CAR_PLAYER_COUNT; p++)
         for (int s = 0; s < CAR_STATE_COUNT; s++)
-            if (res.car_sprites[p][s]) { sprite_destroy(res.car_sprites[p][s]); res.car_sprites[p][s] = NULL; }
+            res.car_sprites[p][s] = NULL;
     for (int f = 0; f < res.car_format_count; f++)
         for (int p = 0; p < CAR_PLAYER_COUNT; p++)
             for (int s = 0; s < CAR_STATE_COUNT; s++)
