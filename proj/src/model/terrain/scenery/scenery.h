@@ -6,7 +6,7 @@
 #ifndef __PROJ_SCENERY_H
 #define __PROJ_SCENERY_H
 
-#include "../elements/track/track.h"
+#include "../track/track.h"
 
 #define MAX_TREES 120 /**< Maximum number of scenery instances alive at once. */
 #define TREE_SIZE  32 /**< Sprite width/height of one scenery object in pixels. */

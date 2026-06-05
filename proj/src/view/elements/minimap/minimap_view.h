@@ -2,7 +2,7 @@
 #define __PROJ_MINIMAP_VIEW_H
 
 #include "../../../model/elements/car/car.h"
-#include "../../../model/elements/track/track.h"
+#include "../../../model/terrain/track/track.h"
 
 /**
  * @brief Draws the race progress minimap in the top-left corner (race mode only).

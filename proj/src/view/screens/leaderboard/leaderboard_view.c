@@ -2,7 +2,7 @@
 #include "../../view.h"
 #include "video_gr.h"
 #include "../../../model/leaderboard/leaderboard.h"
-#include "../../../model/sprite/sprite.h"
+#include "../../../model/common/sprite/sprite.h"
 #include "../../../model/resources/resources.h"
 #include "../../../controller/palette/palette.h"
 #include <string.h>

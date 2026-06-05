@@ -6,7 +6,7 @@
 #ifndef __PROJ_TRACK_VIEW_H
 #define __PROJ_TRACK_VIEW_H
 
-#include "../../../model/elements/track/track.h"
+#include "../../../model/terrain/track/track.h"
 
 /**
  * @brief Draws the full visible portion of the track for the current scroll state.

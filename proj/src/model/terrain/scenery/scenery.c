@@ -1,5 +1,5 @@
 #include "scenery.h"
-#include "../elements/car/car.h"
+#include "../../elements/car/car.h"
 #include <stdlib.h>
 
 #define GRASS_MARGIN 20

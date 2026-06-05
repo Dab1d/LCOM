@@ -6,8 +6,8 @@
 #ifndef __PROJ_RESOURCES_H
 #define __PROJ_RESOURCES_H
 
-#include "../sprite/sprite.h"
-#include "../elements/track/track.h"
+#include "../common/sprite/sprite.h"
+#include "../terrain/track/track.h"
 #include "../elements/car/car.h"
 
 #define CAR_FORMAT_MAX 8

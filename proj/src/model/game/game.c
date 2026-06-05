@@ -10,7 +10,7 @@
 #include "../../view/elements/boost/boost_view.h"
 #include "../../view/elements/shield/shield_view.h"
 #include "../../view/elements/track/track_view.h"
-#include "../scenery/scenery.h"
+#include "../terrain/scenery/scenery.h"
 #include "../../view/elements/scenery/scenery_view.h"
 #include "../../view/screens/pause/pause_view.h"
 #include "../../view/screens/win/win_view.h"

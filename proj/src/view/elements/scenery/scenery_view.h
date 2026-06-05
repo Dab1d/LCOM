@@ -6,8 +6,8 @@
 #ifndef __PROJ_SCENERY_VIEW_H
 #define __PROJ_SCENERY_VIEW_H
 
-#include "../../../model/scenery/scenery.h"
-#include "../../../model/elements/track/track.h"
+#include "../../../model/terrain/scenery/scenery.h"
+#include "../../../model/terrain/track/track.h"
 
 /**
  * @brief Draws all active scenery instances at their current screen positions.

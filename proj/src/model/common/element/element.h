@@ -7,7 +7,7 @@
 #define ELEMENT_H
 
 #include <stdbool.h>
-#include "../../sprite/sprite.h"
+#include "../sprite/sprite.h"
 
 /**
  * @brief Base structure for any physical game object.

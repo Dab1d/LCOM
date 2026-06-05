@@ -1,7 +1,7 @@
 #include <lcom/lcf.h>
 #include "resources.h"
 #include "../elements/car/car.h"
-#include "../elements/track/track.h"
+#include "../terrain/track/track.h"
 #include <stdlib.h>
 
 /* ── city obstacles ── */

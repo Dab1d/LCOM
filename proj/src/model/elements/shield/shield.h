@@ -6,7 +6,7 @@
 #ifndef SHIELD_H
 #define SHIELD_H
 
-#include "../element/element.h"
+#include "../../common/element/element.h"
 #include "../track/track.h"
 #include "../car/car.h"
 
