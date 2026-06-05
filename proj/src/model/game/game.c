@@ -744,6 +744,7 @@ void game_tick(void) {
             }
             break;
         case CAR_SELECT:
+        case BIOME_SELECT:
             break;
         case MAIN_MENU:
         case MODE_SELECT:
