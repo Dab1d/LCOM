@@ -61,7 +61,7 @@ static void draw_counter(int cx, int y, int current, int total) {
     if (d_tot)  draw_sprite(d_tot,  cx + 4, y);
 }
 
-void car_select_view_draw(int p1_fmt, int p2_fmt, int fmt_count) {
+void car_select_view_draw(int p1_design, int p2_design, int design_count) {
     draw_rect(0,      HUD_BAR_H, HALF_W,  SCREEN_W - HUD_BAR_H, PAL_MENU_DARK);
     draw_rect(HALF_W, HUD_BAR_H, HALF_W,  SCREEN_W - HUD_BAR_H, PAL_MENU_DARK);
     draw_rect(HALF_W - 1, HUD_BAR_H, 2, SCREEN_W - HUD_BAR_H, PAL_GREY_MID);
@@ -72,8 +72,8 @@ void car_select_view_draw(int p1_fmt, int p2_fmt, int fmt_count) {
     draw_rect(HALF_W + HALF_W / 2 - 20, HUD_BAR_H + 10, 40, 20, PAL_P2_INDICATOR);
 
     /* Car previews */
-    Sprite *sp1 = resources_get_car_format_preview(p1_fmt, 0);
-    Sprite *sp2 = resources_get_car_format_preview(p2_fmt, 1);
+    Sprite *sp1 = resources_get_car_design_preview(p1_design, 0);
+    Sprite *sp2 = resources_get_car_design_preview(p2_design, 1);
     if (sp1) draw_sprite_scaled(sp1, P1_PREVIEW_X, PREVIEW_Y, PREVIEW_W, PREVIEW_H);
     if (sp2) draw_sprite_scaled(sp2, P2_PREVIEW_X, PREVIEW_Y, PREVIEW_W, PREVIEW_H);
 
@@ -88,11 +88,11 @@ void car_select_view_draw(int p1_fmt, int p2_fmt, int fmt_count) {
     draw_arrow_right(P2_RARROW_X, ARROW_Y, ARROW_SIZE, PAL_BTN_YLW);
 
     /* Format counters */
-    if (fmt_count > 0 && fmt_count <= 9) {
+    if (design_count > 0 && design_count <= 9) {
         int cx1 = P1_PREVIEW_X + PREVIEW_W / 2;
         int cx2 = P2_PREVIEW_X + PREVIEW_W / 2;
-        draw_counter(cx1, COUNTER_Y, p1_fmt, fmt_count);
-        draw_counter(cx2, COUNTER_Y, p2_fmt, fmt_count);
+        draw_counter(cx1, COUNTER_Y, p1_design, design_count);
+        draw_counter(cx2, COUNTER_Y, p2_design, design_count);
     }
 
     /* RACE button */

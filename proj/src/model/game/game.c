@@ -340,15 +340,15 @@ static void game_process_input(void) {
             if (input_mouse_exit_pressed())        game.state = EXIT;
             break;
         case CAR_SELECT: {
-            int n = resources_get_car_format_count();
+            int n = resources_get_car_design_count();
             if (n < 1) n = 1;
             if (input_esc_pressed()) { game.state = MAIN_MENU; break; }
-            if (input_p1_nav_left())  game.car1_format = (game.car1_format - 1 + n) % n;
-            if (input_p1_nav_right()) game.car1_format = (game.car1_format + 1)     % n;
-            if (input_p2_nav_left())  game.car2_format = (game.car2_format - 1 + n) % n;
-            if (input_p2_nav_right()) game.car2_format = (game.car2_format + 1)     % n;
+            if (input_p1_nav_left())  game.car1_design = (game.car1_design - 1 + n) % n;
+            if (input_p1_nav_right()) game.car1_design = (game.car1_design + 1)     % n;
+            if (input_p2_nav_left())  game.car2_design = (game.car2_design - 1 + n) % n;
+            if (input_p2_nav_right()) game.car2_design = (game.car2_design + 1)     % n;
             if (input_car_select_race_pressed() || input_mouse_car_select_race_pressed()) {
-                resources_apply_car_format(game.car1_format, game.car2_format);
+                resources_apply_car_design(game.car1_design, game.car2_design);
                 game.state = BIOME_SELECT;
             }
             break;
@@ -614,8 +614,8 @@ static void game_render(void) {
             break;
         case CAR_SELECT:
             car_select_view_draw(
-                game.car1_format, game.car2_format,
-                resources_get_car_format_count()
+                game.car1_design, game.car2_design,
+                resources_get_car_design_count()
             );
             break;
         case BIOME_SELECT:
@@ -703,8 +703,8 @@ void game_init(void) {
     game.obstacle_count = 0;
     game.boost_count = 0;
     game.shield_count = 0;
-    game.car1_format = 0;
-    game.car2_format = 0;
+    game.car1_design = 0;
+    game.car2_design = 0;
 }
 
 void game_cleanup(void) {

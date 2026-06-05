@@ -10,7 +10,7 @@
 #include "../terrain/track/track.h"
 #include "../elements/car/car.h"
 
-#define CAR_FORMAT_MAX 8
+#define CAR_DESIGN_MAX 8  /**< Maximum number of selectable car designs. */
 
 /**
  * @brief Lateral ground tile variant indices (per theme, up to GROUND_TILE_COUNT).
@@ -62,8 +62,8 @@ typedef struct {
     Sprite *mode_endurance_card;      /**< ENDURANCE mode card graphic. */
     Sprite *mode_race_label;          /**< RACE mode label. */
     Sprite *mode_endurance_label;     /**< ENDURANCE mode label. */
-    Sprite *car_format_sprites[CAR_FORMAT_MAX][CAR_PLAYER_COUNT][CAR_STATE_COUNT]; /**< [fmt][player][CarState] */
-    int     car_format_count;         /**< Number of loaded car format sprites. */
+    Sprite *car_design_sprites[CAR_DESIGN_MAX][CAR_PLAYER_COUNT][CAR_STATE_COUNT]; /**< [design][player][CarState] */
+    int     car_design_count;         /**< Number of loaded car designs. */
     Sprite *win_img[2];               /**< [0]=blue_wins  [1]=red_wins. */
     Sprite *win_play_again_btn;       /**< PLAY AGAIN button. */
     Sprite *win_menu_btn;             /**< MENU button. */
@@ -276,9 +276,9 @@ Sprite* resources_get_mode_race_label(void);
  * @return Non-owning pointer to the sprite.
  */
 Sprite* resources_get_mode_endurance_label(void);
-int     resources_get_car_format_count(void);
-Sprite* resources_get_car_format_preview(int fmt, int player);
-void    resources_apply_car_format(int fmt1, int fmt2);
+int     resources_get_car_design_count(void);
+Sprite* resources_get_car_design_preview(int design, int player);
+void    resources_apply_car_design(int design1, int design2);
 Sprite* resources_get_win_img(int winner);
 Sprite* resources_get_win_play_again_btn(void);
 Sprite* resources_get_win_menu_btn(void);
