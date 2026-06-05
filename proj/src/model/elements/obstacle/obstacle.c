@@ -1,6 +1,7 @@
 #include "obstacle.h"
 #include "../car/car.h"
 #include <stdlib.h>
+#include <time.h>
 
 static double lane_to_x(int lane) {
     return (double)(lane * CAR_LANE_WIDTH);
@@ -15,9 +16,10 @@ Obstacle* create_obstacle(int row, int lane, ObstacleType type) {
     Obstacle* obs = (Obstacle*) malloc(sizeof(Obstacle));
     if (obs == NULL) return NULL;
 
-    obs->lane = lane;
-    obs->row  = row;
-    obs->type = type;
+    obs->lane       = lane;
+    obs->row        = row;
+    obs->type       = type;
+    obs->sprite_idx = rand() % 16;
 
     init_element(&obs->base, lane_to_x(lane), (double)(row * TRACK_TILE_HEIGHT),
                  CAR_LANE_WIDTH, TRACK_TILE_HEIGHT);

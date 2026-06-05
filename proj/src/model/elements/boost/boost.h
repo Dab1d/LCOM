@@ -17,9 +17,10 @@
  * the car's track_progress is advanced and the boost is deactivated.
  */
 typedef struct {
-    Element base; /**< Pixel position, hitbox, active flag, and sprite. */
-    int     lane; /**< Logical lane index (0–9). */
-    int     row;  /**< Logical row index in the track grid. */
+    Element base;       /**< Pixel position, hitbox, active flag, and sprite. */
+    int     lane;       /**< Logical lane index (0–9). */
+    int     row;        /**< Logical row index in the track grid. */
+    int     sprite_idx; /**< Which city boost sprite to use (0-2). */
 } Boost;
 
 /**
