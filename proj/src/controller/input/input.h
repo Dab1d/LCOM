@@ -306,6 +306,9 @@ int input_biome_nav_right(void);
 /** @brief Returns non-zero if the biome confirm key was pressed (ENTER). */
 int input_biome_select_pressed(void);
 
+/** @brief Returns non-zero if the cursor is hovering over the SELECT button on the biome screen. */
+int input_mouse_over_biome_select(void);
+
 /** @brief Returns non-zero if the SELECT button was clicked on the biome screen. */
 int input_mouse_biome_select_pressed(void);
 

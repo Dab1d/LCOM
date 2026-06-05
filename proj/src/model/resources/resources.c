@@ -52,6 +52,24 @@
 #include "../../assets/xpm/biomes/desert/scenery/fence.xpm"
 #include "../../assets/xpm/biomes/desert/tiles/tile_sand_pebbles.xpm"
 
+/* ── forest / blossom ── */
+#include "../../assets/xpm/biomes/forest/tiles/tile_road_forest.xpm"
+#include "../../assets/xpm/biomes/forest/tiles/ground_forest.xpm"
+#include "../../assets/xpm/biomes/forest/scenery/blossom_tree.xpm"
+#include "../../assets/xpm/biomes/forest/scenery/blossom_tree2.xpm"
+#include "../../assets/xpm/biomes/forest/scenery/blossom_petals.xpm"
+#include "../../assets/xpm/biomes/forest/scenery/blossom_umbrella.xpm"
+#include "../../assets/xpm/biomes/forest/obstacles/blossom_lantern.xpm"
+#include "../../assets/xpm/biomes/forest/obstacles/blossom_lantern2.xpm"
+#include "../../assets/xpm/biomes/forest/obstacles/blossom_branch.xpm"
+#include "../../assets/xpm/biomes/forest/obstacles/blossom_stump.xpm"
+
+/* ── biome selector UI ── */
+#include "../../assets/xpm/biomes/forest/ui/biome_select_title.xpm"
+#include "../../assets/xpm/biomes/forest/ui/biome_label_city.xpm"
+#include "../../assets/xpm/biomes/forest/ui/biome_label_desert.xpm"
+#include "../../assets/xpm/biomes/forest/ui/biome_label_forest.xpm"
+
 #include "../../assets/xpm/elements/cars/car_blue.xpm"
 #include "../../assets/xpm/elements/cars/car_blue_dmg1.xpm"
 #include "../../assets/xpm/elements/cars/car_blue_dmg2.xpm"
@@ -151,8 +169,8 @@ int resources_load(void) {
     for (int t = 0; t < 4; t++)
         if (!res.tile_sprites[TRACK_THEME_DESERT][t]) return 1;
 
-    /* Forest tiles — reuse city XPMs until forest-specific tiles are created */
-    res.tile_sprites[TRACK_THEME_FOREST][TILE_EMPTY]    = create_sprite((xpm_map_t)tile_road_xpm);
+    /* Forest / Blossom tiles */
+    res.tile_sprites[TRACK_THEME_FOREST][TILE_EMPTY]    = create_sprite((xpm_map_t)tile_road_forest_xpm);
     res.tile_sprites[TRACK_THEME_FOREST][TILE_OBSTACLE] = create_sprite((xpm_map_t)tile_obstacle_xpm);
     res.tile_sprites[TRACK_THEME_FOREST][TILE_BOOST]    = create_sprite((xpm_map_t)tile_boost_xpm);
     res.tile_sprites[TRACK_THEME_FOREST][TILE_FINISH]   = create_sprite((xpm_map_t)tile_finish_xpm);
@@ -161,13 +179,13 @@ int resources_load(void) {
 
     res.ground_sprites[TRACK_THEME_CITY]   = create_sprite((xpm_map_t)grass1);
     res.ground_sprites[TRACK_THEME_DESERT] = create_sprite((xpm_map_t)tile_sand_xpm);
-    res.ground_sprites[TRACK_THEME_FOREST] = create_sprite((xpm_map_t)grass1);
+    res.ground_sprites[TRACK_THEME_FOREST] = create_sprite((xpm_map_t)ground_forest_xpm);
     for (int i = 0; i < TRACK_THEME_COUNT; i++)
         if (!res.ground_sprites[i]) return 1;
 
     res.scenery_sprites[TRACK_THEME_CITY]   = create_sprite((xpm_map_t)tree);
     res.scenery_sprites[TRACK_THEME_DESERT] = create_sprite((xpm_map_t)cactus_tall_xpm);
-    res.scenery_sprites[TRACK_THEME_FOREST] = create_sprite((xpm_map_t)tree);
+    res.scenery_sprites[TRACK_THEME_FOREST] = create_sprite((xpm_map_t)blossom_tree_xpm);
     for (int i = 0; i < TRACK_THEME_COUNT; i++)
         if (!res.scenery_sprites[i]) return 1;
 
@@ -176,7 +194,7 @@ int resources_load(void) {
 
     res.obstacle_sprites[TRACK_THEME_CITY]   = create_sprite((xpm_map_t)obstacle_xpm);
     res.obstacle_sprites[TRACK_THEME_DESERT] = create_sprite((xpm_map_t)obstacle_barrel_xpm);
-    res.obstacle_sprites[TRACK_THEME_FOREST] = create_sprite((xpm_map_t)obstacle_xpm);
+    res.obstacle_sprites[TRACK_THEME_FOREST] = create_sprite((xpm_map_t)blossom_lantern_xpm);
     for (int i = 0; i < 3; i++)
         if (!res.obstacle_sprites[i]) return 1;
 
@@ -187,9 +205,6 @@ int resources_load(void) {
     res.fence_sprite        = create_sprite((xpm_map_t)fence_xpm);
     res.sand_pebbles_sprite = create_sprite((xpm_map_t)tile_sand_pebbles_xpm);
     if (!res.oil_puddle_sprite || !res.fence_sprite || !res.sand_pebbles_sprite) return 1;
-
-    res.obstacle_sprite = create_sprite((xpm_map_t)obstacle_xpm);
-    if (!res.obstacle_sprite) return 1;
 
     {
         static xpm_map_t city_obs_xpms[16] = {
@@ -207,12 +222,6 @@ int resources_load(void) {
             if (!res.city_obstacle_sprites[i]) return 1;
         }
     }
-
-    res.grass_sprite = create_sprite((xpm_map_t)grass1_xpm);
-    if (!res.grass_sprite) return 1;
-
-    res.tree_sprite = create_sprite((xpm_map_t)tree);
-    if (!res.tree_sprite) return 1;
 
     res.menu_title     = create_sprite((xpm_map_t)getaway_car_title);
     if (!res.menu_title) return 1;
@@ -312,13 +321,15 @@ int resources_load(void) {
         }
     }
 
-    /* Biome selector UI — set to NULL until XPMs are created.
-     * Use #ff00ff (not "None") for transparent pixels in new XPMs.
-     * To enable: add #include + create_sprite calls here. */
-    res.biome_select_title  = NULL;
-    res.biome_labels[TRACK_THEME_CITY]   = NULL;
-    res.biome_labels[TRACK_THEME_DESERT] = NULL;
-    res.biome_labels[TRACK_THEME_FOREST] = NULL;
+    /* Biome selector UI */
+    res.biome_select_title = create_sprite((xpm_map_t)biome_select_title);
+    if (!res.biome_select_title) return 1;
+    res.biome_labels[TRACK_THEME_CITY]   = create_sprite((xpm_map_t)biome_label_city);
+    if (!res.biome_labels[TRACK_THEME_CITY])   return 1;
+    res.biome_labels[TRACK_THEME_DESERT] = create_sprite((xpm_map_t)biome_label_desert);
+    if (!res.biome_labels[TRACK_THEME_DESERT]) return 1;
+    res.biome_labels[TRACK_THEME_FOREST] = create_sprite((xpm_map_t)biome_label_forest);
+    if (!res.biome_labels[TRACK_THEME_FOREST]) return 1;
 
     res.win_img[0] = create_sprite((xpm_map_t)blue_wins);
     if (!res.win_img[0]) return 1;
@@ -365,8 +376,6 @@ void resources_destroy(void) {
     if (res.boost_sprite)    { sprite_destroy(res.boost_sprite);    res.boost_sprite    = NULL; }
     for (int i = 0; i < 3; i++)
         if (res.city_boost_sprites[i]) { sprite_destroy(res.city_boost_sprites[i]); res.city_boost_sprites[i] = NULL; }
-    if (res.grass_sprite)    { sprite_destroy(res.grass_sprite);    res.grass_sprite    = NULL; }
-    if (res.tree_sprite)     { sprite_destroy(res.tree_sprite);     res.tree_sprite     = NULL; }
     if (res.pause_panel)     { sprite_destroy(res.pause_panel);     res.pause_panel     = NULL; }
     if (res.banana_sprite)      { sprite_destroy(res.banana_sprite);      res.banana_sprite      = NULL; }
     if (res.oil_puddle_sprite)  { sprite_destroy(res.oil_puddle_sprite);  res.oil_puddle_sprite  = NULL; }

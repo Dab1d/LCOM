@@ -50,6 +50,7 @@ SRCS = proj.c \
        src/view/screens/win/win_view.c \
        src/view/screens/mode_select/mode_select_view.c \
        src/view/screens/car_select/car_select_view.c \
+       src/view/screens/biome_select/biome_select_view.c \
        src/model/cursor/cursor.c \
        src/model/leaderboard/leaderboard.c \
        src/view/leaderboard_view.c
@@ -186,6 +187,9 @@ src/view/screens/mode_select/mode_select_view.o: src/view/screens/mode_select/mo
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/view/screens/car_select/car_select_view.o: src/view/screens/car_select/car_select_view.c src/view/screens/car_select/car_select_view.h
+	${CC} ${CFLAGS} -c $< -o $@
+
+src/view/screens/biome_select/biome_select_view.o: src/view/screens/biome_select/biome_select_view.c src/view/screens/biome_select/biome_select_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/view/elements/heart/heart_view.o: src/view/elements/heart/heart_view.c src/view/elements/heart/heart_view.h
