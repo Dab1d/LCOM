@@ -37,6 +37,8 @@
 #include "../../assets/xpm/biomes/city/objects/shield.xpm"
 #include "../../assets/xpm/biomes/city/objects/shield_aura.xpm"
 #include "../../assets/xpm/biomes/city/tiles/road.xpm"
+#include "../../assets/xpm/biomes/city/tiles/inner_road_left.xpm"
+#include "../../assets/xpm/biomes/city/tiles/inner_road_right.xpm"
 
 /* ── desert ── */
 #include "../../assets/xpm/biomes/desert/tiles/tile_road_desert.xpm"
@@ -301,6 +303,10 @@ int resources_load(void) {
 
     res.road_detail_sprite = create_sprite((xpm_map_t)road_xpm);
     if (!res.road_detail_sprite) return 1;
+    res.inner_road_left_sprite  = create_sprite((xpm_map_t)inner_road_left_xpm);
+    if (!res.inner_road_left_sprite) return 1;
+    res.inner_road_right_sprite = create_sprite((xpm_map_t)inner_road_right_xpm);
+    if (!res.inner_road_right_sprite) return 1;
 
     return 0;
 }
@@ -363,7 +369,9 @@ void resources_destroy(void) {
     if (res.win_menu_btn)       { sprite_destroy(res.win_menu_btn);       res.win_menu_btn       = NULL; }
     if (res.shield_sprite)      { sprite_destroy(res.shield_sprite);      res.shield_sprite      = NULL; }
     if (res.shield_aura_sprite) { sprite_destroy(res.shield_aura_sprite); res.shield_aura_sprite = NULL; }
-    if (res.road_detail_sprite) { sprite_destroy(res.road_detail_sprite); res.road_detail_sprite = NULL; }
+    if (res.road_detail_sprite)       { sprite_destroy(res.road_detail_sprite);       res.road_detail_sprite       = NULL; }
+    if (res.inner_road_left_sprite)   { sprite_destroy(res.inner_road_left_sprite);   res.inner_road_left_sprite   = NULL; }
+    if (res.inner_road_right_sprite)  { sprite_destroy(res.inner_road_right_sprite);  res.inner_road_right_sprite  = NULL; }
 }
 
 Sprite* resources_get_car_sprite(int player, int state) {
@@ -488,4 +496,6 @@ Sprite* resources_get_city_boost_sprite(int idx) {
 
 Sprite* resources_get_shield_sprite(void)      { return res.shield_sprite; }
 Sprite* resources_get_shield_aura_sprite(void) { return res.shield_aura_sprite; }
-Sprite* resources_get_road_detail_sprite(void) { return res.road_detail_sprite; }
+Sprite* resources_get_road_detail_sprite(void)      { return res.road_detail_sprite; }
+Sprite* resources_get_inner_road_left_sprite(void)  { return res.inner_road_left_sprite; }
+Sprite* resources_get_inner_road_right_sprite(void) { return res.inner_road_right_sprite; }

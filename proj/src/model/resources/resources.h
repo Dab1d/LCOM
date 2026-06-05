@@ -58,7 +58,9 @@ typedef struct {
     Sprite *win_menu_btn;             /**< MENU button. */
     Sprite *shield_sprite;            /**< Shield pickup icon. */
     Sprite *shield_aura_sprite;       /**< Yellow aura overlay while shielded. */
-    Sprite *road_detail_sprite;   /**< City road detail overlay (road.xpm). */
+    Sprite *road_detail_sprite;        /**< City road detail overlay (road.xpm). */
+    Sprite *inner_road_left_sprite;    /**< City inner road tile — lane 4 (left of divider). */
+    Sprite *inner_road_right_sprite;   /**< City inner road tile — lane 5 (right of divider). */
 } Resources;
 
 /**
@@ -265,5 +267,7 @@ Sprite* resources_get_city_boost_sprite(int idx);
 Sprite* resources_get_shield_sprite(void);
 Sprite* resources_get_shield_aura_sprite(void);
 Sprite* resources_get_road_detail_sprite(void);
+Sprite* resources_get_inner_road_left_sprite(void);
+Sprite* resources_get_inner_road_right_sprite(void);
 
 #endif /* __PROJ_RESOURCES_H */
