@@ -1,6 +1,6 @@
 #include "input.h"
 #include "kbc.h"
-#include "../../model/cursor/cursor.h"
+#include "../cursor/cursor.h"
 #include <stdbool.h>
 #include <stdlib.h>
 
