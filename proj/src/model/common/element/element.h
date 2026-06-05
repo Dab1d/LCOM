@@ -57,19 +57,4 @@ void destroy_element(Element *el);
  */
 bool check_collision(Element *el1, Element *el2);
 
-/**
- * @brief Y-axis overlap test between two active elements (lane already checked by caller).
- * @param el1 First element.
- * @param el2 Second element.
- * @return true if both are active and their Y ranges overlap.
- */
-bool element_y_overlap(const Element *el1, const Element *el2);
-
-/**
- * @brief Checks whether an element is within the visible screen area.
- * @param el Element to test.
- * @return true if the element is active and at least one pixel is on screen.
- */
-bool element_is_on_screen(const Element *el);
-
 #endif /* ELEMENT_H */
