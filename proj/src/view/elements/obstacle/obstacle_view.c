@@ -9,8 +9,10 @@ void obstacle_view_draw(Obstacle *obs, int theme) {
         case OBSTACLE_BANANA: sp = resources_get_banana_sprite();       break;
         case OBSTACLE_OIL:    sp = resources_get_oil_puddle_sprite();   break;
         default:
-            if (theme == 0)
+            if (theme == TRACK_THEME_CITY)
                 sp = resources_get_city_obstacle_sprite(obs->sprite_idx);
+            else if (theme == TRACK_THEME_FOREST)
+                sp = resources_get_forest_obstacle_sprite(obs->sprite_idx);
             else
                 sp = resources_get_obstacle_sprite_themed(theme);
             break;

@@ -294,6 +294,32 @@ int input_cursor_y(void);
 
 /** @} */
 
+/** @defgroup input_biome_select Biome-selection screen navigation
+ * @{ */
+
+/** @brief Returns non-zero if the biome left key was pressed (A or left arrow). */
+int input_biome_nav_left(void);
+
+/** @brief Returns non-zero if the biome right key was pressed (D or right arrow). */
+int input_biome_nav_right(void);
+
+/** @brief Returns non-zero if the biome confirm key was pressed (ENTER). */
+int input_biome_select_pressed(void);
+
+/** @brief Returns non-zero if the cursor is hovering over the SELECT button on the biome screen. */
+int input_mouse_over_biome_select(void);
+
+/** @brief Returns non-zero if the SELECT button was clicked on the biome screen. */
+int input_mouse_biome_select_pressed(void);
+
+/** @brief Returns non-zero if the left arrow area was clicked on the biome screen. */
+int input_mouse_biome_arrow_left(void);
+
+/** @brief Returns non-zero if the right arrow area was clicked on the biome screen. */
+int input_mouse_biome_arrow_right(void);
+
+/** @} */
+
 /** @defgroup input_car_select Car-selection screen navigation
  * @{ */
 
