@@ -34,6 +34,9 @@
 #include "../../assets/xpm/biomes/city/objects/boost1.xpm"
 #include "../../assets/xpm/biomes/city/objects/boost2.xpm"
 #include "../../assets/xpm/biomes/city/objects/boost3.xpm"
+#include "../../assets/xpm/biomes/city/objects/shield.xpm"
+#include "../../assets/xpm/biomes/city/objects/shield_aura.xpm"
+#include "../../assets/xpm/biomes/city/tiles/road.xpm"
 
 /* ── desert ── */
 #include "../../assets/xpm/biomes/desert/tiles/tile_road_desert.xpm"
@@ -178,7 +181,7 @@ int resources_load(void) {
         }
     }
 
-    res.grass_sprite = create_sprite((xpm_map_t)grass1);
+    res.grass_sprite = create_sprite((xpm_map_t)grass1_xpm);
     if (!res.grass_sprite) return 1;
 
     res.tree_sprite = create_sprite((xpm_map_t)tree);
@@ -291,6 +294,14 @@ int resources_load(void) {
     res.win_menu_btn = create_sprite((xpm_map_t)win_menu_btn);
     if (!res.win_menu_btn) return 1;
 
+    res.shield_sprite = create_sprite((xpm_map_t)shield_xpm);
+    if (!res.shield_sprite) return 1;
+    res.shield_aura_sprite = create_sprite((xpm_map_t)shield_aura_xpm);
+    if (!res.shield_aura_sprite) return 1;
+
+    res.road_detail_sprite = create_sprite((xpm_map_t)road_xpm);
+    if (!res.road_detail_sprite) return 1;
+
     return 0;
 }
 
@@ -350,6 +361,9 @@ void resources_destroy(void) {
         if (res.win_img[i]) { sprite_destroy(res.win_img[i]); res.win_img[i] = NULL; }
     if (res.win_play_again_btn) { sprite_destroy(res.win_play_again_btn); res.win_play_again_btn = NULL; }
     if (res.win_menu_btn)       { sprite_destroy(res.win_menu_btn);       res.win_menu_btn       = NULL; }
+    if (res.shield_sprite)      { sprite_destroy(res.shield_sprite);      res.shield_sprite      = NULL; }
+    if (res.shield_aura_sprite) { sprite_destroy(res.shield_aura_sprite); res.shield_aura_sprite = NULL; }
+    if (res.road_detail_sprite) { sprite_destroy(res.road_detail_sprite); res.road_detail_sprite = NULL; }
 }
 
 Sprite* resources_get_car_sprite(int player, int state) {
@@ -471,3 +485,7 @@ Sprite* resources_get_city_boost_sprite(int idx) {
     if (idx < 0 || idx >= 3) return res.city_boost_sprites[0];
     return res.city_boost_sprites[idx];
 }
+
+Sprite* resources_get_shield_sprite(void)      { return res.shield_sprite; }
+Sprite* resources_get_shield_aura_sprite(void) { return res.shield_aura_sprite; }
+Sprite* resources_get_road_detail_sprite(void) { return res.road_detail_sprite; }

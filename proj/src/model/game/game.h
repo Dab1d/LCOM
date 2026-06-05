@@ -11,10 +11,12 @@
 #include "../elements/track/track.h"
 #include "../elements/obstacle/obstacle.h"
 #include "../elements/boost/boost.h"
+#include "../elements/shield/shield.h"
 #include "../scenery/scenery.h"
 
 #define MAX_OBSTACLES 200 /**< Maximum number of obstacle objects alive at once. */
 #define MAX_BOOSTS     50 /**< Maximum number of boost pickups alive at once. */
+#define MAX_SHIELDS    20 /**< Maximum number of shield pickups alive at once. */
 
 /**
  * @brief Top-level game screen / phase enumeration.
@@ -53,6 +55,8 @@ typedef struct {
     int        obstacle_count;  /**< Number of active obstacles. */
     Boost     *boosts[MAX_BOOSTS];       /**< Active boost pool. */
     int        boost_count;     /**< Number of active boosts. */
+    Shield    *shields[MAX_SHIELDS];     /**< Active shield pickup pool. */
+    int        shield_count;    /**< Number of active shield pickups. */
     int        last_spawn_row;  /**< Last row seeded (endurance dynamic spawning). */
     uint32_t   car1_death_tick; /**< Tick when P1 died; 0 if still alive. */
     uint32_t   car2_death_tick; /**< Tick when P2 died; 0 if still alive. */

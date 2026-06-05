@@ -20,6 +20,7 @@ Car* create_car(int initial_lane, int lane_min, int lane_max, int car_width, int
     car->lane_min = lane_min;
     car->lane_max = lane_max;
     car->exploding        = false;
+    car->shield_ticks     = 0;
     car_init_session(car, CAR_INITIAL_LIVES);
 
     return car;
@@ -44,6 +45,7 @@ void car_move_lane(Car* car, int direction) {
 
 void car_take_damage(Car* car) {
     if (car == NULL || !car->base.is_active) return;
+    if (car->shield_ticks > 0) { car->shield_ticks = 0; return; }
 
     if (car->lives > 0) car->lives--;
 
@@ -101,6 +103,7 @@ void reset_car(Car* car, int initial_lane) {
     car->boost_remaining  = 0.0f;
     car->state            = CAR_STATE_NORMAL;
     car->exploding        = false;
+    car->shield_ticks     = 0;
     car_init_session(car, CAR_INITIAL_LIVES);
 }
 
@@ -108,4 +111,10 @@ void car_init_session(Car* car, int initial_lives) {
     if (car == NULL) return;
     car->score = 0;
     car->lives = initial_lives;
+}
+
+void car_apply_shield(Car* car, int ticks) {
+    if (car == NULL || !car->base.is_active) return;
+    if (car->state == CAR_STATE_EXPLODED)    return;
+    car->shield_ticks = ticks;
 }

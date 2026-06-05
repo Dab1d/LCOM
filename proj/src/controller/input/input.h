@@ -57,6 +57,12 @@ void input_set_car1_inverted(int ticks);
  */
 void input_set_car2_inverted(int ticks);
 
+/** @brief Returns the remaining inversion ticks for player 1 (0 = no effect). */
+int input_get_car1_inverted_ticks(void);
+
+/** @brief Returns the remaining inversion ticks for player 2 (0 = no effect). */
+int input_get_car2_inverted_ticks(void);
+
 /**
  * @brief Decrements the inversion countdown timers by one tick.
  *
