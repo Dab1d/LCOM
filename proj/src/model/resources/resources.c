@@ -1,7 +1,7 @@
 #include <lcom/lcf.h>
 #include "resources.h"
 #include "../elements/car/car.h"
-#include "../elements/track/track.h"
+#include "../terrain/track/track.h"
 #include <stdlib.h>
 
 /* ── city obstacles ── */
@@ -60,21 +60,16 @@
 #include "../../assets/xpm/biomes/forest/tiles/ground_forest_branches.xpm"
 #include "../../assets/xpm/biomes/forest/tiles/blossom_wall.xpm"
 #include "../../assets/xpm/biomes/forest/scenery/blossom_tree.xpm"
-#include "../../assets/xpm/biomes/forest/scenery/blossom_tree2.xpm"
-#include "../../assets/xpm/biomes/forest/scenery/blossom_petals.xpm"
-#include "../../assets/xpm/biomes/forest/scenery/blossom_umbrella.xpm"
-#include "../../assets/xpm/biomes/forest/obstacles/blossom_lantern.xpm"
-#include "../../assets/xpm/biomes/forest/obstacles/blossom_lantern2.xpm"
-#include "../../assets/xpm/biomes/forest/obstacles/blossom_branch.xpm"
-#include "../../assets/xpm/biomes/forest/obstacles/blossom_stump.xpm"
-#include "../../assets/xpm/biomes/forest/obstacles/blossom_log.xpm"
-#include "../../assets/xpm/biomes/forest/obstacles/blossom_flower.xpm"
+#include "../../assets/xpm/biomes/forest/objects/blossom_lantern.xpm"
+#include "../../assets/xpm/biomes/forest/objects/blossom_branch.xpm"
+#include "../../assets/xpm/biomes/forest/objects/blossom_stump.xpm"
+#include "../../assets/xpm/biomes/forest/objects/blossom_log.xpm"
 
 /* ── biome selector UI ── */
-#include "../../assets/xpm/biomes/forest/ui/biome_select_title.xpm"
-#include "../../assets/xpm/biomes/forest/ui/biome_label_city.xpm"
-#include "../../assets/xpm/biomes/forest/ui/biome_label_desert.xpm"
-#include "../../assets/xpm/biomes/forest/ui/biome_label_forest.xpm"
+#include "../../assets/xpm/ui/screens/biome_select/biome_select_title.xpm"
+#include "../../assets/xpm/ui/screens/biome_select/biome_label_city.xpm"
+#include "../../assets/xpm/ui/screens/biome_select/biome_label_desert.xpm"
+#include "../../assets/xpm/ui/screens/biome_select/biome_label_forest.xpm"
 
 #include "../../assets/xpm/elements/cars/car_blue.xpm"
 #include "../../assets/xpm/elements/cars/car_blue_dmg1.xpm"
@@ -86,8 +81,6 @@
 #include "../../assets/xpm/elements/cars/car_red_dmg2.xpm"
 #include "../../assets/xpm/elements/cars/car_red_destroyed.xpm"
 
-/* ── car selection formats (s1=normal, s2=damaged, s3=burning, s4=exploded) ── */
-/* ── car rotation sprites (8 rotations, step 45°: 00,02,04,06,08,10,12,14) ── */
 #include "../../assets/xpm/elements/cars/carBlue00/carB00_s1.xpm"
 #include "../../assets/xpm/elements/cars/carBlue02/carB02_s1.xpm"
 #include "../../assets/xpm/elements/cars/carBlue04/carB04_s1.xpm"
@@ -105,43 +98,43 @@
 #include "../../assets/xpm/elements/cars/carRed12/carR12_s1.xpm"
 #include "../../assets/xpm/elements/cars/carRed14/carR14_s1.xpm"
 
-#include "../../assets/xpm/pause/pause_panel.xpm"
+#include "../../assets/xpm/ui/screens/pause/pause_panel.xpm"
 #include "../../assets/xpm/elements/banana.xpm"
-#include "../../assets/xpm/pause/pause_resume_btn.xpm"
-#include "../../assets/xpm/pause/pause_resume_btn_sel.xpm"
-#include "../../assets/xpm/pause/pause_quit_btn.xpm"
-#include "../../assets/xpm/pause/pause_quit_btn_sel.xpm"
+#include "../../assets/xpm/ui/screens/pause/pause_resume_btn.xpm"
+#include "../../assets/xpm/ui/screens/pause/pause_resume_btn_sel.xpm"
+#include "../../assets/xpm/ui/screens/pause/pause_quit_btn.xpm"
+#include "../../assets/xpm/ui/screens/pause/pause_quit_btn_sel.xpm"
 
-#include "../../assets/xpm/digits/digit_0.xpm"
-#include "../../assets/xpm/digits/digit_1.xpm"
-#include "../../assets/xpm/digits/digit_2.xpm"
-#include "../../assets/xpm/digits/digit_3.xpm"
-#include "../../assets/xpm/digits/digit_4.xpm"
-#include "../../assets/xpm/digits/digit_5.xpm"
-#include "../../assets/xpm/digits/digit_6.xpm"
-#include "../../assets/xpm/digits/digit_7.xpm"
-#include "../../assets/xpm/digits/digit_8.xpm"
-#include "../../assets/xpm/digits/digit_9.xpm"
-#include "../../assets/xpm/digits/digit_colon.xpm"
+#include "../../assets/xpm/ui/hud/digits/digit_0.xpm"
+#include "../../assets/xpm/ui/hud/digits/digit_1.xpm"
+#include "../../assets/xpm/ui/hud/digits/digit_2.xpm"
+#include "../../assets/xpm/ui/hud/digits/digit_3.xpm"
+#include "../../assets/xpm/ui/hud/digits/digit_4.xpm"
+#include "../../assets/xpm/ui/hud/digits/digit_5.xpm"
+#include "../../assets/xpm/ui/hud/digits/digit_6.xpm"
+#include "../../assets/xpm/ui/hud/digits/digit_7.xpm"
+#include "../../assets/xpm/ui/hud/digits/digit_8.xpm"
+#include "../../assets/xpm/ui/hud/digits/digit_9.xpm"
+#include "../../assets/xpm/ui/hud/digits/digit_colon.xpm"
 
-#include "../../assets/xpm/main/getaway_car_title.xpm"
-#include "../../assets/xpm/main/start_button.xpm"
-#include "../../assets/xpm/main/instructions_button.xpm"
-#include "../../assets/xpm/main/leaderboard_button.xpm"
-#include "../../assets/xpm/main/exit_button.xpm"
-#include "../../assets/xpm/elements/cursor.xpm"
-#include "../../assets/xpm/elements/heart.xpm"
+#include "../../assets/xpm/ui/screens/main/getaway_car_title.xpm"
+#include "../../assets/xpm/ui/screens/main/start_button.xpm"
+#include "../../assets/xpm/ui/screens/main/instructions_button.xpm"
+#include "../../assets/xpm/ui/screens/main/leaderboard_button.xpm"
+#include "../../assets/xpm/ui/screens/main/exit_button.xpm"
+#include "../../assets/xpm/ui/hud/cursor.xpm"
+#include "../../assets/xpm/ui/hud/heart.xpm"
 
-#include "../../assets/xpm/modes/mode_select_title.xpm"
-#include "../../assets/xpm/modes/mode_race_card.xpm"
-#include "../../assets/xpm/modes/mode_endurance_card.xpm"
-#include "../../assets/xpm/modes/title_race.xpm"
-#include "../../assets/xpm/modes/title_endurance.xpm"
+#include "../../assets/xpm/ui/screens/modes/mode_select_title.xpm"
+#include "../../assets/xpm/ui/screens/modes/mode_race_card.xpm"
+#include "../../assets/xpm/ui/screens/modes/mode_endurance_card.xpm"
+#include "../../assets/xpm/ui/screens/modes/title_race.xpm"
+#include "../../assets/xpm/ui/screens/modes/title_endurance.xpm"
 
-#include "../../assets/xpm/win/blue_wins.xpm"
-#include "../../assets/xpm/win/red_wins.xpm"
-#include "../../assets/xpm/win/win_play_again_btn.xpm"
-#include "../../assets/xpm/win/win_menu_btn.xpm"
+#include "../../assets/xpm/ui/screens/win/blue_wins.xpm"
+#include "../../assets/xpm/ui/screens/win/red_wins.xpm"
+#include "../../assets/xpm/ui/screens/win/win_play_again_btn.xpm"
+#include "../../assets/xpm/ui/screens/win/win_menu_btn.xpm"
 
 static Resources res;
 
@@ -220,7 +213,7 @@ int resources_load(void) {
             (xpm_map_t)blossom_branch_xpm,
             (xpm_map_t)blossom_stump_xpm,
             (xpm_map_t)blossom_log_xpm,
-            (xpm_map_t)blossom_flower_xpm,
+            (xpm_map_t)blossom_lantern_xpm,
         };
         for (int i = 0; i < 4; i++) {
             res.forest_obstacle_sprites[i] = create_sprite(forest_obs_xpms[i]);
@@ -321,38 +314,6 @@ int resources_load(void) {
     res.mode_endurance_label = create_sprite((xpm_map_t)title_endurance);
     if (!res.mode_endurance_label) return 1;
 
-    {
-        static xpm_map_t fmt_blue_s1[CAR_FORMAT_MAX] = {
-            (xpm_map_t)car_blue_00_s1, (xpm_map_t)car_blue_02_s1,
-            (xpm_map_t)car_blue_04_s1, (xpm_map_t)car_blue_06_s1,
-            (xpm_map_t)car_blue_08_s1, (xpm_map_t)car_blue_10_s1,
-            (xpm_map_t)car_blue_12_s1, (xpm_map_t)car_blue_14_s1,
-        };
-        static xpm_map_t fmt_red_s1[CAR_FORMAT_MAX] = {
-            (xpm_map_t)car_red_00_s1, (xpm_map_t)car_red_02_s1,
-            (xpm_map_t)car_red_04_s1, (xpm_map_t)car_red_06_s1,
-            (xpm_map_t)car_red_08_s1, (xpm_map_t)car_red_10_s1,
-            (xpm_map_t)car_red_12_s1, (xpm_map_t)car_red_14_s1,
-        };
-        res.car_format_count = 0;
-        for (int f = 0; f < CAR_FORMAT_MAX; f++) {
-            Sprite *sb = create_sprite(fmt_blue_s1[f]);
-            Sprite *sr = create_sprite(fmt_red_s1[f]);
-            if (!sb || !sr) {
-                if (sb) sprite_destroy(sb);
-                if (sr) sprite_destroy(sr);
-                break;
-            }
-            res.car_format_sprites[f][0][CAR_STATE_NORMAL] = sb;
-            res.car_format_sprites[f][1][CAR_STATE_NORMAL] = sr;
-            for (int s = 1; s < CAR_STATE_COUNT; s++) {
-                res.car_format_sprites[f][0][s] = NULL;
-                res.car_format_sprites[f][1][s] = NULL;
-            }
-            res.car_format_count++;
-        }
-    }
-
     /* Biome selector UI */
     res.biome_select_title = create_sprite((xpm_map_t)biome_select_title);
     if (!res.biome_select_title) return 1;
@@ -391,6 +352,14 @@ void resources_destroy(void) {
     for (int p = 0; p < CAR_PLAYER_COUNT; p++)
         for (int s = 0; s < CAR_STATE_COUNT; s++)
             if (res.car_sprites[p][s]) { sprite_destroy(res.car_sprites[p][s]); res.car_sprites[p][s] = NULL; }
+    for (int f = 0; f < res.car_format_count; f++)
+        for (int p = 0; p < CAR_PLAYER_COUNT; p++)
+            for (int s = 0; s < CAR_STATE_COUNT; s++)
+                if (res.car_format_sprites[f][p][s]) {
+                    sprite_destroy(res.car_format_sprites[f][p][s]);
+                    res.car_format_sprites[f][p][s] = NULL;
+                }
+    res.car_format_count = 0;
     for (int th = 0; th < TRACK_THEME_COUNT; th++)
         for (int t = 0; t < 4; t++)
             if (res.tile_sprites[th][t]) { sprite_destroy(res.tile_sprites[th][t]); res.tile_sprites[th][t] = NULL; }
@@ -436,14 +405,6 @@ void resources_destroy(void) {
     if (res.mode_endurance_card) { sprite_destroy(res.mode_endurance_card); res.mode_endurance_card = NULL; }
     if (res.mode_race_label)      { sprite_destroy(res.mode_race_label);      res.mode_race_label      = NULL; }
     if (res.mode_endurance_label) { sprite_destroy(res.mode_endurance_label); res.mode_endurance_label = NULL; }
-    for (int f = 0; f < res.car_format_count; f++)
-        for (int p = 0; p < CAR_PLAYER_COUNT; p++)
-            for (int s = 0; s < CAR_STATE_COUNT; s++)
-                if (res.car_format_sprites[f][p][s]) {
-                    sprite_destroy(res.car_format_sprites[f][p][s]);
-                    res.car_format_sprites[f][p][s] = NULL;
-                }
-    res.car_format_count = 0;
     for (int i = 0; i < 2; i++)
         if (res.win_img[i]) { sprite_destroy(res.win_img[i]); res.win_img[i] = NULL; }
     if (res.win_play_again_btn) { sprite_destroy(res.win_play_again_btn); res.win_play_again_btn = NULL; }

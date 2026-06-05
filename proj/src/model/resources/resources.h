@@ -6,11 +6,11 @@
 #ifndef __PROJ_RESOURCES_H
 #define __PROJ_RESOURCES_H
 
-#include "../sprite/sprite.h"
-#include "../elements/track/track.h"
+#include "../common/sprite/sprite.h"
+#include "../terrain/track/track.h"
 #include "../elements/car/car.h"
 
-#define CAR_FORMAT_MAX 8
+#define CAR_FORMAT_MAX 8  /**< Maximum number of selectable car formats. */
 
 /**
  * @brief Lateral ground tile variant indices (per theme, up to GROUND_TILE_COUNT).
@@ -64,7 +64,7 @@ typedef struct {
     Sprite *mode_race_label;          /**< RACE mode label. */
     Sprite *mode_endurance_label;     /**< ENDURANCE mode label. */
     Sprite *car_format_sprites[CAR_FORMAT_MAX][CAR_PLAYER_COUNT][CAR_STATE_COUNT]; /**< [fmt][player][CarState] */
-    int     car_format_count;         /**< Number of loaded car format sprites. */
+    int     car_format_count;         /**< Number of loaded car formats. */
     Sprite *win_img[2];               /**< [0]=blue_wins  [1]=red_wins. */
     Sprite *win_play_again_btn;       /**< PLAY AGAIN button. */
     Sprite *win_menu_btn;             /**< MENU button. */

@@ -38,4 +38,5 @@ trace.txt
 .idea/
 .vscode/
 .codex
+.gdbinit
 

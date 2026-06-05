@@ -8,11 +8,11 @@
 
 #include <stdint.h>
 #include "../elements/car/car.h"
-#include "../elements/track/track.h"
+#include "../terrain/track/track.h"
 #include "../elements/obstacle/obstacle.h"
 #include "../elements/boost/boost.h"
 #include "../elements/shield/shield.h"
-#include "../scenery/scenery.h"
+#include "../terrain/scenery/scenery.h"
 
 #define MAX_OBSTACLES 200 /**< Maximum number of obstacle objects alive at once. */
 #define MAX_BOOSTS     50 /**< Maximum number of boost pickups alive at once. */

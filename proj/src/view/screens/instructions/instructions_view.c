@@ -1,14 +1,14 @@
 #include "instructions_view.h"
 #include "../../view.h"
 #include "../../../model/resources/resources.h"
-#include "../../../model/sprite/sprite.h"
+#include "../../../model/common/sprite/sprite.h"
 #include "../../../controller/input/input.h"
 #include "../../../controller/palette/palette.h"
 
-#include "../../../assets/xpm/main/race_desc.xpm"
-#include "../../../assets/xpm/main/endur_desc.xpm"
-#include "../../../assets/xpm/main/race_mini.xpm"
-#include "../../../assets/xpm/main/endur_mini.xpm"
+#include "../../../assets/xpm/ui/screens/main/race_desc.xpm"
+#include "../../../assets/xpm/ui/screens/main/endur_desc.xpm"
+#include "../../../assets/xpm/ui/screens/main/race_mini.xpm"
+#include "../../../assets/xpm/ui/screens/main/endur_mini.xpm"
 
 #define SCREEN_W      1024
 #define SCREEN_H       768

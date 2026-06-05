@@ -7,7 +7,7 @@
 #define __PROJ_CAR_VIEW_H
 
 #include "../../../model/elements/car/car.h"
-#include "../../../model/elements/track/track.h"
+#include "../../../model/terrain/track/track.h"
 
 /**
  * @brief Draws the car sprite corresponding to its current CarState.

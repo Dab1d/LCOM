@@ -6,8 +6,8 @@
 #ifndef OBSTACLE_H
 #define OBSTACLE_H
 
-#include "../element/element.h"
-#include "../track/track.h"
+#include "../../common/element/element.h"
+#include "../../terrain/track/track.h"
 #include "../car/car.h"
 
 /**

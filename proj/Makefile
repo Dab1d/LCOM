@@ -24,35 +24,35 @@ LDLIBS += -lm
 
 SRCS = proj.c \
        src/model/game/game.c \
-       src/model/scenery/scenery.c \
-       src/model/elements/element/element.c \
+       src/model/common/element/element.c \
+       src/model/common/sprite/sprite.c \
        src/model/elements/car/car.c \
-       src/model/elements/track/track.c \
        src/model/elements/obstacle/obstacle.c \
        src/model/elements/boost/boost.c \
        src/model/elements/shield/shield.c \
-       src/model/sprite/sprite.c \
+       src/model/terrain/track/track.c \
+       src/model/terrain/scenery/scenery.c \
        src/controller/input/input.c \
        src/controller/palette/palette.c \
        src/controller/graphics/graphics.c \
+       src/controller/cursor/cursor.c \
        src/view/view.c \
        src/model/resources/resources.c \
        src/view/elements/car/car_view.c \
        src/view/elements/obstacle/obstacle_view.c \
        src/view/elements/boost/boost_view.c \
        src/view/elements/shield/shield_view.c \
-       src/view/elements/track/track_view.c \
-       src/view/elements/scenery/scenery_view.c \
-       src/view/elements/heart/heart_view.c \
-       src/view/elements/timer/timer_view.c \
-       src/view/elements/minimap/minimap_view.c \
+       src/view/terrain/track/track_view.c \
+       src/view/terrain/scenery/scenery_view.c \
+       src/view/hud/heart/heart_view.c \
+       src/view/hud/timer/timer_view.c \
+       src/view/hud/minimap/minimap_view.c \
        src/view/screens/pause/pause_view.c \
        src/view/screens/menu/menu_view.c \
        src/view/screens/win/win_view.c \
        src/view/screens/mode_select/mode_select_view.c \
        src/view/screens/car_select/car_select_view.c \
        src/view/screens/biome_select/biome_select_view.c \
-       src/model/cursor/cursor.c \
        src/model/leaderboard/leaderboard.c \
        src/view/screens/leaderboard/leaderboard_view.c \
        src/view/screens/instructions/instructions_view.c
@@ -60,34 +60,34 @@ SRCS = proj.c \
 
 # Headers — listados explicitamente para dependências corretas
 HDRS = src/model/game/game.h \
-       src/model/scenery/scenery.h \
-       src/model/elements/element/element.h \
+       src/model/common/element/element.h \
+       src/model/common/sprite/sprite.h \
        src/model/elements/car/car.h \
-       src/model/elements/track/track.h \
        src/model/elements/obstacle/obstacle.h \
        src/model/elements/boost/boost.h \
        src/model/elements/shield/shield.h \
-       src/model/sprite/sprite.h \
+       src/model/terrain/track/track.h \
+       src/model/terrain/scenery/scenery.h \
        src/controller/input/input.h \
        src/controller/palette/palette.h \
        src/controller/graphics/graphics.h \
+       src/controller/cursor/cursor.h \
        src/view/view.h \
        src/model/resources/resources.h \
        src/view/elements/car/car_view.h \
        src/view/elements/obstacle/obstacle_view.h \
        src/view/elements/boost/boost_view.h \
        src/view/elements/shield/shield_view.h \
-       src/view/elements/track/track_view.h \
-       src/view/elements/scenery/scenery_view.h \
-       src/view/elements/heart/heart_view.h \
-       src/view/elements/timer/timer_view.h \
-       src/view/elements/minimap/minimap_view.h \
+       src/view/terrain/track/track_view.h \
+       src/view/terrain/scenery/scenery_view.h \
+       src/view/hud/heart/heart_view.h \
+       src/view/hud/timer/timer_view.h \
+       src/view/hud/minimap/minimap_view.h \
        src/view/screens/pause/pause_view.h \
        src/view/screens/menu/menu_view.h \
        src/view/screens/win/win_view.h \
        src/view/screens/mode_select/mode_select_view.h \
        src/view/screens/car_select/car_select_view.h \
-       src/model/cursor/cursor.h \
        src/model/leaderboard/leaderboard.h \
        src/view/screens/leaderboard/leaderboard_view.h \
        src/view/screens/instructions/instructions_view.h
@@ -103,22 +103,22 @@ proj.o: src/proj.c ${HDRS}
 src/model/game/game.o: src/model/game/game.c src/model/game/game.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/model/elements/element/element.o: src/model/elements/element/element.c src/model/elements/element/element.h
+src/model/common/element/element.o: src/model/common/element/element.c src/model/common/element/element.h
+	${CC} ${CFLAGS} -c $< -o $@
+
+src/model/common/sprite/sprite.o: src/model/common/sprite/sprite.c src/model/common/sprite/sprite.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/model/elements/car/car.o: src/model/elements/car/car.c src/model/elements/car/car.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/model/elements/track/track.o: src/model/elements/track/track.c src/model/elements/track/track.h
-	${CC} ${CFLAGS} -c $< -o $@
-
 src/model/elements/obstacle/obstacle.o: src/model/elements/obstacle/obstacle.c src/model/elements/obstacle/obstacle.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/model/sprite/sprite.o: src/model/sprite/sprite.c src/model/sprite/sprite.h
+src/model/terrain/track/track.o: src/model/terrain/track/track.c src/model/terrain/track/track.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/model/cursor/cursor.o: src/model/cursor/cursor.c src/model/cursor/cursor.h
+src/controller/cursor/cursor.o: src/controller/cursor/cursor.c src/controller/cursor/cursor.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/model/leaderboard/leaderboard.o: src/model/leaderboard/leaderboard.c src/model/leaderboard/leaderboard.h
@@ -163,6 +163,9 @@ src/model/elements/boost/boost.o: src/model/elements/boost/boost.c src/model/ele
 src/model/elements/shield/shield.o: src/model/elements/shield/shield.c src/model/elements/shield/shield.h
 	${CC} ${CFLAGS} -c $< -o $@
 
+src/model/terrain/scenery/scenery.o: src/model/terrain/scenery/scenery.c src/model/terrain/scenery/scenery.h
+	${CC} ${CFLAGS} -c $< -o $@
+
 src/view/elements/shield/shield_view.o: src/view/elements/shield/shield_view.c src/view/elements/shield/shield_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
@@ -172,13 +175,11 @@ src/view/elements/boost/boost_view.o: src/view/elements/boost/boost_view.c src/v
 src/view/elements/obstacle/obstacle_view.o: src/view/elements/obstacle/obstacle_view.c src/view/elements/obstacle/obstacle_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/view/elements/track/track_view.o: src/view/elements/track/track_view.c src/view/elements/track/track_view.h
+src/view/terrain/track/track_view.o: src/view/terrain/track/track_view.c src/view/terrain/track/track_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/model/scenery/scenery.o: src/model/scenery/scenery.c src/model/scenery/scenery.h
-	${CC} ${CFLAGS} -c $< -o $@
 
-src/view/elements/scenery/scenery_view.o: src/view/elements/scenery/scenery_view.c src/view/elements/scenery/scenery_view.h
+src/view/terrain/scenery/scenery_view.o: src/view/terrain/scenery/scenery_view.c src/view/terrain/scenery/scenery_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/view/screens/pause/pause_view.o: src/view/screens/pause/pause_view.c src/view/screens/pause/pause_view.h
@@ -199,13 +200,13 @@ src/view/screens/car_select/car_select_view.o: src/view/screens/car_select/car_s
 src/view/screens/biome_select/biome_select_view.o: src/view/screens/biome_select/biome_select_view.c src/view/screens/biome_select/biome_select_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/view/elements/heart/heart_view.o: src/view/elements/heart/heart_view.c src/view/elements/heart/heart_view.h
+src/view/hud/heart/heart_view.o: src/view/hud/heart/heart_view.c src/view/hud/heart/heart_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/view/elements/timer/timer_view.o: src/view/elements/timer/timer_view.c src/view/elements/timer/timer_view.h
+src/view/hud/timer/timer_view.o: src/view/hud/timer/timer_view.c src/view/hud/timer/timer_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/view/elements/minimap/minimap_view.o: src/view/elements/minimap/minimap_view.c src/view/elements/minimap/minimap_view.h
+src/view/hud/minimap/minimap_view.o: src/view/hud/minimap/minimap_view.c src/view/hud/minimap/minimap_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/controller/graphics/graphics.o: src/controller/graphics/graphics.c src/controller/graphics/graphics.h
