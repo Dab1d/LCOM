@@ -62,7 +62,8 @@ Track* create_track(TrackTheme theme) {
     memset(track->grid, TILE_EMPTY, sizeof(track->grid));
 
     track->scroll_row    = 0;
-    track->scroll_offset = 0.0f;
+    track->scroll_offset = 0;
+    track->scroll_accum  = 0.0f;
     track->scroll_speed  = SCROLL_SPEED_INITIAL;
     track->theme         = theme;
     track->infinite      = false;
@@ -89,7 +90,10 @@ void track_update(Track* track) {
     if (track->scroll_speed < SCROLL_SPEED_MAX)
         track->scroll_speed += SCROLL_ACCELERATION;
 
-    track->scroll_offset += track->scroll_speed;
+    track->scroll_accum += track->scroll_speed;
+    int pixels = (int)track->scroll_accum;
+    track->scroll_accum -= (float)pixels;
+    track->scroll_offset += pixels;
 
     while (track->scroll_offset >= TRACK_TILE_HEIGHT) {
         track->scroll_offset -= TRACK_TILE_HEIGHT;

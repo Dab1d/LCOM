@@ -66,6 +66,7 @@ void car_take_damage(Car* car) {
             car->base.is_active = false; // Retira o carro do jogo
             break;
         case CAR_STATE_EXPLODED:
+        default:
             break;
     }
 }

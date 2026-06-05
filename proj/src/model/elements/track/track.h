@@ -50,8 +50,9 @@ typedef enum {
 typedef struct {
     TileType grid[TRACK_TOTAL_ROWS][TRACK_LANES]; /**< Full logical grid. */
     int      scroll_row;    /**< Logical row at the top of the screen (advances each tick). */
-    float    scroll_offset; /**< Sub-tile pixel offset within the current row (0..TRACK_TILE_HEIGHT-1). */
+    int      scroll_offset; /**< Sub-tile pixel offset within the current row (0..TRACK_TILE_HEIGHT-1). */
     float    scroll_speed;  /**< Pixels scrolled per tick (track speed). */
+    float    scroll_accum;  /**< Fractional pixel accumulator for subpixel scrolling. */
     TrackTheme theme;       /**< Visual theme for this race. */
     bool     infinite;      /**< When true, track scrolls past the finish row indefinitely. */
 } Track;

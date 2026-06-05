@@ -20,6 +20,7 @@
 #include "../../view/screens/menu/menu_view.h"
 #include "../../view/screens/mode_select/mode_select_view.h"
 #include "../../view/screens/car_select/car_select_view.h"
+#include "../../view/screens/biome_select/biome_select_view.h"
 #include "../../view/leaderboard_view.h"
 #include "../leaderboard/leaderboard.h"
 
@@ -325,9 +326,6 @@ static void game_process_input(void) {
                 game.menu_selection = (game.menu_selection + MENU_ITEMS - 1) % MENU_ITEMS;
             if (input_menu_nav_down())
                 game.menu_selection = (game.menu_selection + 1) % MENU_ITEMS;
-            if (input_menu_nav_left() || input_menu_nav_right())
-                game.selected_theme = (game.selected_theme == TRACK_THEME_CITY)
-                                      ? TRACK_THEME_DESERT : TRACK_THEME_CITY;
             if (input_mouse_over_start())       game.menu_selection = MENU_START;
             if (input_mouse_over_leaderboard()) game.menu_selection = MENU_LEADERBOARD;
             if (input_mouse_over_exit())        game.menu_selection = MENU_EXIT;
@@ -351,12 +349,21 @@ static void game_process_input(void) {
             if (input_p2_nav_right()) game.car2_format = (game.car2_format + 1)     % n;
             if (input_car_select_race_pressed() || input_mouse_car_select_race_pressed()) {
                 resources_apply_car_format(game.car1_format, game.car2_format);
-                game.state = MODE_SELECT;
+                game.state = BIOME_SELECT;
             }
             break;
         }
+        case BIOME_SELECT:
+            if (input_esc_pressed()) { game.state = CAR_SELECT; break; }
+            if (input_biome_nav_left() || input_mouse_biome_arrow_left())
+                game.selected_theme = (TrackTheme)((game.selected_theme + TRACK_THEME_COUNT - 1) % TRACK_THEME_COUNT);
+            if (input_biome_nav_right() || input_mouse_biome_arrow_right())
+                game.selected_theme = (TrackTheme)((game.selected_theme + 1) % TRACK_THEME_COUNT);
+            if (input_biome_select_pressed() || input_mouse_biome_select_pressed())
+                game.state = MODE_SELECT;
+            break;
         case MODE_SELECT:
-            if (input_esc_pressed()) { game.mode_selection = 0; game.state = CAR_SELECT; break; }
+            if (input_esc_pressed()) { game.mode_selection = 0; game.state = BIOME_SELECT; break; }
             if (input_mode_nav_left())               game.mode_selection = 0;
             if (input_mode_nav_right())              game.mode_selection = 1;
             if (input_mouse_over_race_card())        game.mode_selection = 0;
@@ -603,7 +610,7 @@ static void game_render(void) {
             copy_buffer_to_video();
             return;
         case MAIN_MENU:
-            menu_view_draw(game.menu_selection, game.selected_theme);
+            menu_view_draw(game.menu_selection);
             break;
         case CAR_SELECT:
             car_select_view_draw(
@@ -611,12 +618,15 @@ static void game_render(void) {
                 resources_get_car_format_count()
             );
             break;
+        case BIOME_SELECT:
+            biome_select_view_draw(game.selected_theme);
+            break;
         case MODE_SELECT:
             mode_select_view_draw(game.mode_selection);
             break;
         case GAMEPLAY:
             track_view_draw(game.track);
-            scenery_view_draw(game.scenery, game.track->theme);
+            scenery_view_draw(game.scenery, game.track, game.track->theme);
             car_view_draw(game.car1, game.track->theme);
             car_view_draw(game.car2, game.track->theme);
             shield_aura_draw(game.car1);
@@ -642,7 +652,7 @@ static void game_render(void) {
             break;
         case PAUSE:
             track_view_draw(game.track);
-            scenery_view_draw(game.scenery, game.track->theme);
+            scenery_view_draw(game.scenery, game.track, game.track->theme);
             car_view_draw(game.car1, game.track->theme);
             car_view_draw(game.car2, game.track->theme);
             shield_aura_draw(game.car1);
@@ -735,6 +745,7 @@ void game_tick(void) {
             }
             break;
         case CAR_SELECT:
+        case BIOME_SELECT:
             break;
         case MAIN_MENU:
         case MODE_SELECT:

@@ -24,11 +24,14 @@
  *
  * The index maps directly to the sprite loaded by the View layer.
  */
+#define CAR_PLAYER_COUNT 2 /**< Number of players (P1 + P2). */
+
 typedef enum {
     CAR_STATE_NORMAL   = 0, /**< Car in perfect condition. */
     CAR_STATE_DAMAGED  = 1, /**< First impact — visible damage. */
     CAR_STATE_BURNING  = 2, /**< Second impact — on fire. */
-    CAR_STATE_EXPLODED = 3  /**< Third impact — out of the race. */
+    CAR_STATE_EXPLODED = 3, /**< Third impact — out of the race. */
+    CAR_STATE_COUNT         /**< Sentinel — number of car states. */
 } CarState;
 
 /**

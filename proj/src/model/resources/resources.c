@@ -52,6 +52,30 @@
 #include "../../assets/xpm/biomes/desert/scenery/fence.xpm"
 #include "../../assets/xpm/biomes/desert/tiles/tile_sand_pebbles.xpm"
 
+/* ── forest / blossom ── */
+#include "../../assets/xpm/biomes/forest/tiles/tile_road_forest.xpm"
+#include "../../assets/xpm/biomes/forest/tiles/ground_forest.xpm"
+#include "../../assets/xpm/biomes/forest/tiles/ground_forest2.xpm"
+#include "../../assets/xpm/biomes/forest/tiles/tile_road_cobble.xpm"
+#include "../../assets/xpm/biomes/forest/tiles/ground_forest_branches.xpm"
+#include "../../assets/xpm/biomes/forest/tiles/blossom_wall.xpm"
+#include "../../assets/xpm/biomes/forest/scenery/blossom_tree.xpm"
+#include "../../assets/xpm/biomes/forest/scenery/blossom_tree2.xpm"
+#include "../../assets/xpm/biomes/forest/scenery/blossom_petals.xpm"
+#include "../../assets/xpm/biomes/forest/scenery/blossom_umbrella.xpm"
+#include "../../assets/xpm/biomes/forest/obstacles/blossom_lantern.xpm"
+#include "../../assets/xpm/biomes/forest/obstacles/blossom_lantern2.xpm"
+#include "../../assets/xpm/biomes/forest/obstacles/blossom_branch.xpm"
+#include "../../assets/xpm/biomes/forest/obstacles/blossom_stump.xpm"
+#include "../../assets/xpm/biomes/forest/obstacles/blossom_log.xpm"
+#include "../../assets/xpm/biomes/forest/obstacles/blossom_flower.xpm"
+
+/* ── biome selector UI ── */
+#include "../../assets/xpm/biomes/forest/ui/biome_select_title.xpm"
+#include "../../assets/xpm/biomes/forest/ui/biome_label_city.xpm"
+#include "../../assets/xpm/biomes/forest/ui/biome_label_desert.xpm"
+#include "../../assets/xpm/biomes/forest/ui/biome_label_forest.xpm"
+
 #include "../../assets/xpm/elements/cars/car_blue.xpm"
 #include "../../assets/xpm/elements/cars/car_blue_dmg1.xpm"
 #include "../../assets/xpm/elements/cars/car_blue_dmg2.xpm"
@@ -125,46 +149,91 @@ int resources_load(void) {
     res.car_sprites[0][CAR_STATE_DAMAGED]  = create_sprite((xpm_map_t)car_blue_dmg1);
     res.car_sprites[0][CAR_STATE_BURNING]  = create_sprite((xpm_map_t)car_blue_dmg2);
     res.car_sprites[0][CAR_STATE_EXPLODED] = create_sprite((xpm_map_t)car_blue_destroyed);
-    for (int s = 0; s < 4; s++)
+    for (int s = 0; s < CAR_STATE_COUNT; s++)
         if (!res.car_sprites[0][s]) return 1;
 
     res.car_sprites[1][CAR_STATE_NORMAL]   = create_sprite((xpm_map_t)car_red);
     res.car_sprites[1][CAR_STATE_DAMAGED]  = create_sprite((xpm_map_t)car_red_dmg1);
     res.car_sprites[1][CAR_STATE_BURNING]  = create_sprite((xpm_map_t)car_red_dmg2);
     res.car_sprites[1][CAR_STATE_EXPLODED] = create_sprite((xpm_map_t)car_red_destroyed);
-    for (int s = 0; s < 4; s++)
+    for (int s = 0; s < CAR_STATE_COUNT; s++)
         if (!res.car_sprites[1][s]) return 1;
 
-    res.tile_sprites[TILE_EMPTY]    = create_sprite((xpm_map_t)tile_road_xpm);
-    res.tile_sprites[TILE_OBSTACLE] = create_sprite((xpm_map_t)tile_obstacle_xpm);
-    res.tile_sprites[TILE_BOOST]    = create_sprite((xpm_map_t)tile_boost_xpm);
-    res.tile_sprites[TILE_FINISH]   = create_sprite((xpm_map_t)tile_finish_xpm);
+    /* City tiles */
+    res.tile_sprites[TRACK_THEME_CITY][TILE_EMPTY]    = create_sprite((xpm_map_t)tile_road_xpm);
+    res.tile_sprites[TRACK_THEME_CITY][TILE_OBSTACLE] = create_sprite((xpm_map_t)tile_obstacle_xpm);
+    res.tile_sprites[TRACK_THEME_CITY][TILE_BOOST]    = create_sprite((xpm_map_t)tile_boost_xpm);
+    res.tile_sprites[TRACK_THEME_CITY][TILE_FINISH]   = create_sprite((xpm_map_t)tile_finish_xpm);
     for (int t = 0; t < 4; t++)
-        if (!res.tile_sprites[t]) return 1;
+        if (!res.tile_sprites[TRACK_THEME_CITY][t]) return 1;
 
-    res.tile_sprites_desert[TILE_EMPTY]    = create_sprite((xpm_map_t)tile_road_desert_xpm);
-    res.tile_sprites_desert[TILE_OBSTACLE] = create_sprite((xpm_map_t)tile_obstacle_xpm);
-    res.tile_sprites_desert[TILE_BOOST]    = create_sprite((xpm_map_t)tile_boost_xpm);
-    res.tile_sprites_desert[TILE_FINISH]   = create_sprite((xpm_map_t)tile_finish_desert_xpm);
+    /* Desert tiles */
+    res.tile_sprites[TRACK_THEME_DESERT][TILE_EMPTY]    = create_sprite((xpm_map_t)tile_road_desert_xpm);
+    res.tile_sprites[TRACK_THEME_DESERT][TILE_OBSTACLE] = create_sprite((xpm_map_t)tile_obstacle_xpm);
+    res.tile_sprites[TRACK_THEME_DESERT][TILE_BOOST]    = create_sprite((xpm_map_t)tile_boost_xpm);
+    res.tile_sprites[TRACK_THEME_DESERT][TILE_FINISH]   = create_sprite((xpm_map_t)tile_finish_desert_xpm);
     for (int t = 0; t < 4; t++)
-        if (!res.tile_sprites_desert[t]) return 1;
+        if (!res.tile_sprites[TRACK_THEME_DESERT][t]) return 1;
 
-    res.sand_sprite   = create_sprite((xpm_map_t)tile_sand_xpm);
-    res.cactus_sprite = create_sprite((xpm_map_t)cactus_tall_xpm);
-    res.divider_sprite= create_sprite((xpm_map_t)tile_divider_xpm);
-    if (!res.sand_sprite || !res.cactus_sprite || !res.divider_sprite) return 1;
+    /* Forest / Blossom tiles */
+    res.tile_sprites[TRACK_THEME_FOREST][TILE_EMPTY]    = create_sprite((xpm_map_t)tile_road_forest_xpm);
+    res.tile_sprites[TRACK_THEME_FOREST][TILE_OBSTACLE] = create_sprite((xpm_map_t)tile_obstacle_xpm);
+    res.tile_sprites[TRACK_THEME_FOREST][TILE_BOOST]    = create_sprite((xpm_map_t)tile_boost_xpm);
+    res.tile_sprites[TRACK_THEME_FOREST][TILE_FINISH]   = create_sprite((xpm_map_t)tile_finish_xpm);
+    for (int t = 0; t < 4; t++)
+        if (!res.tile_sprites[TRACK_THEME_FOREST][t]) return 1;
 
-    res.obstacle_desert_sprite = create_sprite((xpm_map_t)obstacle_barrel_xpm);
-    res.haybale_sprite         = create_sprite((xpm_map_t)obstacle_haybale_xpm);
-    if (!res.obstacle_desert_sprite || !res.haybale_sprite) return 1;
+    res.ground_tiles[TRACK_THEME_CITY][GROUND_TILE_SOIL]   = create_sprite((xpm_map_t)grass1);
+    res.ground_tiles[TRACK_THEME_DESERT][GROUND_TILE_SOIL] = create_sprite((xpm_map_t)tile_sand_xpm);
+    res.ground_tiles[TRACK_THEME_FOREST][GROUND_TILE_SOIL] = create_sprite((xpm_map_t)ground_forest_xpm);
+    for (int i = 0; i < TRACK_THEME_COUNT; i++)
+        if (!res.ground_tiles[i][GROUND_TILE_SOIL]) return 1;
+
+    res.ground_tiles[TRACK_THEME_FOREST][GROUND_TILE_ROCKS]  = create_sprite((xpm_map_t)ground_forest2_xpm);
+    if (!res.ground_tiles[TRACK_THEME_FOREST][GROUND_TILE_ROCKS]) return 1;
+    res.ground_tiles[TRACK_THEME_FOREST][GROUND_TILE_COBBLE] = create_sprite((xpm_map_t)tile_road_cobble_xpm);
+    if (!res.ground_tiles[TRACK_THEME_FOREST][GROUND_TILE_COBBLE]) return 1;
+    res.ground_tiles[TRACK_THEME_FOREST][GROUND_TILE_BLOCK]  = create_sprite((xpm_map_t)ground_forest_branches_xpm);
+    if (!res.ground_tiles[TRACK_THEME_FOREST][GROUND_TILE_BLOCK]) return 1;
+
+    res.wall_sprites[TRACK_THEME_FOREST] = create_sprite((xpm_map_t)blossom_wall_xpm);
+    if (!res.wall_sprites[TRACK_THEME_FOREST]) return 1;
+
+    res.scenery_sprites[TRACK_THEME_CITY]   = create_sprite((xpm_map_t)tree);
+    res.scenery_sprites[TRACK_THEME_DESERT] = create_sprite((xpm_map_t)cactus_tall_xpm);
+    res.scenery_sprites[TRACK_THEME_FOREST] = create_sprite((xpm_map_t)blossom_tree_xpm);
+    for (int i = 0; i < TRACK_THEME_COUNT; i++)
+        if (!res.scenery_sprites[i]) return 1;
+
+    res.divider_sprite = create_sprite((xpm_map_t)tile_divider_xpm);
+    if (!res.divider_sprite) return 1;
+
+    res.obstacle_sprites[TRACK_THEME_CITY]   = create_sprite((xpm_map_t)obstacle_xpm);
+    res.obstacle_sprites[TRACK_THEME_DESERT] = create_sprite((xpm_map_t)obstacle_barrel_xpm);
+    res.obstacle_sprites[TRACK_THEME_FOREST] = create_sprite((xpm_map_t)blossom_lantern_xpm);
+    for (int i = 0; i < 3; i++)
+        if (!res.obstacle_sprites[i]) return 1;
+
+    {
+        static xpm_map_t forest_obs_xpms[4] = {
+            (xpm_map_t)blossom_branch_xpm,
+            (xpm_map_t)blossom_stump_xpm,
+            (xpm_map_t)blossom_log_xpm,
+            (xpm_map_t)blossom_flower_xpm,
+        };
+        for (int i = 0; i < 4; i++) {
+            res.forest_obstacle_sprites[i] = create_sprite(forest_obs_xpms[i]);
+            if (!res.forest_obstacle_sprites[i]) return 1;
+        }
+    }
+
+    res.haybale_sprite = create_sprite((xpm_map_t)obstacle_haybale_xpm);
+    if (!res.haybale_sprite) return 1;
 
     res.oil_puddle_sprite   = create_sprite((xpm_map_t)oil_puddle_xpm);
     res.fence_sprite        = create_sprite((xpm_map_t)fence_xpm);
     res.sand_pebbles_sprite = create_sprite((xpm_map_t)tile_sand_pebbles_xpm);
     if (!res.oil_puddle_sprite || !res.fence_sprite || !res.sand_pebbles_sprite) return 1;
-
-    res.obstacle_sprite = create_sprite((xpm_map_t)obstacle_xpm);
-    if (!res.obstacle_sprite) return 1;
 
     {
         static xpm_map_t city_obs_xpms[16] = {
@@ -182,12 +251,6 @@ int resources_load(void) {
             if (!res.city_obstacle_sprites[i]) return 1;
         }
     }
-
-    res.grass_sprite = create_sprite((xpm_map_t)grass1_xpm);
-    if (!res.grass_sprite) return 1;
-
-    res.tree_sprite = create_sprite((xpm_map_t)tree);
-    if (!res.tree_sprite) return 1;
 
     res.menu_title     = create_sprite((xpm_map_t)getaway_car_title);
     if (!res.menu_title) return 1;
@@ -279,13 +342,23 @@ int resources_load(void) {
             }
             res.car_format_sprites[f][0][CAR_STATE_NORMAL] = sb;
             res.car_format_sprites[f][1][CAR_STATE_NORMAL] = sr;
-            for (int s = 1; s < 4; s++) {
+            for (int s = 1; s < CAR_STATE_COUNT; s++) {
                 res.car_format_sprites[f][0][s] = NULL;
                 res.car_format_sprites[f][1][s] = NULL;
             }
             res.car_format_count++;
         }
     }
+
+    /* Biome selector UI */
+    res.biome_select_title = create_sprite((xpm_map_t)biome_select_title);
+    if (!res.biome_select_title) return 1;
+    res.biome_labels[TRACK_THEME_CITY]   = create_sprite((xpm_map_t)biome_label_city);
+    if (!res.biome_labels[TRACK_THEME_CITY])   return 1;
+    res.biome_labels[TRACK_THEME_DESERT] = create_sprite((xpm_map_t)biome_label_desert);
+    if (!res.biome_labels[TRACK_THEME_DESERT]) return 1;
+    res.biome_labels[TRACK_THEME_FOREST] = create_sprite((xpm_map_t)biome_label_forest);
+    if (!res.biome_labels[TRACK_THEME_FOREST]) return 1;
 
     res.win_img[0] = create_sprite((xpm_map_t)blue_wins);
     if (!res.win_img[0]) return 1;
@@ -312,26 +385,30 @@ int resources_load(void) {
 }
 
 void resources_destroy(void) {
-    for (int p = 0; p < 2; p++)
-        for (int s = 0; s < 4; s++)
+    for (int p = 0; p < CAR_PLAYER_COUNT; p++)
+        for (int s = 0; s < CAR_STATE_COUNT; s++)
             if (res.car_sprites[p][s]) { sprite_destroy(res.car_sprites[p][s]); res.car_sprites[p][s] = NULL; }
-    for (int t = 0; t < 4; t++) {
-        if (res.tile_sprites[t])        { sprite_destroy(res.tile_sprites[t]);        res.tile_sprites[t]        = NULL; }
-        if (res.tile_sprites_desert[t]) { sprite_destroy(res.tile_sprites_desert[t]); res.tile_sprites_desert[t] = NULL; }
+    for (int th = 0; th < TRACK_THEME_COUNT; th++)
+        for (int t = 0; t < 4; t++)
+            if (res.tile_sprites[th][t]) { sprite_destroy(res.tile_sprites[th][t]); res.tile_sprites[th][t] = NULL; }
+    for (int i = 0; i < TRACK_THEME_COUNT; i++) {
+        for (int v = 0; v < GROUND_TILE_COUNT; v++)
+            if (res.ground_tiles[i][v]) { sprite_destroy(res.ground_tiles[i][v]); res.ground_tiles[i][v] = NULL; }
+        if (res.wall_sprites[i])     { sprite_destroy(res.wall_sprites[i]);     res.wall_sprites[i]     = NULL; }
+        if (res.scenery_sprites[i])  { sprite_destroy(res.scenery_sprites[i]);  res.scenery_sprites[i]  = NULL; }
+        if (res.obstacle_sprites[i]) { sprite_destroy(res.obstacle_sprites[i]); res.obstacle_sprites[i] = NULL; }
+        if (res.biome_labels[i])     { sprite_destroy(res.biome_labels[i]);     res.biome_labels[i]     = NULL; }
     }
-    if (res.sand_sprite)            { sprite_destroy(res.sand_sprite);            res.sand_sprite            = NULL; }
-    if (res.cactus_sprite)          { sprite_destroy(res.cactus_sprite);          res.cactus_sprite          = NULL; }
-    if (res.divider_sprite)         { sprite_destroy(res.divider_sprite);         res.divider_sprite         = NULL; }
-    if (res.obstacle_desert_sprite) { sprite_destroy(res.obstacle_desert_sprite); res.obstacle_desert_sprite = NULL; }
-    if (res.haybale_sprite)         { sprite_destroy(res.haybale_sprite);         res.haybale_sprite         = NULL; }
-    if (res.obstacle_sprite) { sprite_destroy(res.obstacle_sprite); res.obstacle_sprite = NULL; }
+    if (res.biome_select_title) { sprite_destroy(res.biome_select_title); res.biome_select_title = NULL; }
+    if (res.divider_sprite)     { sprite_destroy(res.divider_sprite);     res.divider_sprite     = NULL; }
+    if (res.haybale_sprite)     { sprite_destroy(res.haybale_sprite);     res.haybale_sprite     = NULL; }
     for (int i = 0; i < 16; i++)
         if (res.city_obstacle_sprites[i]) { sprite_destroy(res.city_obstacle_sprites[i]); res.city_obstacle_sprites[i] = NULL; }
+    for (int i = 0; i < 4; i++)
+        if (res.forest_obstacle_sprites[i]) { sprite_destroy(res.forest_obstacle_sprites[i]); res.forest_obstacle_sprites[i] = NULL; }
     if (res.boost_sprite)    { sprite_destroy(res.boost_sprite);    res.boost_sprite    = NULL; }
     for (int i = 0; i < 3; i++)
         if (res.city_boost_sprites[i]) { sprite_destroy(res.city_boost_sprites[i]); res.city_boost_sprites[i] = NULL; }
-    if (res.grass_sprite)    { sprite_destroy(res.grass_sprite);    res.grass_sprite    = NULL; }
-    if (res.tree_sprite)     { sprite_destroy(res.tree_sprite);     res.tree_sprite     = NULL; }
     if (res.pause_panel)     { sprite_destroy(res.pause_panel);     res.pause_panel     = NULL; }
     if (res.banana_sprite)      { sprite_destroy(res.banana_sprite);      res.banana_sprite      = NULL; }
     if (res.oil_puddle_sprite)  { sprite_destroy(res.oil_puddle_sprite);  res.oil_puddle_sprite  = NULL; }
@@ -356,8 +433,8 @@ void resources_destroy(void) {
     if (res.mode_race_label)      { sprite_destroy(res.mode_race_label);      res.mode_race_label      = NULL; }
     if (res.mode_endurance_label) { sprite_destroy(res.mode_endurance_label); res.mode_endurance_label = NULL; }
     for (int f = 0; f < res.car_format_count; f++)
-        for (int p = 0; p < 2; p++)
-            for (int s = 0; s < 4; s++)
+        for (int p = 0; p < CAR_PLAYER_COUNT; p++)
+            for (int s = 0; s < CAR_STATE_COUNT; s++)
                 if (res.car_format_sprites[f][p][s]) {
                     sprite_destroy(res.car_format_sprites[f][p][s]);
                     res.car_format_sprites[f][p][s] = NULL;
@@ -381,7 +458,7 @@ Sprite* resources_get_car_sprite(int player, int state) {
 }
 
 Sprite* resources_get_obstacle_sprite(void) {
-    return res.obstacle_sprite;
+    return res.obstacle_sprites[TRACK_THEME_CITY];
 }
 
 Sprite* resources_get_boost_sprite(void) {
@@ -389,32 +466,43 @@ Sprite* resources_get_boost_sprite(void) {
 }
 
 Sprite* resources_get_tile_sprite(int type) {
-    return res.tile_sprites[type];
+    return res.tile_sprites[TRACK_THEME_CITY][type];
 }
 
 Sprite* resources_get_tile_sprite_themed(int type, int theme) {
-    if (theme == 1) return res.tile_sprites_desert[type];
-    return res.tile_sprites[type];
+    if (theme < 0 || theme >= TRACK_THEME_COUNT) return res.tile_sprites[TRACK_THEME_CITY][type];
+    return res.tile_sprites[theme][type];
+}
+
+Sprite* resources_get_ground_tile(int theme, int variant) {
+    if (theme < 0 || theme >= TRACK_THEME_COUNT) return res.ground_tiles[TRACK_THEME_CITY][GROUND_TILE_SOIL];
+    if (variant < 0 || variant >= GROUND_TILE_COUNT) return res.ground_tiles[theme][GROUND_TILE_SOIL];
+    return res.ground_tiles[theme][variant];
 }
 
 Sprite* resources_get_ground_sprite(int theme) {
-    if (theme == 1) return res.sand_sprite;
-    return res.grass_sprite;
+    if (theme < 0 || theme >= TRACK_THEME_COUNT) return res.ground_tiles[TRACK_THEME_CITY][GROUND_TILE_SOIL];
+    return res.ground_tiles[theme][GROUND_TILE_SOIL];
+}
+
+Sprite* resources_get_wall_sprite(int theme) {
+    if (theme < 0 || theme >= TRACK_THEME_COUNT) return NULL;
+    return res.wall_sprites[theme];
 }
 
 Sprite* resources_get_scenery_sprite(int theme) {
-    if (theme == 1) return res.cactus_sprite;
-    return res.tree_sprite;
+    if (theme < 0 || theme >= TRACK_THEME_COUNT) return res.scenery_sprites[TRACK_THEME_CITY];
+    return res.scenery_sprites[theme];
 }
 
 Sprite* resources_get_divider_sprite(void) { return res.divider_sprite; }
 
 Sprite* resources_get_grass_sprite(void) {
-    return res.grass_sprite;
+    return res.ground_tiles[TRACK_THEME_CITY][GROUND_TILE_SOIL];
 }
 
 Sprite* resources_get_tree_sprite(void) {
-    return res.tree_sprite;
+    return res.scenery_sprites[TRACK_THEME_CITY];
 }
 
 Sprite* resources_get_pause_panel(void) {
@@ -445,8 +533,8 @@ Sprite* resources_get_digit_sprite(int digit) {
 Sprite* resources_get_colon_sprite(void) { return res.colon_sprite; }
 
 Sprite* resources_get_obstacle_sprite_themed(int theme) {
-    if (theme == 1) return res.obstacle_desert_sprite;
-    return res.obstacle_sprite;
+    if (theme < 0 || theme >= TRACK_THEME_COUNT) return res.obstacle_sprites[TRACK_THEME_CITY];
+    return res.obstacle_sprites[theme];
 }
 
 Sprite* resources_get_fence_sprite(void)        { return res.fence_sprite; }
@@ -468,12 +556,19 @@ Sprite* resources_get_car_format_preview(int fmt, int player) {
 void resources_apply_car_format(int fmt1, int fmt2) {
     if (fmt1 < 0 || fmt1 >= res.car_format_count) return;
     if (fmt2 < 0 || fmt2 >= res.car_format_count) return;
-    for (int s = 0; s < 4; s++) {
+    for (int s = 0; s < CAR_STATE_COUNT; s++) {
         if (res.car_format_sprites[fmt1][0][s])
             res.car_sprites[0][s] = res.car_format_sprites[fmt1][0][s];
         if (res.car_format_sprites[fmt2][1][s])
             res.car_sprites[1][s] = res.car_format_sprites[fmt2][1][s];
     }
+}
+
+Sprite* resources_get_biome_select_title(void) { return res.biome_select_title; }
+
+Sprite* resources_get_biome_label(int theme) {
+    if (theme < 0 || theme >= TRACK_THEME_COUNT) return NULL;
+    return res.biome_labels[theme];
 }
 
 Sprite* resources_get_win_img(int winner) {
@@ -499,3 +594,7 @@ Sprite* resources_get_shield_aura_sprite(void) { return res.shield_aura_sprite; 
 Sprite* resources_get_road_detail_sprite(void)      { return res.road_detail_sprite; }
 Sprite* resources_get_inner_road_left_sprite(void)  { return res.inner_road_left_sprite; }
 Sprite* resources_get_inner_road_right_sprite(void) { return res.inner_road_right_sprite; }
+
+Sprite* resources_get_forest_obstacle_sprite(int idx) {
+    return res.forest_obstacle_sprites[((unsigned int)idx) % 4];
+}
