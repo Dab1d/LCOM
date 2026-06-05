@@ -27,7 +27,7 @@ static void draw_effect(Sprite *icon, int ticks, int x) {
 
 void heart_view_draw(const Car *car1, const Car *car2, int banana_ticks1, int banana_ticks2) {
     Sprite *heart  = resources_get_heart_sprite();
-    Sprite *banana = resources_get_banana_sprite();
+    Sprite *banana = resources_get_banana_sprite(0);
     Sprite *shield = resources_get_shield_sprite();
 
     /* ── Player 1 hearts (left) ── */
