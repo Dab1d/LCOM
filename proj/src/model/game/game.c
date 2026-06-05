@@ -597,8 +597,7 @@ static bool game_is_over(void) {
     return false;
 }
 
-#define SCREEN_W 1024
-#define SCREEN_H  768
+#include "config.h"
 
 static void game_render(void) {
     switch (game.state) {

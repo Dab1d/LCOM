@@ -1,6 +1,9 @@
 #include "input.h"
 #include "kbc.h"
 #include "../cursor/cursor.h"
+#include "../../view/screens/biome_select/biome_select_view.h"
+#include "../../view/screens/car_select/car_select_view.h"
+#include "config.h"
 #include <stdbool.h>
 #include <stdlib.h>
 
@@ -14,43 +17,26 @@
 #define KEY_A_CODE          0x1E
 #define KEY_D_CODE          0x20
 
-/* Menu button layout — must match the positions used in game_render */
+/* Menu button layout */
 /* Buttons are 256x64 XPMs drawn at 5/4 scale = 320x80 on screen */
 #define MENU_BTN_W         320
 #define MENU_BTN_H          80
-#define MENU_SCREEN_W      1024
-#define MENU_START_X       ((MENU_SCREEN_W - MENU_BTN_W) / 2)
+#define MENU_START_X       ((SCREEN_W - MENU_BTN_W) / 2)
 #define MENU_START_Y        310
-#define MENU_INSTRUCTIONS_X ((MENU_SCREEN_W - MENU_BTN_W) / 2)
+#define MENU_INSTRUCTIONS_X ((SCREEN_W - MENU_BTN_W) / 2)
 #define MENU_INSTRUCTIONS_Y  400
-#define MENU_LEADERBOARD_X ((MENU_SCREEN_W - MENU_BTN_W) / 2)
+#define MENU_LEADERBOARD_X ((SCREEN_W - MENU_BTN_W) / 2)
 #define MENU_LEADERBOARD_Y  490
-#define MENU_EXIT_X        ((MENU_SCREEN_W - MENU_BTN_W) / 2)
+#define MENU_EXIT_X        ((SCREEN_W - MENU_BTN_W) / 2)
 #define MENU_EXIT_Y         580
 
-/* Mode select card layout — must match mode_select_view.c */
+/* Mode select card layout */
 #define MODE_CARD_W   200
 #define MODE_CARD_H   200
 #define MODE_CARD_GAP  80
-#define MODE_RACE_X  ((MENU_SCREEN_W - MODE_CARD_W * 2 - MODE_CARD_GAP) / 2)
+#define MODE_RACE_X  ((SCREEN_W - MODE_CARD_W * 2 - MODE_CARD_GAP) / 2)
 #define MODE_ENDUR_X (MODE_RACE_X + MODE_CARD_W + MODE_CARD_GAP)
 #define MODE_CARDS_Y  280
-
-/* Biome select layout — must match biome_select_view.c */
-#define BIOME_LARROW_X    100
-#define BIOME_RARROW_X    884
-#define BIOME_ARROW_Y     390
-#define BIOME_ARROW_HIT    60
-#define BIOME_SELECT_BTN_X 384
-#define BIOME_SELECT_BTN_Y 650
-#define BIOME_SELECT_BTN_W 256
-#define BIOME_SELECT_BTN_H  64
-
-/* Car select RACE button — must match car_select_view.c */
-#define CAR_SELECT_RACE_BTN_X  384
-#define CAR_SELECT_RACE_BTN_Y  640
-#define CAR_SELECT_RACE_BTN_W  256
-#define CAR_SELECT_RACE_BTN_H   64
 
 /* Pause button layout — must match pause_view.h */
 #define PAUSE_BTN_X_C   412

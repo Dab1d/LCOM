@@ -2,8 +2,7 @@
 #include "../../view.h"
 #include "../../../model/resources/resources.h"
 #include "../../../controller/input/input.h"
-
-#define SCREEN_W 1024
+#include "config.h"
 
 #define MENU_START        0
 #define MENU_INSTRUCTIONS 1

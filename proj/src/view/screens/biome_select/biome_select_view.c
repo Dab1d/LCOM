@@ -4,6 +4,7 @@
 #include "../../../controller/input/input.h"
 #include "../../../controller/palette/palette.h"
 #include "../../../view/hud/timer/timer_view.h"
+#include "config.h"
 
 static uint8_t biome_bg_color(TrackTheme theme) {
     switch (theme) {
@@ -12,8 +13,6 @@ static uint8_t biome_bg_color(TrackTheme theme) {
         default:                 return PAL_GRASS_BASE;
     }
 }
-
-#define SCREEN_W       1024
 #define CARD_W          300
 #define CARD_H          300
 #define CARD_X         ((SCREEN_W - CARD_W) / 2)
@@ -21,14 +20,8 @@ static uint8_t biome_bg_color(TrackTheme theme) {
 #define BORDER_T          4
 #define ARROW_SIZE       40
 #define ARROW_Y         (CARD_Y + (CARD_H - ARROW_SIZE) / 2)
-#define LARROW_X        100
-#define RARROW_X        884
 #define LABEL_Y         (CARD_Y + CARD_H + 16)
 #define COUNTER_Y       (LABEL_Y + 36)
-#define SELECT_BTN_W    256
-#define SELECT_BTN_H     64
-#define SELECT_BTN_X   ((SCREEN_W - SELECT_BTN_W) / 2)
-#define SELECT_BTN_Y    650
 
 /* Copied from car_select_view.c — static helpers not exported */
 static void draw_arrow_left(int x, int y, int size, uint8_t color) {
@@ -69,7 +62,7 @@ static void draw_card_highlight(int x, int y, int w, int h) {
 }
 
 void biome_select_view_draw(TrackTheme selected) {
-    draw_rect(0, HUD_BAR_H, SCREEN_W, SCREEN_W, PAL_MENU_DARK);
+    draw_rect(0, HUD_BAR_H, SCREEN_W, SCREEN_H - HUD_BAR_H, PAL_MENU_DARK);
 
     /* Title — NULL-safe: shows nothing until biome_select_title.xpm is created */
     Sprite *title = resources_get_biome_select_title();
@@ -91,8 +84,8 @@ void biome_select_view_draw(TrackTheme selected) {
     }
 
     /* Navigation arrows */
-    draw_arrow_left (LARROW_X, ARROW_Y, ARROW_SIZE, PAL_BTN_YLW);
-    draw_arrow_right(RARROW_X, ARROW_Y, ARROW_SIZE, PAL_BTN_YLW);
+    draw_arrow_left (BIOME_LARROW_X, ARROW_Y, ARROW_SIZE, PAL_BTN_YLW);
+    draw_arrow_right(BIOME_RARROW_X, ARROW_Y, ARROW_SIZE, PAL_BTN_YLW);
 
     /* Biome name label — NULL-safe: fallback coloured rect until XPMs are created */
     Sprite *label = resources_get_biome_label(selected);
@@ -110,11 +103,11 @@ void biome_select_view_draw(TrackTheme selected) {
     Sprite *btn = resources_get_menu_start_btn();
     if (btn) {
         int hovered = input_mouse_over_biome_select();
-        int w = hovered ? SELECT_BTN_W * 9 / 8 : SELECT_BTN_W;
-        int h = hovered ? SELECT_BTN_H * 9 / 8 : SELECT_BTN_H;
+        int w = hovered ? BIOME_SELECT_BTN_W * 9 / 8 : BIOME_SELECT_BTN_W;
+        int h = hovered ? BIOME_SELECT_BTN_H * 9 / 8 : BIOME_SELECT_BTN_H;
         draw_sprite_scaled(btn,
-            SELECT_BTN_X - (w - SELECT_BTN_W) / 2,
-            SELECT_BTN_Y - (h - SELECT_BTN_H) / 2,
+            BIOME_SELECT_BTN_X - (w - BIOME_SELECT_BTN_W) / 2,
+            BIOME_SELECT_BTN_Y - (h - BIOME_SELECT_BTN_H) / 2,
             w, h);
     }
 
