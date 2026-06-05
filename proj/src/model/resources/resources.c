@@ -99,7 +99,22 @@
 #include "../../assets/xpm/elements/cars/carRed14/carR14_s1.xpm"
 
 #include "../../assets/xpm/ui/screens/pause/pause_panel.xpm"
-#include "../../assets/xpm/elements/banana.xpm"
+#include "../../assets/xpm/elements/nana_tiles_64x64/nana_0_0.xpm"
+#include "../../assets/xpm/elements/nana_tiles_64x64/nana_0_1.xpm"
+#include "../../assets/xpm/elements/nana_tiles_64x64/nana_0_2.xpm"
+#include "../../assets/xpm/elements/nana_tiles_64x64/nana_0_3.xpm"
+#include "../../assets/xpm/elements/nana_tiles_64x64/nana_1_0.xpm"
+#include "../../assets/xpm/elements/nana_tiles_64x64/nana_1_1.xpm"
+#include "../../assets/xpm/elements/nana_tiles_64x64/nana_1_2.xpm"
+#include "../../assets/xpm/elements/nana_tiles_64x64/nana_1_3.xpm"
+#include "../../assets/xpm/elements/nana_tiles_64x64/nana_2_0.xpm"
+#include "../../assets/xpm/elements/nana_tiles_64x64/nana_2_1.xpm"
+#include "../../assets/xpm/elements/nana_tiles_64x64/nana_2_2.xpm"
+#include "../../assets/xpm/elements/nana_tiles_64x64/nana_2_3.xpm"
+#include "../../assets/xpm/elements/nana_tiles_64x64/nana_3_0.xpm"
+#include "../../assets/xpm/elements/nana_tiles_64x64/nana_3_1.xpm"
+#include "../../assets/xpm/elements/nana_tiles_64x64/nana_3_2.xpm"
+#include "../../assets/xpm/elements/nana_tiles_64x64/nana_3_3.xpm"
 #include "../../assets/xpm/ui/screens/pause/pause_resume_btn.xpm"
 #include "../../assets/xpm/ui/screens/pause/pause_resume_btn_sel.xpm"
 #include "../../assets/xpm/ui/screens/pause/pause_quit_btn.xpm"
@@ -291,8 +306,22 @@ int resources_load(void) {
     res.cursor_sprite = create_sprite((xpm_map_t)cursor_xpm);
     if (!res.cursor_sprite) return 1;
 
-    res.banana_sprite = create_sprite((xpm_map_t)banana_xpm);
-    if (!res.banana_sprite) return 1;
+    {
+        static const xpm_map_t nana_xpms[16] = {
+            (xpm_map_t)nana_0_0_xpm, (xpm_map_t)nana_0_1_xpm,
+            (xpm_map_t)nana_0_2_xpm, (xpm_map_t)nana_0_3_xpm,
+            (xpm_map_t)nana_1_0_xpm, (xpm_map_t)nana_1_1_xpm,
+            (xpm_map_t)nana_1_2_xpm, (xpm_map_t)nana_1_3_xpm,
+            (xpm_map_t)nana_2_0_xpm, (xpm_map_t)nana_2_1_xpm,
+            (xpm_map_t)nana_2_2_xpm, (xpm_map_t)nana_2_3_xpm,
+            (xpm_map_t)nana_3_0_xpm, (xpm_map_t)nana_3_1_xpm,
+            (xpm_map_t)nana_3_2_xpm, (xpm_map_t)nana_3_3_xpm,
+        };
+        for (int i = 0; i < 16; i++) {
+            res.banana_frames[i] = create_sprite(nana_xpms[i]);
+            if (!res.banana_frames[i]) return 1;
+        }
+    }
 
     res.heart_sprite = create_sprite((xpm_map_t)heart_xpm);
     if (!res.heart_sprite) return 1;
@@ -389,7 +418,8 @@ void resources_destroy(void) {
     for (int i = 0; i < 3; i++)
         if (res.city_boost_sprites[i]) { sprite_destroy(res.city_boost_sprites[i]); res.city_boost_sprites[i] = NULL; }
     if (res.pause_panel)     { sprite_destroy(res.pause_panel);     res.pause_panel     = NULL; }
-    if (res.banana_sprite)      { sprite_destroy(res.banana_sprite);      res.banana_sprite      = NULL; }
+    for (int i = 0; i < 16; i++)
+        if (res.banana_frames[i]) { sprite_destroy(res.banana_frames[i]); res.banana_frames[i] = NULL; }
     if (res.oil_puddle_sprite)  { sprite_destroy(res.oil_puddle_sprite);  res.oil_puddle_sprite  = NULL; }
     if (res.fence_sprite)       { sprite_destroy(res.fence_sprite);       res.fence_sprite       = NULL; }
     if (res.sand_pebbles_sprite){ sprite_destroy(res.sand_pebbles_sprite);res.sand_pebbles_sprite= NULL; }
@@ -495,7 +525,9 @@ Sprite* resources_get_menu_instructions_btn(void) { return res.menu_instructions
 Sprite* resources_get_menu_leaderboard_btn(void)  { return res.menu_leaderboard_btn; }
 Sprite* resources_get_menu_exit_btn(void)         { return res.menu_exit_btn; }
 Sprite* resources_get_cursor_sprite(void)  { return res.cursor_sprite; }
-Sprite* resources_get_banana_sprite(void)  { return res.banana_sprite; }
+Sprite* resources_get_banana_sprite(uint32_t tick) {
+    return res.banana_frames[(tick / 4) % 16];
+}
 Sprite* resources_get_heart_sprite(void)   { return res.heart_sprite; }
 
 Sprite* resources_get_digit_sprite(int digit) {

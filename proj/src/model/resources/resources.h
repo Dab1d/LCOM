@@ -51,7 +51,7 @@ typedef struct {
     Sprite *pause_resume_btn[2];      /**< [0]=normal  [1]=highlighted. */
     Sprite *pause_quit_btn[2];        /**< [0]=normal  [1]=highlighted. */
     Sprite *cursor_sprite;            /**< Mouse cursor. */
-    Sprite *banana_sprite;            /**< Banana-peel obstacle. */
+    Sprite *banana_frames[16];        /**< Banana animation frames (16 tiles, row-major). */
     Sprite *heart_sprite;             /**< Heart icon for life counter. */
     Sprite *digit_sprites[10];        /**< Digit glyphs 0-9 for the timer. */
     Sprite *colon_sprite;             /**< Colon ':' glyph for the timer. */
@@ -213,10 +213,11 @@ Sprite* resources_get_pause_quit_btn(int selected);
 Sprite* resources_get_cursor_sprite(void);
 
 /**
- * @brief Returns the banana-peel obstacle sprite.
- * @return Non-owning pointer to the sprite.
+ * @brief Returns the banana animation frame for the given tick.
+ * @param tick Game tick (use game_get()->elapsed_ticks).
+ * @return Non-owning pointer to the current frame sprite.
  */
-Sprite* resources_get_banana_sprite(void);
+Sprite* resources_get_banana_sprite(uint32_t tick);
 
 /**
  * @brief Returns the heart (life counter) sprite.

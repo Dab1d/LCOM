@@ -1,5 +1,5 @@
 /* XPM */
-static char *tile[] = {
+static char *nana_1_1_xpm[] = {
 "64 64 18 1",
 "  c #FF00FF",
 ". c #000000",
