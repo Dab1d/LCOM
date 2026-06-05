@@ -183,7 +183,7 @@ int resources_load(void) {
     for (int t = 0; t < 4; t++)
         if (!res.tile_sprites[TRACK_THEME_FOREST][t]) return 1;
 
-    res.ground_tiles[TRACK_THEME_CITY][GROUND_TILE_SOIL]   = create_sprite((xpm_map_t)grass1);
+    res.ground_tiles[TRACK_THEME_CITY][GROUND_TILE_SOIL]   = create_sprite((xpm_map_t)grass1_xpm);
     res.ground_tiles[TRACK_THEME_DESERT][GROUND_TILE_SOIL] = create_sprite((xpm_map_t)tile_sand_xpm);
     res.ground_tiles[TRACK_THEME_FOREST][GROUND_TILE_SOIL] = create_sprite((xpm_map_t)ground_forest_xpm);
     for (int i = 0; i < TRACK_THEME_COUNT; i++)

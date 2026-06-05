@@ -21,7 +21,7 @@
 #include "../../view/screens/mode_select/mode_select_view.h"
 #include "../../view/screens/car_select/car_select_view.h"
 #include "../../view/screens/biome_select/biome_select_view.h"
-#include "../../view/leaderboard_view.h"
+#include "../../view/screens/leaderboard/leaderboard_view.h"
 #include "../leaderboard/leaderboard.h"
 
 #define CLUSTER_CHANCE     70
