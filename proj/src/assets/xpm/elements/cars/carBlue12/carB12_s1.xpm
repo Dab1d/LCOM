@@ -2,7 +2,7 @@
 static char *car_blue_12_s1[] = {
 /* columns rows colors chars-per-pixel */
 "64 64 28 1 ",
-"  c None",
+"  c #FF00FF",
 ". c #010000",
 "X c #2D342B",
 "o c #282936",
