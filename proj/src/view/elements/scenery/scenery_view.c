@@ -2,6 +2,7 @@
 #include "../../view.h"
 #include "../../../model/resources/resources.h"
 #include "../../../controller/palette/palette.h"
+#include <math.h>
 
 #define STRIP_TILES  3
 #define SCREEN_H_SV  768
@@ -21,7 +22,7 @@ void scenery_view_draw(const Scenery *s, const Track *track, TrackTheme theme) {
     if (!s || !track) return;
 
     int tile     = TRACK_TILE_HEIGHT;
-    int off      = (int)s->scroll_offset;
+    int off      = s->scroll_offset;
     int road_end = ROAD_OFFSET_X + 10 * CAR_LANE_WIDTH;
     int strip_w  = STRIP_TILES * tile;
 
@@ -74,22 +75,9 @@ void scenery_view_draw(const Scenery *s, const Track *track, TrackTheme theme) {
     int screen_h = TRACK_VISIBLE_ROWS * tile;
     for (int i = 0; i < s->count; i++) {
         int sx = s->trees[i].screen_x;
-        int sy = (int)s->trees[i].screen_y;
+        int sy = (int)round(s->trees[i].screen_y);
         if (sy + TREE_SIZE < 0 || sy >= screen_h) continue;
 
-        /* Draw the ground tile beneath the tree (non-forest only; forest uses bg fill) */
-        if (theme != TRACK_THEME_FOREST) {
-            int gtx = (sx / tile) * tile;
-            int gty = (sy / tile) * tile;
-            Sprite *g;
-            if (theme == TRACK_THEME_DESERT) {
-                int col = (sx >= road_end) ? (sx - road_end) / tile : sx / tile;
-                g = (col == 1) ? resources_get_sand_pebbles_sprite() : variants[GROUND_TILE_SOIL];
-            } else {
-                g = variants[GROUND_TILE_SOIL];
-            }
-            if (g) draw_sprite(g, gtx, gty);
-        }
         Sprite *obj;
         if (theme == TRACK_THEME_FOREST) {
             int slot = i % 3;
