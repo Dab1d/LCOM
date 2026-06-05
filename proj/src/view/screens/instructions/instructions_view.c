@@ -82,7 +82,7 @@ void instructions_view_draw(void) {
     Sprite *race_icons[] = {
         resources_get_city_boost_sprite(0),
         resources_get_city_obstacle_sprite(0),
-        resources_get_banana_sprite(),
+        resources_get_banana_sprite(0),
         resources_get_heart_sprite()
     };
     draw_icons_row(race_cx, ICON_Y, race_icons, 4);
@@ -104,7 +104,7 @@ void instructions_view_draw(void) {
 
     Sprite *endur_icons[] = {
         resources_get_city_obstacle_sprite(0),
-        resources_get_banana_sprite(),
+        resources_get_banana_sprite(0),
         resources_get_heart_sprite()
     };
     draw_icons_row(endur_cx, ICON_Y, endur_icons, 3);
