@@ -46,18 +46,14 @@ void scenery_view_draw(const Scenery *s, const Track *track, TrackTheme theme) {
         for (int col = 0; col < STRIP_TILES; col++) {
             /* LEFT strip */
             if (theme != TRACK_THEME_FOREST) {
-                Sprite *g = (theme == TRACK_THEME_DESERT && col == 1)
-                            ? resources_get_sand_pebbles_sprite()
-                            : variants[GROUND_TILE_SOIL];
+                Sprite *g = variants[GROUND_TILE_SOIL];
                 if (g) draw_sprite(g, col * tile, y);
             }
 
             /* RIGHT strip — col 0 is road-adjacent */
             int rcol = STRIP_TILES - 1 - col;
             if (theme != TRACK_THEME_FOREST) {
-                Sprite *g = (theme == TRACK_THEME_DESERT && rcol == 1)
-                            ? resources_get_sand_pebbles_sprite()
-                            : variants[GROUND_TILE_SOIL];
+                Sprite *g = variants[GROUND_TILE_SOIL];
                 if (g) draw_sprite(g, road_end + rcol * tile, y);
             }
         }
