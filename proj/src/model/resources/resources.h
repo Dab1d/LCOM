@@ -18,8 +18,10 @@
  */
 typedef struct {
     Sprite *car_sprites[2][4];        /**< [player-1][CarState] */
-    Sprite *obstacle_sprite;          /**< Rock obstacle — city theme. */
-    Sprite *boost_sprite;             /**< Boost pickup. */
+    Sprite *obstacle_sprite;          /**< Rock obstacle — city theme (legacy). */
+    Sprite *city_obstacle_sprites[16]; /**< 16 random city obstacle item sprites. */
+    Sprite *boost_sprite;             /**< Boost pickup (legacy). */
+    Sprite *city_boost_sprites[3];    /**< 3 random city boost sprites. */
     Sprite *tile_sprites[4];          /**< City road tiles, indexed by TileType. */
     Sprite *tile_sprites_desert[4];   /**< Desert road tiles, indexed by TileType. */
     Sprite *grass_sprite;             /**< City/forest lateral ground. */
@@ -255,5 +257,7 @@ void    resources_apply_car_format(int fmt1, int fmt2);
 Sprite* resources_get_win_img(int winner);
 Sprite* resources_get_win_play_again_btn(void);
 Sprite* resources_get_win_menu_btn(void);
+Sprite* resources_get_city_obstacle_sprite(int idx);
+Sprite* resources_get_city_boost_sprite(int idx);
 
 #endif /* __PROJ_RESOURCES_H */

@@ -25,10 +25,11 @@ typedef enum {
  * Always occupies one lane × one row. Multi-tile clusters are composed in game.c.
  */
 typedef struct {
-    Element      base; /**< Pixel position, hitbox, active flag, and sprite. */
-    int          lane; /**< Logical lane index. */
-    int          row;  /**< Logical row index in the track grid. */
-    ObstacleType type; /**< Effect applied when a car collides with this obstacle. */
+    Element      base;       /**< Pixel position, hitbox, active flag, and sprite. */
+    int          lane;       /**< Logical lane index. */
+    int          row;        /**< Logical row index in the track grid. */
+    ObstacleType type;       /**< Effect applied when a car collides with this obstacle. */
+    int          sprite_idx; /**< Which city obstacle sprite to use (0-15). */
 } Obstacle;
 
 /**
