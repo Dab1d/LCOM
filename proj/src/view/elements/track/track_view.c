@@ -13,7 +13,12 @@ void track_view_draw(const Track *track) {
             TileType type = track_get_tile(track, lr, lane);
             Sprite *sp = resources_get_tile_sprite_themed(type, track->theme);
             if (!sp) continue;
-            draw_sprite(sp, ROAD_OFFSET_X + lane * CAR_LANE_WIDTH, y);
+            int x = ROAD_OFFSET_X + lane * CAR_LANE_WIDTH;
+            draw_sprite(sp, x, y);
+            if (track->theme == TRACK_THEME_CITY && type == TILE_EMPTY) {
+                Sprite *detail = resources_get_road_detail_sprite();
+                if (detail) draw_sprite(detail, x, y);
+            }
         }
     }
 }

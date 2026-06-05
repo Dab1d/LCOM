@@ -30,6 +30,7 @@ SRCS = proj.c \
        src/model/elements/track/track.c \
        src/model/elements/obstacle/obstacle.c \
        src/model/elements/boost/boost.c \
+       src/model/elements/shield/shield.c \
        src/model/sprite/sprite.c \
        src/controller/input/input.c \
        src/controller/palette/palette.c \
@@ -39,6 +40,7 @@ SRCS = proj.c \
        src/view/elements/car/car_view.c \
        src/view/elements/obstacle/obstacle_view.c \
        src/view/elements/boost/boost_view.c \
+       src/view/elements/shield/shield_view.c \
        src/view/elements/track/track_view.c \
        src/view/elements/scenery/scenery_view.c \
        src/view/elements/heart/heart_view.c \
@@ -61,6 +63,7 @@ HDRS = src/model/game/game.h \
        src/model/elements/track/track.h \
        src/model/elements/obstacle/obstacle.h \
        src/model/elements/boost/boost.h \
+       src/model/elements/shield/shield.h \
        src/model/sprite/sprite.h \
        src/controller/input/input.h \
        src/controller/palette/palette.h \
@@ -70,6 +73,7 @@ HDRS = src/model/game/game.h \
        src/view/elements/car/car_view.h \
        src/view/elements/obstacle/obstacle_view.h \
        src/view/elements/boost/boost_view.h \
+       src/view/elements/shield/shield_view.h \
        src/view/elements/track/track_view.h \
        src/view/elements/scenery/scenery_view.h \
        src/view/elements/heart/heart_view.h \
@@ -146,6 +150,12 @@ src/view/elements/car/car_view.o: src/view/elements/car/car_view.c src/view/elem
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/model/elements/boost/boost.o: src/model/elements/boost/boost.c src/model/elements/boost/boost.h
+	${CC} ${CFLAGS} -c $< -o $@
+
+src/model/elements/shield/shield.o: src/model/elements/shield/shield.c src/model/elements/shield/shield.h
+	${CC} ${CFLAGS} -c $< -o $@
+
+src/view/elements/shield/shield_view.o: src/view/elements/shield/shield_view.c src/view/elements/shield/shield_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/view/elements/boost/boost_view.o: src/view/elements/boost/boost_view.c src/view/elements/boost/boost_view.h

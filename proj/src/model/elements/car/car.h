@@ -46,6 +46,7 @@ typedef struct {
     int     score;          /**< Accumulated score for this session. */
     int     lives;          /**< Lives remaining; reaches 0 on EXPLODED. */
     bool    exploding;      /**< Endurance: true while the car is animating off-screen. */
+    int     shield_ticks;   /**< Remaining invulnerability ticks (0 = no shield). */
 } Car;
 
 /**
@@ -106,5 +107,12 @@ void reset_car(Car *car, int initial_lane);
  * @param initial_lives Number of lives to grant.
  */
 void car_init_session(Car *car, int initial_lives);
+
+/**
+ * @brief Activates the shield for the given number of ticks.
+ * @param car   Car to shield.
+ * @param ticks Duration in game ticks (use SHIELD_DURATION_TICKS for 5 s).
+ */
+void car_apply_shield(Car *car, int ticks);
 
 #endif /* CAR_H */

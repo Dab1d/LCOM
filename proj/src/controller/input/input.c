@@ -80,6 +80,8 @@ int input_mouse_car2_right(void) { return inverted_car2 > 0 ? mouse_lb_event : m
 
 void input_set_car1_inverted(int ticks) { inverted_car1 = ticks; }
 void input_set_car2_inverted(int ticks) { inverted_car2 = ticks; }
+int  input_get_car1_inverted_ticks(void) { return inverted_car1; }
+int  input_get_car2_inverted_ticks(void) { return inverted_car2; }
 void input_tick_inverted(void) {
     if (inverted_car1 > 0) inverted_car1--;
     if (inverted_car2 > 0) inverted_car2--;
