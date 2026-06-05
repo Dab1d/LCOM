@@ -7,8 +7,21 @@
 #define __PROJ_RESOURCES_H
 
 #include "../sprite/sprite.h"
+#include "../elements/track/track.h"
+#include "../elements/car/car.h"
 
 #define CAR_FORMAT_MAX 8
+
+/**
+ * @brief Lateral ground tile variant indices (per theme, up to GROUND_TILE_COUNT).
+ */
+typedef enum {
+    GROUND_TILE_SOIL   = 0, /**< Soft soil / grass — trees may spawn here. */
+    GROUND_TILE_ROCKS  = 1, /**< Rocky ground — trees may spawn here. */
+    GROUND_TILE_COBBLE = 2, /**< Hard cobblestone — no trees. */
+    GROUND_TILE_BLOCK  = 3, /**< Decorative paved block — no trees. */
+    GROUND_TILE_COUNT       /**< Total number of lateral tile variants. */
+} GroundTileVariant;
 
 /**
  * @brief Container for every sprite used by the game.
@@ -17,20 +30,18 @@
  * non-owning pointers obtained through the getter functions below.
  */
 typedef struct {
-    Sprite *car_sprites[2][4];        /**< [player-1][CarState] */
-    Sprite *obstacle_sprite;          /**< Rock obstacle — city theme (legacy). */
+    Sprite *car_sprites[CAR_PLAYER_COUNT][CAR_STATE_COUNT]; /**< [player][CarState] */
+    Sprite *obstacle_sprites[TRACK_THEME_COUNT]; /**< [TrackTheme] main obstacle per biome. */
     Sprite *city_obstacle_sprites[16]; /**< 16 random city obstacle item sprites. */
+    Sprite *forest_obstacle_sprites[4]; /**< 4 colorful forest obstacle sprites. */
     Sprite *boost_sprite;             /**< Boost pickup (legacy). */
     Sprite *city_boost_sprites[3];    /**< 3 random city boost sprites. */
-    Sprite *tile_sprites[4];          /**< City road tiles, indexed by TileType. */
-    Sprite *tile_sprites_desert[4];   /**< Desert road tiles, indexed by TileType. */
-    Sprite *grass_sprite;             /**< City/forest lateral ground. */
-    Sprite *sand_sprite;              /**< Desert lateral ground. */
-    Sprite *tree_sprite;              /**< City/forest lateral scenery. */
-    Sprite *cactus_sprite;            /**< Desert lateral scenery. */
+    Sprite *tile_sprites[TRACK_THEME_COUNT][4];    /**< [TrackTheme][TileType] road tiles. */
+    Sprite *ground_tiles[TRACK_THEME_COUNT][GROUND_TILE_COUNT]; /**< [TrackTheme][GroundTileVariant] */
+    Sprite *wall_sprites[TRACK_THEME_COUNT];       /**< [TrackTheme] road-edge wall delimiter. */
+    Sprite *scenery_sprites[TRACK_THEME_COUNT];    /**< [TrackTheme] lateral scenery per biome. */
     Sprite *divider_sprite;           /**< Lane divider line. */
-    Sprite *obstacle_desert_sprite;   /**< Barrel — same damage effect as rock. */
-    Sprite *haybale_sprite;           /**< Hay bale — same damage effect as rock. */
+    Sprite *haybale_sprite;           /**< Hay bale — desert obstacle. */
     Sprite *menu_title;               /**< Main menu title graphic. */
     Sprite *menu_start_btn;           /**< START button. */
     Sprite *menu_leaderboard_btn;     /**< LEADERBOARD button. */
@@ -51,7 +62,7 @@ typedef struct {
     Sprite *mode_endurance_card;      /**< ENDURANCE mode card graphic. */
     Sprite *mode_race_label;          /**< RACE mode label. */
     Sprite *mode_endurance_label;     /**< ENDURANCE mode label. */
-    Sprite *car_format_sprites[CAR_FORMAT_MAX][2][4]; /**< [fmt][player][CarState] */
+    Sprite *car_format_sprites[CAR_FORMAT_MAX][CAR_PLAYER_COUNT][CAR_STATE_COUNT]; /**< [fmt][player][CarState] */
     int     car_format_count;         /**< Number of loaded car format sprites. */
     Sprite *win_img[2];               /**< [0]=blue_wins  [1]=red_wins. */
     Sprite *win_play_again_btn;       /**< PLAY AGAIN button. */
@@ -61,6 +72,8 @@ typedef struct {
     Sprite *road_detail_sprite;        /**< City road detail overlay (road.xpm). */
     Sprite *inner_road_left_sprite;    /**< City inner road tile — lane 4 (left of divider). */
     Sprite *inner_road_right_sprite;   /**< City inner road tile — lane 5 (right of divider). */
+    Sprite *biome_select_title;       /**< Biome selector screen title. */
+    Sprite *biome_labels[TRACK_THEME_COUNT]; /**< [TrackTheme] biome name label per biome. */
 } Resources;
 
 /**
@@ -114,9 +127,16 @@ Sprite* resources_get_grass_sprite(void);
 Sprite* resources_get_tree_sprite(void);
 
 /**
- * @brief Returns the lateral ground sprite for the given theme.
+ * @brief Returns a lateral ground tile for the given theme and variant.
+ * @param theme   TrackTheme value.
+ * @param variant GroundTileVariant index (0 = SOIL, …).
+ * @return Non-owning pointer; NULL if the variant is unused for that theme.
+ */
+Sprite* resources_get_ground_tile(int theme, int variant);
+
+/**
+ * @brief Returns the SOIL (variant 0) lateral ground sprite for the given theme.
  * @param theme TrackTheme value.
- * @return Grass sprite for city/forest; sand sprite for desert.
  */
 Sprite* resources_get_ground_sprite(int theme);
 
@@ -269,5 +289,20 @@ Sprite* resources_get_shield_aura_sprite(void);
 Sprite* resources_get_road_detail_sprite(void);
 Sprite* resources_get_inner_road_left_sprite(void);
 Sprite* resources_get_inner_road_right_sprite(void);
+Sprite* resources_get_forest_obstacle_sprite(int idx);
+
+/**
+ * @brief Returns the biome selector screen title sprite.
+ * @return Non-owning pointer; NULL until the XPM is created and loaded.
+ */
+Sprite* resources_get_biome_select_title(void);
+
+/**
+ * @brief Returns the biome name label sprite for a given theme.
+ * @param theme TrackTheme value (0=city, 1=desert, 2=forest).
+ * @return Non-owning pointer; NULL until the XPM is created and loaded.
+ */
+Sprite* resources_get_biome_label(int theme);
+Sprite* resources_get_wall_sprite(int theme);
 
 #endif /* __PROJ_RESOURCES_H */

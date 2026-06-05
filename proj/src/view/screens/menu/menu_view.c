@@ -15,7 +15,7 @@
 #define BTN_Y_LEADERBOARD 490
 #define BTN_Y_EXIT        580
 
-void menu_view_draw(int selection, TrackTheme theme) {
+void menu_view_draw(int selection) {
     Sprite *title            = resources_get_menu_title();
     Sprite *start_btn        = resources_get_menu_start_btn();
     Sprite *leaderboard_btn  = resources_get_menu_leaderboard_btn();
@@ -59,15 +59,6 @@ void menu_view_draw(int selection, TrackTheme theme) {
         } else {
             draw_sprite_scaled(exit_btn, (SCREEN_W - bw) / 2, BTN_Y_EXIT, bw, bh);
         }
-    }
-
-    /* Biome preview tile below buttons */
-    Sprite *road_tile = resources_get_tile_sprite_themed(0, theme);
-    if (road_tile) {
-        int px = (SCREEN_W - 96) / 2;
-        draw_sprite_scaled(road_tile, px,           664, 96, 96);
-        draw_sprite_scaled(road_tile, px - 64,      664, 48, 48);
-        draw_sprite_scaled(road_tile, px + 96 + 16, 664, 48, 48);
     }
 
     draw_sprite(resources_get_cursor_sprite(), input_cursor_x(), input_cursor_y());

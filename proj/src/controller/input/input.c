@@ -34,6 +34,16 @@
 #define MODE_ENDUR_X (MODE_RACE_X + MODE_CARD_W + MODE_CARD_GAP)
 #define MODE_CARDS_Y  280
 
+/* Biome select layout — must match biome_select_view.c */
+#define BIOME_LARROW_X    100
+#define BIOME_RARROW_X    884
+#define BIOME_ARROW_Y     390
+#define BIOME_ARROW_HIT    60
+#define BIOME_SELECT_BTN_X 384
+#define BIOME_SELECT_BTN_Y 650
+#define BIOME_SELECT_BTN_W 256
+#define BIOME_SELECT_BTN_H  64
+
 /* Car select RACE button — must match car_select_view.c */
 #define CAR_SELECT_RACE_BTN_X  384
 #define CAR_SELECT_RACE_BTN_Y  640
@@ -214,6 +224,30 @@ int input_mouse_win_menu_pressed(void) {
 }
 int input_cursor_x(void) { return menu_cursor ? cursor_get_x(menu_cursor) : 0; }
 int input_cursor_y(void) { return menu_cursor ? cursor_get_y(menu_cursor) : 0; }
+
+int input_biome_nav_left(void) {
+    return (scancode_ready && !prev_extended && get_current_scancode() == KEY_A_CODE)
+        || (scancode_ready && prev_extended  && get_current_scancode() == ARROW_LEFT_CODE);
+}
+int input_biome_nav_right(void) {
+    return (scancode_ready && !prev_extended && get_current_scancode() == KEY_D_CODE)
+        || (scancode_ready && prev_extended  && get_current_scancode() == ARROW_RIGHT_CODE);
+}
+int input_biome_select_pressed(void) { return scancode_ready && get_current_scancode() == ENTER_MAKECODE; }
+int input_mouse_over_biome_select(void) {
+    return over_rect(BIOME_SELECT_BTN_X, BIOME_SELECT_BTN_Y, BIOME_SELECT_BTN_W, BIOME_SELECT_BTN_H);
+}
+int input_mouse_biome_select_pressed(void) {
+    return menu_cursor && cursor_left_clicked(menu_cursor) && input_mouse_over_biome_select();
+}
+int input_mouse_biome_arrow_left(void) {
+    return menu_cursor && cursor_left_clicked(menu_cursor)
+        && over_rect(BIOME_LARROW_X, BIOME_ARROW_Y, BIOME_ARROW_HIT, BIOME_ARROW_HIT);
+}
+int input_mouse_biome_arrow_right(void) {
+    return menu_cursor && cursor_left_clicked(menu_cursor)
+        && over_rect(BIOME_RARROW_X, BIOME_ARROW_Y, BIOME_ARROW_HIT, BIOME_ARROW_HIT);
+}
 
 int input_p1_nav_left(void)  { return scancode_ready && !prev_extended && get_current_scancode() == KEY_A_CODE; }
 int input_p1_nav_right(void) { return scancode_ready && !prev_extended && get_current_scancode() == KEY_D_CODE; }

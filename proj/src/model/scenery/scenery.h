@@ -15,9 +15,9 @@
  * @brief One scenery sprite instance placed beside the track.
  */
 typedef struct {
-    int    screen_x;    /**< Horizontal pixel position on screen. */
-    int    logical_row; /**< Logical track row this instance was spawned at. */
-    double screen_y;    /**< Vertical pixel position, updated each scroll tick. */
+    int    screen_x;    /**< Horizontal pixel position (fixed at spawn). */
+    double screen_y;    /**< Vertical pixel position, updated each tick by scenery_update. */
+    int    logical_row; /**< World row at spawn — used for tile variant and scroll calc. */
 } TreeInstance;
 
 /**
