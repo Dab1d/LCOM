@@ -38,5 +38,5 @@ trace.txt
 .idea/
 .vscode/
 .codex
-proj/.gbinit
+.gdbinit
 
