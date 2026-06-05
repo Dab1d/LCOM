@@ -13,10 +13,11 @@ Car* create_car(int initial_lane, int lane_min, int lane_max, int car_width, int
     init_element(&car->base, lane_to_x(initial_lane),
                  (double)(CAR_SCREEN_ROW * TRACK_TILE_HEIGHT), car_width, car_height);
 
-    car->lane             = initial_lane;
-    car->track_progress   = 0;
-    car->boost_remaining  = 0.0f;
-    car->state            = CAR_STATE_NORMAL;
+    car->lane              = initial_lane;
+    car->track_progress    = 0;
+    car->boost_remaining   = 0.0f;
+    car->setback_remaining = 0.0f;
+    car->state             = CAR_STATE_NORMAL;
     car->lane_min = lane_min;
     car->lane_max = lane_max;
     car->exploding        = false;
@@ -100,9 +101,10 @@ void reset_car(Car* car, int initial_lane) {
     car->base.x           = lane_to_x(initial_lane);
     car->base.y           = (double)(CAR_SCREEN_ROW * TRACK_TILE_HEIGHT);
     car->base.is_active   = true;
-    car->track_progress   = 0;
-    car->boost_remaining  = 0.0f;
-    car->state            = CAR_STATE_NORMAL;
+    car->track_progress    = 0;
+    car->boost_remaining   = 0.0f;
+    car->setback_remaining = 0.0f;
+    car->state             = CAR_STATE_NORMAL;
     car->exploding        = false;
     car->shield_ticks     = 0;
     car_init_session(car, CAR_INITIAL_LIVES);
@@ -118,4 +120,10 @@ void car_apply_shield(Car* car, int ticks) {
     if (car == NULL || !car->base.is_active) return;
     if (car->state == CAR_STATE_EXPLODED)    return;
     car->shield_ticks = ticks;
+}
+
+void car_apply_setback(Car* car, int tiles) {
+    if (car == NULL || !car->base.is_active) return;
+    if (car->state == CAR_STATE_EXPLODED)    return;
+    car->setback_remaining += (float)(tiles * TRACK_TILE_HEIGHT);
 }

@@ -44,7 +44,8 @@ typedef struct {
     int     lane_min;       /**< Leftmost lane this car may occupy. */
     int     lane_max;       /**< Rightmost lane this car may occupy. */
     int     track_progress; /**< Logical rows completed (higher = further ahead). */
-    float   boost_remaining;/**< Boost ticks remaining (unused — reserved). */
+    float   boost_remaining;  /**< Boost animation: pixels to travel forward (upward). */
+    float   setback_remaining;/**< Setback animation: pixels to travel backward (downward). */
     CarState state;         /**< Current damage/visual state. */
     int     score;          /**< Accumulated score for this session. */
     int     lives;          /**< Lives remaining; reaches 0 on EXPLODED. */
@@ -90,6 +91,13 @@ void car_take_damage(Car *car);
  * @param tiles Number of logical rows to skip forward.
  */
 void car_apply_boost(Car *car, int tiles);
+
+/**
+ * @brief Pushes the car backward on screen (setback animation, no track-progress change).
+ * @param car   Car to push back.
+ * @param tiles Number of logical rows worth of backward movement.
+ */
+void car_apply_setback(Car *car, int tiles);
 
 /**
  * @brief Slides the car one lane in a random direction (banana-peel effect).

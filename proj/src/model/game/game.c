@@ -28,6 +28,8 @@
 #define CLUSTER_CHANCE     70
 #define BOOST_TILES        2
 #define BOOST_SPAWN_CHANCE 65
+#define MIDSCREEN_Y        ((TRACK_VISIBLE_ROWS / 2) * TRACK_TILE_HEIGHT)
+#define BOTTOM_Y           ((TRACK_VISIBLE_ROWS - 1) * TRACK_TILE_HEIGHT)
 #define SHIELD_SPAWN_CHANCE 20
 #define MENU_START        0
 #define MENU_INSTRUCTIONS 1
@@ -433,11 +435,19 @@ static void game_process_input(void) {
 }
 
 static void apply_boost_movement(Car* car, float boost_speed) {
-    if (car->boost_remaining <= 0.0f) return;
-    float step = car->boost_remaining < boost_speed ? car->boost_remaining : boost_speed;
-    car->base.y -= (double)step;
-    if (car->base.y < 0.0) car->base.y = 0.0;
-    car->boost_remaining -= step;
+    if (car->boost_remaining > 0.0f) {
+        float step = car->boost_remaining < boost_speed ? car->boost_remaining : boost_speed;
+        car->base.y -= (double)step;
+        if (car->base.y < 0.0) car->base.y = 0.0;
+        car->boost_remaining -= step;
+    }
+    if (car->setback_remaining > 0.0f) {
+        float step = car->setback_remaining < boost_speed ? car->setback_remaining : boost_speed;
+        double max_y = (double)((TRACK_VISIBLE_ROWS - 1) * TRACK_TILE_HEIGHT);
+        car->base.y += (double)step;
+        if (car->base.y > max_y) car->base.y = max_y;
+        car->setback_remaining -= step;
+    }
 }
 
 static void game_update(void) {
@@ -528,10 +538,18 @@ static void game_process_collisions(void) {
         if (boost == NULL || !boost->base.is_active) continue;
 
         if (c1_active_before && boost_collides_with_car(boost, game.car1)) {
-            car_apply_boost(game.car1, BOOST_TILES);
+            if (game.car1->base.y <= (double)MIDSCREEN_Y && c2_active_before
+                    && game.car2->base.y < (double)BOTTOM_Y)
+                car_apply_setback(game.car2, BOOST_TILES);
+            else
+                car_apply_boost(game.car1, BOOST_TILES);
             boost->base.is_active = false;
         } else if (c2_active_before && boost_collides_with_car(boost, game.car2)) {
-            car_apply_boost(game.car2, BOOST_TILES);
+            if (game.car2->base.y <= (double)MIDSCREEN_Y && c1_active_before
+                    && game.car1->base.y < (double)BOTTOM_Y)
+                car_apply_setback(game.car1, BOOST_TILES);
+            else
+                car_apply_boost(game.car2, BOOST_TILES);
             boost->base.is_active = false;
         }
     }
