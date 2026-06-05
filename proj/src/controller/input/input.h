@@ -207,6 +207,12 @@ int input_mouse_car2_right(void);
 /** @brief Returns non-zero if the cursor is over the START button. */
 int input_mouse_over_start(void);
 
+/** @brief Returns non-zero if the cursor is over the INSTRUCTIONS button. */
+int input_mouse_over_instructions(void);
+
+/** @brief Returns non-zero if the INSTRUCTIONS button was clicked this frame. */
+int input_mouse_instructions_pressed(void);
+
 /** @brief Returns non-zero if the cursor is over the EXIT button. */
 int input_mouse_over_exit(void);
 

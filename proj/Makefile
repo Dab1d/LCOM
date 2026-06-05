@@ -54,7 +54,8 @@ SRCS = proj.c \
        src/view/screens/biome_select/biome_select_view.c \
        src/model/cursor/cursor.c \
        src/model/leaderboard/leaderboard.c \
-       src/view/screens/leaderboard/leaderboard_view.c
+       src/view/screens/leaderboard/leaderboard_view.c \
+       src/view/screens/instructions/instructions_view.c
 
 
 # Headers — listados explicitamente para dependências corretas
@@ -88,7 +89,8 @@ HDRS = src/model/game/game.h \
        src/view/screens/car_select/car_select_view.h \
        src/model/cursor/cursor.h \
        src/model/leaderboard/leaderboard.h \
-       src/view/screens/leaderboard/leaderboard_view.h
+       src/view/screens/leaderboard/leaderboard_view.h \
+       src/view/screens/instructions/instructions_view.h
 
 #       src/controller/timer/timer.h \
 #       src/controller/rtc/rtc.h \
@@ -123,6 +125,9 @@ src/model/leaderboard/leaderboard.o: src/model/leaderboard/leaderboard.c src/mod
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/view/screens/leaderboard/leaderboard_view.o: src/view/screens/leaderboard/leaderboard_view.c src/view/screens/leaderboard/leaderboard_view.h
+	${CC} ${CFLAGS} -c $< -o $@
+
+src/view/screens/instructions/instructions_view.o: src/view/screens/instructions/instructions_view.c src/view/screens/instructions/instructions_view.h
 	${CC} ${CFLAGS} -c $< -o $@
 
 src/controller/timer/timer.o: src/controller/timer/timer.c src/controller/timer/timer.h

@@ -22,8 +22,9 @@
  * @brief Top-level game screen / phase enumeration.
  */
 typedef enum {
-    MAIN_MENU,    /**< Main menu screen. */
-    CAR_SELECT,   /**< Car-skin selection screen. */
+    MAIN_MENU,       /**< Main menu screen. */
+    INSTRUCTIONS,    /**< Instructions screen. */
+    CAR_SELECT,      /**< Car-skin selection screen. */
     BIOME_SELECT, /**< Biome selection screen (after car select). */
     MODE_SELECT,  /**< Game-mode selection screen. */
     GAMEPLAY,     /**< Active race. */

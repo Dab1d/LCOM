@@ -44,6 +44,7 @@ typedef struct {
     Sprite *haybale_sprite;           /**< Hay bale — desert obstacle. */
     Sprite *menu_title;               /**< Main menu title graphic. */
     Sprite *menu_start_btn;           /**< START button. */
+    Sprite *menu_instructions_btn;   /**< INSTRUCTIONS button. */
     Sprite *menu_leaderboard_btn;     /**< LEADERBOARD button. */
     Sprite *menu_exit_btn;            /**< EXIT button. */
     Sprite *pause_panel;              /**< Pause overlay background panel. */
@@ -279,6 +280,7 @@ Sprite* resources_get_mode_endurance_label(void);
 int     resources_get_car_format_count(void);
 Sprite* resources_get_car_format_preview(int fmt, int player);
 void    resources_apply_car_format(int fmt1, int fmt2);
+Sprite* resources_get_menu_instructions_btn(void);
 Sprite* resources_get_win_img(int winner);
 Sprite* resources_get_win_play_again_btn(void);
 Sprite* resources_get_win_menu_btn(void);

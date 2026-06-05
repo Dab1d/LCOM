@@ -6,18 +6,19 @@
 #define SCREEN_W 1024
 
 #define MENU_START        0
-#define MENU_LEADERBOARD  1
-#define MENU_EXIT         2
+#define MENU_INSTRUCTIONS 1
+#define MENU_LEADERBOARD  2
+#define MENU_EXIT         3
 
-/* START must stay above the initial cursor position (screen centre y=384).
-   Each selected button grows to 90 px; leave >=15 px clearance on each side. */
-#define BTN_Y_START       400
-#define BTN_Y_LEADERBOARD 490
-#define BTN_Y_EXIT        580
+#define BTN_Y_START        310
+#define BTN_Y_INSTRUCTIONS 400
+#define BTN_Y_LEADERBOARD  490
+#define BTN_Y_EXIT         580
 
 void menu_view_draw(int selection) {
     Sprite *title            = resources_get_menu_title();
     Sprite *start_btn        = resources_get_menu_start_btn();
+    Sprite *instructions_btn = resources_get_menu_instructions_btn();
     Sprite *leaderboard_btn  = resources_get_menu_leaderboard_btn();
     Sprite *exit_btn         = resources_get_menu_exit_btn();
 
@@ -36,6 +37,17 @@ void menu_view_draw(int selection) {
             draw_sprite_scaled(start_btn, (SCREEN_W - w) / 2, BTN_Y_START - (h - bh) / 2, w, h);
         } else {
             draw_sprite_scaled(start_btn, (SCREEN_W - bw) / 2, BTN_Y_START, bw, bh);
+        }
+    }
+
+    if (instructions_btn) {
+        int bw = instructions_btn->width  * 5 / 4;
+        int bh = instructions_btn->height * 5 / 4;
+        if (selection == MENU_INSTRUCTIONS) {
+            int w = bw * 9 / 8, h = bh * 9 / 8;
+            draw_sprite_scaled(instructions_btn, (SCREEN_W - w) / 2, BTN_Y_INSTRUCTIONS - (h - bh) / 2, w, h);
+        } else {
+            draw_sprite_scaled(instructions_btn, (SCREEN_W - bw) / 2, BTN_Y_INSTRUCTIONS, bw, bh);
         }
     }
 

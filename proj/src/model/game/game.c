@@ -22,6 +22,7 @@
 #include "../../view/screens/car_select/car_select_view.h"
 #include "../../view/screens/biome_select/biome_select_view.h"
 #include "../../view/screens/leaderboard/leaderboard_view.h"
+#include "../../view/screens/instructions/instructions_view.h"
 #include "../leaderboard/leaderboard.h"
 
 #define CLUSTER_CHANCE     70
@@ -29,9 +30,10 @@
 #define BOOST_SPAWN_CHANCE 65
 #define SHIELD_SPAWN_CHANCE 20
 #define MENU_START        0
-#define MENU_LEADERBOARD  1
-#define MENU_EXIT         2
-#define MENU_ITEMS        3
+#define MENU_INSTRUCTIONS 1
+#define MENU_LEADERBOARD  2
+#define MENU_EXIT         3
+#define MENU_ITEMS        4
 
 static Game game;
 
@@ -326,18 +328,21 @@ static void game_process_input(void) {
                 game.menu_selection = (game.menu_selection + MENU_ITEMS - 1) % MENU_ITEMS;
             if (input_menu_nav_down())
                 game.menu_selection = (game.menu_selection + 1) % MENU_ITEMS;
-            if (input_mouse_over_start())       game.menu_selection = MENU_START;
-            if (input_mouse_over_leaderboard()) game.menu_selection = MENU_LEADERBOARD;
-            if (input_mouse_over_exit())        game.menu_selection = MENU_EXIT;
+            if (input_mouse_over_start())        game.menu_selection = MENU_START;
+            if (input_mouse_over_instructions()) game.menu_selection = MENU_INSTRUCTIONS;
+            if (input_mouse_over_leaderboard())  game.menu_selection = MENU_LEADERBOARD;
+            if (input_mouse_over_exit())         game.menu_selection = MENU_EXIT;
 
             if (input_keyboard_start_pressed()) {
-                if (game.menu_selection == MENU_START)            game.state = CAR_SELECT;
-                else if (game.menu_selection == MENU_LEADERBOARD) game.state = LEADERBOARD;
-                else if (game.menu_selection == MENU_EXIT)        game.state = EXIT;
+                if      (game.menu_selection == MENU_START)        game.state = CAR_SELECT;
+                else if (game.menu_selection == MENU_INSTRUCTIONS) game.state = INSTRUCTIONS;
+                else if (game.menu_selection == MENU_LEADERBOARD)  game.state = LEADERBOARD;
+                else if (game.menu_selection == MENU_EXIT)         game.state = EXIT;
             }
-            if (input_mouse_start_pressed())       game.state = CAR_SELECT;
-            if (input_mouse_leaderboard_pressed()) game.state = LEADERBOARD;
-            if (input_mouse_exit_pressed())        game.state = EXIT;
+            if (input_mouse_start_pressed())        game.state = CAR_SELECT;
+            if (input_mouse_instructions_pressed()) game.state = INSTRUCTIONS;
+            if (input_mouse_leaderboard_pressed())  game.state = LEADERBOARD;
+            if (input_mouse_exit_pressed())         game.state = EXIT;
             break;
         case CAR_SELECT: {
             int n = resources_get_car_format_count();
@@ -413,6 +418,10 @@ static void game_process_input(void) {
             if (input_mouse_win_play_again_pressed()) game_reset(&game);
             if (input_mouse_win_menu_pressed()) { game.menu_selection = 0; game.state = MAIN_MENU; }
             if (input_gameover_menu_pressed())  { game.menu_selection = 0; game.state = MAIN_MENU; }
+            break;
+        case INSTRUCTIONS:
+            if (input_esc_pressed() || input_keyboard_confirm_pressed())
+                game.state = MAIN_MENU;
             break;
         case LEADERBOARD:
             if (input_leaderboard_back_pressed()) game.state = MAIN_MENU;
@@ -609,6 +618,9 @@ static void game_render(void) {
             leaderboard_view_draw();
             copy_buffer_to_video();
             return;
+        case INSTRUCTIONS:
+            instructions_view_draw();
+            break;
         case MAIN_MENU:
             menu_view_draw(game.menu_selection);
             break;
@@ -748,6 +760,7 @@ void game_tick(void) {
         case BIOME_SELECT:
             break;
         case MAIN_MENU:
+        case INSTRUCTIONS:
         case MODE_SELECT:
         case PAUSE:
         case GAME_OVER:

@@ -126,6 +126,7 @@
 
 #include "../../assets/xpm/main/getaway_car_title.xpm"
 #include "../../assets/xpm/main/start_button.xpm"
+#include "../../assets/xpm/main/instructions_button.xpm"
 #include "../../assets/xpm/main/leaderboard_button.xpm"
 #include "../../assets/xpm/main/exit_button.xpm"
 #include "../../assets/xpm/elements/cursor.xpm"
@@ -257,6 +258,8 @@ int resources_load(void) {
 
     res.menu_start_btn = create_sprite((xpm_map_t)start_button);
     if (!res.menu_start_btn) return 1;
+
+    res.menu_instructions_btn = create_sprite((xpm_map_t)instructions_button_xpm);
 
     res.menu_leaderboard_btn = create_sprite((xpm_map_t)leaderboard_button);
     if (!res.menu_leaderboard_btn) return 1;
@@ -419,9 +422,10 @@ void resources_destroy(void) {
         if (res.pause_quit_btn[i])   { sprite_destroy(res.pause_quit_btn[i]);   res.pause_quit_btn[i]   = NULL; }
     }
     if (res.menu_title)            { sprite_destroy(res.menu_title);            res.menu_title            = NULL; }
-    if (res.menu_start_btn)       { sprite_destroy(res.menu_start_btn);       res.menu_start_btn       = NULL; }
-    if (res.menu_leaderboard_btn) { sprite_destroy(res.menu_leaderboard_btn); res.menu_leaderboard_btn = NULL; }
-    if (res.menu_exit_btn)        { sprite_destroy(res.menu_exit_btn);        res.menu_exit_btn        = NULL; }
+    if (res.menu_start_btn)        { sprite_destroy(res.menu_start_btn);        res.menu_start_btn        = NULL; }
+    if (res.menu_instructions_btn) { sprite_destroy(res.menu_instructions_btn); res.menu_instructions_btn = NULL; }
+    if (res.menu_leaderboard_btn)  { sprite_destroy(res.menu_leaderboard_btn);  res.menu_leaderboard_btn  = NULL; }
+    if (res.menu_exit_btn)         { sprite_destroy(res.menu_exit_btn);         res.menu_exit_btn         = NULL; }
     if (res.cursor_sprite)   { sprite_destroy(res.cursor_sprite);   res.cursor_sprite   = NULL; }
     if (res.heart_sprite)    { sprite_destroy(res.heart_sprite);    res.heart_sprite    = NULL; }
     for (int i = 0; i < 10; i++)
@@ -519,6 +523,7 @@ Sprite* resources_get_pause_quit_btn(int selected) {
 
 Sprite* resources_get_menu_title(void)           { return res.menu_title; }
 Sprite* resources_get_menu_start_btn(void)        { return res.menu_start_btn; }
+Sprite* resources_get_menu_instructions_btn(void) { return res.menu_instructions_btn; }
 Sprite* resources_get_menu_leaderboard_btn(void)  { return res.menu_leaderboard_btn; }
 Sprite* resources_get_menu_exit_btn(void)         { return res.menu_exit_btn; }
 Sprite* resources_get_cursor_sprite(void)  { return res.cursor_sprite; }

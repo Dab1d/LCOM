@@ -20,7 +20,9 @@
 #define MENU_BTN_H          80
 #define MENU_SCREEN_W      1024
 #define MENU_START_X       ((MENU_SCREEN_W - MENU_BTN_W) / 2)
-#define MENU_START_Y        400
+#define MENU_START_Y        310
+#define MENU_INSTRUCTIONS_X ((MENU_SCREEN_W - MENU_BTN_W) / 2)
+#define MENU_INSTRUCTIONS_Y  400
 #define MENU_LEADERBOARD_X ((MENU_SCREEN_W - MENU_BTN_W) / 2)
 #define MENU_LEADERBOARD_Y  490
 #define MENU_EXIT_X        ((MENU_SCREEN_W - MENU_BTN_W) / 2)
@@ -162,12 +164,16 @@ static int over_rect(int rx, int ry, int rw, int rh) {
     return cx >= rx && cx < rx + rw && cy >= ry && cy < ry + rh;
 }
 
-int input_mouse_over_start(void)       { return over_rect(MENU_START_X,       MENU_START_Y,       MENU_BTN_W, MENU_BTN_H); }
-int input_mouse_over_leaderboard(void) { return over_rect(MENU_LEADERBOARD_X, MENU_LEADERBOARD_Y, MENU_BTN_W, MENU_BTN_H); }
-int input_mouse_over_exit(void)        { return over_rect(MENU_EXIT_X,        MENU_EXIT_Y,        MENU_BTN_W, MENU_BTN_H); }
+int input_mouse_over_start(void)        { return over_rect(MENU_START_X,        MENU_START_Y,        MENU_BTN_W, MENU_BTN_H); }
+int input_mouse_over_instructions(void) { return over_rect(MENU_INSTRUCTIONS_X, MENU_INSTRUCTIONS_Y, MENU_BTN_W, MENU_BTN_H); }
+int input_mouse_over_leaderboard(void)  { return over_rect(MENU_LEADERBOARD_X,  MENU_LEADERBOARD_Y,  MENU_BTN_W, MENU_BTN_H); }
+int input_mouse_over_exit(void)         { return over_rect(MENU_EXIT_X,         MENU_EXIT_Y,         MENU_BTN_W, MENU_BTN_H); }
 
 int input_mouse_start_pressed(void) {
     return menu_cursor && cursor_left_clicked(menu_cursor) && input_mouse_over_start();
+}
+int input_mouse_instructions_pressed(void) {
+    return menu_cursor && cursor_left_clicked(menu_cursor) && input_mouse_over_instructions();
 }
 int input_mouse_leaderboard_pressed(void) {
     return menu_cursor && cursor_left_clicked(menu_cursor) && input_mouse_over_leaderboard();
