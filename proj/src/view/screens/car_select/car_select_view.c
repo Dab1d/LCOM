@@ -50,10 +50,10 @@ static void draw_counter(int cx, int y, int current, int total) {
     Sprite *d_cur = resources_get_digit_sprite(current + 1);
     Sprite *colon  = resources_get_colon_sprite();
     Sprite *d_tot  = resources_get_digit_sprite(total);
-    int dw = 20;
+    int dw = 32;
     if (d_cur) draw_sprite(d_cur, cx - dw - 4, y);
     if (colon)  draw_sprite(colon,  cx - colon->width / 2, y);
-    if (d_tot)  draw_sprite(d_tot,  cx + 4, y);
+    if (d_tot)  draw_sprite(d_tot,  cx + dw - 8, y);
 }
 
 void car_select_view_draw(int p1_fmt, int p2_fmt, int fmt_count) {
