@@ -12,7 +12,7 @@ static char *obstacle_danger_xpm[] = {
 "et c #885522",
 "hm c #999966",
 "io c #CC9966",
-"jv c None",
+"jv c #FF00FF",
 /* pixels */
 "jvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjv",
 "jvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjv",

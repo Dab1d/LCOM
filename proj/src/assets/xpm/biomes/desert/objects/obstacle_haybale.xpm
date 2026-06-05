@@ -11,7 +11,7 @@ static char *obstacle_haybale_xpm[] = {
 "io c #CC9966",
 "it c #CCCC66",
 "jr c #FFCC33",
-"jv c None",
+"jv c #FF00FF",
 /* pixels */
 "jvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjv",
 "jvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjv",

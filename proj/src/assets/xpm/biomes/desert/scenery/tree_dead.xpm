@@ -19,7 +19,7 @@ static char *tree_dead_xpm[] = {
 "hm c #999966",
 "in c #CC9933",
 "io c #CC9966",
-"jv c None",
+"jv c #FF00FF",
 /* pixels */
 "jvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjv",
 "jvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvafjvjvjvjvjvjvjvjvjvjvjvfvfvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjv",

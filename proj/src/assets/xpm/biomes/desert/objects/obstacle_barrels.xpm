@@ -12,7 +12,7 @@ static char *obstacle_barrels_xpm[] = {
 "ck c #6E2018",
 "et c #885522",
 "ge c #669933",
-"jv c None",
+"jv c #FF00FF",
 /* pixels */
 "jvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjv",
 "jvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjv",

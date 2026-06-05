@@ -21,7 +21,7 @@ static char *fence_angled_xpm[] = {
 "io c #CC9966",
 "ip c #CC9999",
 "iu c #CCCC99",
-"jv c None",
+"jv c #FF00FF",
 /* pixels */
 "jvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjv",
 "jvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjv",

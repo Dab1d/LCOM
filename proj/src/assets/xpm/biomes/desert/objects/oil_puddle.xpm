@@ -12,7 +12,7 @@ static char *oil_puddle_xpm[] = {
 "hm c #999966",
 "io c #CC9966",
 "ip c #CC9999",
-"jv c None",
+"jv c #FF00FF",
 /* pixels */
 "jvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjv",
 "jvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjvjviohmhmaebbccbjccccccccccccccccccccccccccccccccbbbbbbbbjvjvjvjvjvhmbbjvjvjvjvjvjvjvjv",
