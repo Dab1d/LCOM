@@ -3,8 +3,7 @@
 #include "../../../model/resources/resources.h"
 #include "../../../controller/palette/palette.h"
 
-#define SCREEN_W   1024
-#define TIMER_FREQ   60
+#include "config.h"
 #define DIGIT_W      24
 #define DIGIT_H      32
 #define DIGIT_Y    ((HUD_BAR_H - DIGIT_H) / 2)

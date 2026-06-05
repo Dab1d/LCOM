@@ -6,7 +6,7 @@
 #define HEART_SIZE   48
 #define HEART_GAP     6
 #define HUD_Y         8
-#define SCREEN_W   1024
+#include "config.h"
 #define ICON_SIZE    32
 #define EFF_DIGIT_W  20
 #define EFF_DIGIT_H  28
