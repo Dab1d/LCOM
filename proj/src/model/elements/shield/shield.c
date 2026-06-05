@@ -1,11 +1,6 @@
 #include "shield.h"
 #include <stdlib.h>
 
-static double row_to_y(int logical_row, int scroll_row, float scroll_offset) {
-    int screen_row = logical_row - scroll_row;
-    return (double)((2 * CAR_SCREEN_ROW - screen_row) * TRACK_TILE_HEIGHT) + (double)scroll_offset;
-}
-
 Shield* create_shield(int row, int lane) {
     Shield *shield = (Shield*) malloc(sizeof(Shield));
     if (shield == NULL) return NULL;
@@ -13,7 +8,7 @@ Shield* create_shield(int row, int lane) {
     shield->lane = lane;
     shield->row  = row;
 
-    double x = (double)(lane * CAR_LANE_WIDTH);
+    double x = car_lane_to_x(lane);
     double y = (double)(row  * TRACK_TILE_HEIGHT);
     init_element(&shield->base, x, y, CAR_LANE_WIDTH, TRACK_TILE_HEIGHT);
 
@@ -25,10 +20,10 @@ void destroy_shield(Shield *shield) {
         free(shield);
 }
 
-void shield_update(Shield *shield, int scroll_row, float scroll_offset) {
+void shield_update(Shield *shield, int scroll_row, int scroll_offset) {
     if (shield == NULL || !shield->base.is_active) return;
 
-    shield->base.y = row_to_y(shield->row, scroll_row, scroll_offset);
+    shield->base.y = track_row_to_y(shield->row, scroll_row, scroll_offset);
 
     if (shield->base.y > (double)(TRACK_VISIBLE_ROWS * TRACK_TILE_HEIGHT))
         shield->base.is_active = false;

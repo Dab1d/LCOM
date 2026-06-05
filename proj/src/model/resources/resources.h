@@ -116,18 +116,6 @@ Sprite* resources_get_boost_sprite(void);
 Sprite* resources_get_tile_sprite(int type);
 
 /**
- * @brief Returns the city/forest lateral ground sprite.
- * @return Non-owning pointer to the grass sprite.
- */
-Sprite* resources_get_grass_sprite(void);
-
-/**
- * @brief Returns the city/forest lateral scenery sprite.
- * @return Non-owning pointer to the tree sprite.
- */
-Sprite* resources_get_tree_sprite(void);
-
-/**
  * @brief Returns a lateral ground tile for the given theme and variant.
  * @param theme   TrackTheme value.
  * @param variant GroundTileVariant index (0 = SOIL, …).
@@ -245,8 +233,22 @@ Sprite* resources_get_colon_sprite(void);
  */
 Sprite* resources_get_obstacle_sprite_themed(int theme);
 
+/**
+ * @brief Returns the fence scenery sprite (city/forest theme).
+ * @return Non-owning pointer to the sprite.
+ */
 Sprite* resources_get_fence_sprite(void);
+
+/**
+ * @brief Returns the oil puddle obstacle sprite.
+ * @return Non-owning pointer to the sprite.
+ */
 Sprite* resources_get_oil_puddle_sprite(void);
+
+/**
+ * @brief Returns the sand pebbles scenery sprite (desert theme).
+ * @return Non-owning pointer to the sprite.
+ */
 Sprite* resources_get_sand_pebbles_sprite(void);
 
 /**
@@ -278,20 +280,103 @@ Sprite* resources_get_mode_race_label(void);
  * @return Non-owning pointer to the sprite.
  */
 Sprite* resources_get_mode_endurance_label(void);
+/**
+ * @brief Returns the number of available car formats (skins).
+ * @return Number of formats loaded (0..CAR_FORMAT_MAX).
+ */
 int     resources_get_car_format_count(void);
+
+/**
+ * @brief Returns the preview sprite for a car format on the car-selection screen.
+ * @param fmt    Format index (0..car_format_count-1).
+ * @param player 0 for player 1, 1 for player 2.
+ * @return Non-owning pointer to the sprite.
+ */
 Sprite* resources_get_car_format_preview(int fmt, int player);
+
+/**
+ * @brief Applies the chosen car formats to the active car sprites.
+ *
+ * Swaps the car sprite pointers so that car_view_draw uses the selected skins.
+ * @param fmt1 Format index chosen by player 1.
+ * @param fmt2 Format index chosen by player 2.
+ */
 void    resources_apply_car_format(int fmt1, int fmt2);
+
+/**
+ * @brief Returns the INSTRUCTIONS button sprite for the main menu.
+ * @return Non-owning pointer to the sprite.
+ */
 Sprite* resources_get_menu_instructions_btn(void);
+
+/**
+ * @brief Returns the winner announcement image.
+ * @param winner 0 = blue (player 1) wins, 1 = red (player 2) wins.
+ * @return Non-owning pointer to the sprite.
+ */
 Sprite* resources_get_win_img(int winner);
+
+/**
+ * @brief Returns the PLAY AGAIN button sprite on the win screen.
+ * @return Non-owning pointer to the sprite.
+ */
 Sprite* resources_get_win_play_again_btn(void);
+
+/**
+ * @brief Returns the MENU button sprite on the win screen.
+ * @return Non-owning pointer to the sprite.
+ */
 Sprite* resources_get_win_menu_btn(void);
+
+/**
+ * @brief Returns one of the 16 city obstacle sprites.
+ * @param idx Sprite index in [0, 15].
+ * @return Non-owning pointer to the sprite.
+ */
 Sprite* resources_get_city_obstacle_sprite(int idx);
+
+/**
+ * @brief Returns one of the 3 city boost sprites.
+ * @param idx Sprite index in [0, 2].
+ * @return Non-owning pointer to the sprite.
+ */
 Sprite* resources_get_city_boost_sprite(int idx);
+
+/**
+ * @brief Returns the shield pickup icon sprite.
+ * @return Non-owning pointer to the sprite.
+ */
 Sprite* resources_get_shield_sprite(void);
+
+/**
+ * @brief Returns the shield aura overlay sprite (drawn over a shielded car).
+ * @return Non-owning pointer to the sprite.
+ */
 Sprite* resources_get_shield_aura_sprite(void);
+
+/**
+ * @brief Returns the city road detail overlay sprite (road.xpm).
+ * @return Non-owning pointer to the sprite.
+ */
 Sprite* resources_get_road_detail_sprite(void);
+
+/**
+ * @brief Returns the city inner road tile for lane 4 (left of the centre divider).
+ * @return Non-owning pointer to the sprite.
+ */
 Sprite* resources_get_inner_road_left_sprite(void);
+
+/**
+ * @brief Returns the city inner road tile for lane 5 (right of the centre divider).
+ * @return Non-owning pointer to the sprite.
+ */
 Sprite* resources_get_inner_road_right_sprite(void);
+
+/**
+ * @brief Returns one of the 4 forest obstacle sprites.
+ * @param idx Sprite index in [0, 3].
+ * @return Non-owning pointer to the sprite.
+ */
 Sprite* resources_get_forest_obstacle_sprite(int idx);
 
 /**
@@ -306,6 +391,11 @@ Sprite* resources_get_biome_select_title(void);
  * @return Non-owning pointer; NULL until the XPM is created and loaded.
  */
 Sprite* resources_get_biome_label(int theme);
+/**
+ * @brief Returns the road-edge wall delimiter sprite for the given theme.
+ * @param theme TrackTheme value.
+ * @return Non-owning pointer to the sprite.
+ */
 Sprite* resources_get_wall_sprite(int theme);
 
 #endif /* __PROJ_RESOURCES_H */

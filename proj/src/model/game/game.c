@@ -204,7 +204,7 @@ static void game_spawn_endurance(void) {
 
 /* ── ciclo de vida da sessão ──────────────────────────────────────── */
 
-void game_var_init(Game *game) {
+static void game_var_init(Game *game) {
     game->track = create_track(game->selected_theme);
     if (game->mode_selection == 1) game->track->infinite = true;
     game->car1 = create_car(2, PLAYER1_LANE_START, PLAYER1_LANE_END, CAR_WIDTH, CAR_HEIGHT);
@@ -599,6 +599,32 @@ static bool game_is_over(void) {
 
 #include "config.h"
 
+static void game_render_track_scene(void) {
+    track_view_draw(game.track);
+    scenery_view_draw(game.scenery, game.track, game.track->theme);
+    car_view_draw(game.car1, game.track->theme);
+    car_view_draw(game.car2, game.track->theme);
+    shield_aura_draw(game.car1);
+    shield_aura_draw(game.car2);
+    for (int i = 0; i < game.obstacle_count; i++) {
+        if (obstacle_is_visible(game.obstacles[i]))
+            obstacle_view_draw(game.obstacles[i], game.track->theme);
+    }
+    for (int i = 0; i < game.boost_count; i++) {
+        if (boost_is_visible(game.boosts[i]))
+            boost_view_draw(game.boosts[i]);
+    }
+    for (int i = 0; i < game.shield_count; i++) {
+        if (shield_is_visible(game.shields[i]))
+            shield_view_draw(game.shields[i]);
+    }
+    timer_view_draw(game.elapsed_ticks);
+    heart_view_draw(game.car1, game.car2,
+                    input_get_car1_inverted_ticks(), input_get_car2_inverted_ticks());
+    if (game.mode_selection == 0)
+        minimap_view_draw(game.car1, game.car2, game.track);
+}
+
 static void game_render(void) {
     switch (game.state) {
         case GAME_OVER:
@@ -636,54 +662,12 @@ static void game_render(void) {
             mode_select_view_draw(game.mode_selection);
             break;
         case GAMEPLAY:
-            track_view_draw(game.track);
-            scenery_view_draw(game.scenery, game.track, game.track->theme);
-            car_view_draw(game.car1, game.track->theme);
-            car_view_draw(game.car2, game.track->theme);
-            shield_aura_draw(game.car1);
-            shield_aura_draw(game.car2);
-            for (int i = 0; i < game.obstacle_count; i++) {
-                if (obstacle_is_visible(game.obstacles[i]))
-                    obstacle_view_draw(game.obstacles[i], game.track->theme);
-            }
-            for (int i = 0; i < game.boost_count; i++) {
-                if (boost_is_visible(game.boosts[i]))
-                    boost_view_draw(game.boosts[i]);
-            }
-            for (int i = 0; i < game.shield_count; i++) {
-                if (shield_is_visible(game.shields[i]))
-                    shield_view_draw(game.shields[i]);
-            }
-            timer_view_draw(game.elapsed_ticks);
-            heart_view_draw(game.car1, game.car2, input_get_car1_inverted_ticks(), input_get_car2_inverted_ticks());
-            if (game.mode_selection == 0)
-                minimap_view_draw(game.car1, game.car2, game.track);
+            game_render_track_scene();
             break;
         case GAME_OVER:
             break;
         case PAUSE:
-            track_view_draw(game.track);
-            scenery_view_draw(game.scenery, game.track, game.track->theme);
-            car_view_draw(game.car1, game.track->theme);
-            car_view_draw(game.car2, game.track->theme);
-            shield_aura_draw(game.car1);
-            shield_aura_draw(game.car2);
-            for (int i = 0; i < game.obstacle_count; i++) {
-                if (obstacle_is_visible(game.obstacles[i]))
-                    obstacle_view_draw(game.obstacles[i], game.track->theme);
-            }
-            for (int i = 0; i < game.boost_count; i++) {
-                if (boost_is_visible(game.boosts[i]))
-                    boost_view_draw(game.boosts[i]);
-            }
-            for (int i = 0; i < game.shield_count; i++) {
-                if (shield_is_visible(game.shields[i]))
-                    shield_view_draw(game.shields[i]);
-            }
-            timer_view_draw(game.elapsed_ticks);
-            heart_view_draw(game.car1, game.car2, input_get_car1_inverted_ticks(), input_get_car2_inverted_ticks());
-            if (game.mode_selection == 0)
-                minimap_view_draw(game.car1, game.car2, game.track);
+            game_render_track_scene();
             pause_view_draw(game.pause_selected);
             draw_sprite(resources_get_cursor_sprite(), input_cursor_x(), input_cursor_y());
             break;

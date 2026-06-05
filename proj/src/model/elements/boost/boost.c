@@ -1,11 +1,5 @@
 #include "boost.h"
 #include <stdlib.h>
-#include <time.h>
-
-static double row_to_y(int logical_row, int scroll_row, int scroll_offset) {
-    int screen_row = logical_row - scroll_row;
-    return (double)((2 * CAR_SCREEN_ROW - screen_row) * TRACK_TILE_HEIGHT + scroll_offset);
-}
 
 Boost* create_boost(int row, int lane) {
     Boost* boost = (Boost*) malloc(sizeof(Boost));
@@ -15,7 +9,7 @@ Boost* create_boost(int row, int lane) {
     boost->row        = row;
     boost->sprite_idx = rand() % 3;
 
-    double x = (double)(lane * CAR_LANE_WIDTH);
+    double x = car_lane_to_x(lane);
     double y = (double)(row * TRACK_TILE_HEIGHT);
 
     init_element(&boost->base, x, y, CAR_LANE_WIDTH, TRACK_TILE_HEIGHT);
@@ -31,7 +25,7 @@ void destroy_boost(Boost* boost) {
 void boost_update(Boost* boost, int scroll_row, int scroll_offset) {
     if (boost == NULL || !boost->base.is_active) return;
 
-    boost->base.y = row_to_y(boost->row, scroll_row, scroll_offset);
+    boost->base.y = track_row_to_y(boost->row, scroll_row, scroll_offset);
 
     if (boost->base.y > (double)(TRACK_VISIBLE_ROWS * TRACK_TILE_HEIGHT))
         boost->base.is_active = false;

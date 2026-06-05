@@ -39,8 +39,13 @@ void leaderboard_add(const char *player, int race_time_sec,
         entry.rtc_month = 0;
     }
 
-    if (lb.count < MAX_LEADERBOARD)
+    if (lb.count < MAX_LEADERBOARD) {
         lb.count++;
+    } else {
+        /* Full — only insert if this score beats the current worst entry. */
+        if (entry.race_time_sec <= lb.entries[MAX_LEADERBOARD - 1].race_time_sec)
+            return;
+    }
 
     /* Place at the end, then bubble up into sorted position (descending). */
     int i = lb.count - 1;
