@@ -24,6 +24,7 @@
 typedef enum {
     MAIN_MENU,    /**< Main menu screen. */
     CAR_SELECT,   /**< Car-skin selection screen. */
+    BIOME_SELECT, /**< Biome selection screen (after car select). */
     MODE_SELECT,  /**< Game-mode selection screen. */
     GAMEPLAY,     /**< Active race. */
     PAUSE,        /**< Pause overlay. */

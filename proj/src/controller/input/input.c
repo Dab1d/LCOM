@@ -34,6 +34,16 @@
 #define MODE_ENDUR_X (MODE_RACE_X + MODE_CARD_W + MODE_CARD_GAP)
 #define MODE_CARDS_Y  280
 
+/* Biome select layout — must match biome_select_view.c */
+#define BIOME_LARROW_X    100
+#define BIOME_RARROW_X    884
+#define BIOME_ARROW_Y     390
+#define BIOME_ARROW_HIT    60
+#define BIOME_SELECT_BTN_X 384
+#define BIOME_SELECT_BTN_Y 650
+#define BIOME_SELECT_BTN_W 256
+#define BIOME_SELECT_BTN_H  64
+
 /* Car select RACE button — must match car_select_view.c */
 #define CAR_SELECT_RACE_BTN_X  384
 #define CAR_SELECT_RACE_BTN_Y  640
